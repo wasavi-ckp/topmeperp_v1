@@ -1,0 +1,124 @@
+﻿@model topmeperp.Models.TyepManageModel
+@{
+    ViewBag.Title = "九宮格資料維護";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--九宮格基本資料區塊-->
+@using (Html.BeginForm("EditMainType", "TypeManage", FormMethod.Post))
+{
+    <div class="jumbotron">
+        <div class="row"><h5>@ViewBag.Title</h5></div>
+        <div class="row">
+            <div class="col-md-2">九宮格第1碼</div><div class="col-md-2">
+                @Html.TextBoxFor(m => m.MainType.TYPE_CODE_1, new { @class = "form-control", @readonly = "true" })
+                @Html.HiddenFor(m => m.MainType.TYPE_CODE_ID, new { @class = "form-control", @readonly = "true" })
+            </div>
+            <div class="col-md-2">名稱</div><div class="col-md-6">
+                @Html.TextBoxFor(m => m.MainType.CODE_1_DESC)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">九宮格第2碼</div>
+            <div class="col-md-2">
+                @Html.TextBoxFor(m => m.MainType.TYPE_CODE_2, new { @class = "form-control", @readonly = "true" })
+            </div>
+            <div class="col-md-2">名稱</div><div class="col-md-6">
+                @Html.TextBoxFor(m => m.MainType.TYPE_DESC)
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <!--次九宮格基本資料區塊-->
+        <table class="table" id="tableSubType" name="tableSubType">
+            <tr>
+                <td>
+                    代號
+                </td>
+                <td>
+                    九宮格編碼
+                </td>
+                <td>
+                    次九宮格編碼
+                </td>
+                <td>
+                    名稱
+                </td>
+            </tr>
+            @foreach (var item in Model.SubTypes)
+            {
+                <tr>
+                    <td>
+                        @Html.TextBoxFor(modelItem => item.SUB_TYPE_ID, new { @class = "form-control", @readonly = "true" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(modelItem => item.TYPE_CODE_ID, new { @class = "form-control", @readonly = "true" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(modelItem => item.SUB_TYPE_CODE)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(modelItem => item.TYPE_DESC)
+                    </td>
+                </tr>
+            }
+        </table>
+        <div class="row">
+            <div class="col-md-1">
+                <input type="button" id="addButton" class="btn btn-warning" value="新增" onclick="addRow()" />
+            </div>
+            <div class="col-md-1">
+                <input type="button" id="addButton" class="btn btn-danger" value="刪除" onclick="removeRow()" />
+            </div>
+            <div class="col-md-1">
+                <input type="submit" id="submit" class="btn btn-info" value="儲存" />
+            </div>
+            <div class="col-md-1">
+                <a href="Index" class="btn btn-success">返回</a>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    function addRow() {
+        var typecode1 = $("#MainType_TYPE_CODE_1").val() + $("#MainType_TYPE_CODE_2").val();
+        var htmlTD1 = "<tr><td><input class='form-control' id='item_SUB_TYPE_ID' name='item.SUB_TYPE_ID' readonly='true' type='text' value='' /></td>";
+        var htmlTD2 = "<td><input class='form-control' id='item_TYPE_CODE_ID' name='item.TYPE_CODE_ID' readonly='true' type='text' value='" + typecode1 + "' /></td>";
+        var htmlTD3 = "<td><input id='item_SUB_TYPE_CODE' name='item.SUB_TYPE_CODE' type='text' value='' /></td>";
+        var htmlTD4 = "<td><input id='item_TYPE_DESC' name='item.TYPE_DESC' type='text' value='' /></td></tr>";
+        $('#tableSubType').append(htmlTD1 + htmlTD2 + htmlTD3 + htmlTD4);
+    }
+    function removeRow() {
+        $('#tableSubType tr:last').remove();
+    }
+    /* Sample
+    //增加表格列(row)方法一
+    function add_row() {
+        var td1 = $('<td>').text('Val-01');
+        var td2 = $('<td>').text('Val-02');
+        var td3 = $('<td>').text('Val-03');
+        var tr = $('<tr>').append(td1, td2, td3);
+        $('table').append(tr);
+    }
+
+    //增加表格列(row)方法二
+    function add_row2() {
+        $('table').append("<tr><td>add_row2-01</td><td>add_row2-02</td><td>add_row2-03</td></tr>");
+    }
+
+    //刪除最後一列(row)
+    function remove_last_row() {
+        $('table tr:last').remove();
+    }
+
+    //假設row 有id, 可使用id選擇器刪除該row
+    function remove_row_by_id() {
+        $('#r5').remove();
+    }
+
+    //插入row, 在第2列後插入新的row
+    function insert_row() {
+        $($('table > tbody > tr')[2]).after("<tr><td>insert_row-01</td><td>insert_row-02</td><td>insert_row-03</td></tr>");
+    }
+    */
+
+</script>

@@ -1,0 +1,167 @@
+﻿@{
+    ViewBag.Title = "專案執行-廠商估驗計價";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<style>
+    .checkbox label:after,
+    .radio label:after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+
+    .checkbox .cr,
+    .radio .cr {
+        position: relative;
+        display: inline-block;
+        border: 1px solid #a9a9a9;
+        border-radius: .25em;
+        width: 1.3em;
+        height: 1.3em;
+        float: left;
+        margin-right: .5em;
+    }
+
+    .radio .cr {
+        border-radius: 50%;
+    }
+
+        .checkbox .cr .cr-icon,
+        .radio .cr .cr-icon {
+            position: absolute;
+            font-size: .8em;
+            line-height: 0;
+            top: 50%;
+            left: 20%;
+        }
+
+        .radio .cr .cr-icon {
+            margin-left: 0.04em;
+        }
+
+    .checkbox label input[type="checkbox"],
+    .radio label input[type="radio"] {
+        display: none;
+    }
+
+        .checkbox label input[type="checkbox"] + .cr > .cr-icon,
+        .radio label input[type="radio"] + .cr > .cr-icon {
+            transform: scale(3) rotateZ(-20deg);
+            opacity: 0;
+            transition: all .3s ease-in;
+        }
+
+        .checkbox label input[type="checkbox"]:checked + .cr > .cr-icon,
+        .radio label input[type="radio"]:checked + .cr > .cr-icon {
+            transform: scale(1) rotateZ(0deg);
+            opacity: 1;
+        }
+
+        .checkbox label input[type="checkbox"]:disabled + .cr,
+        .radio label input[type="radio"]:disabled + .cr {
+            opacity: .5;
+        }
+</style>
+<!--標單項目搜尋區條件區域-->
+<div class="container" style="margin:3px">
+    <form name="query" id="query" method="post" action="~/Estimation/queryInfo4Estimation" class="form-inline">
+        <div class="row bg-primary">
+            <div class="col-md-12">
+                <label for="projectId" class="col-md-2">專案編號:@ViewBag.projectId</label>
+                <input type="hidden" id="projectId" name="projectId" value="@ViewBag.projectId" />
+                <label for="projectName" class="col-md-8">專案名稱:@ViewBag.projectName</label>
+                <input type="hidden" id="projectName" name="projectName" value="@ViewBag.projectName" />
+                <div class="col-md-2 pull-right">
+                    <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+                </div>
+            </div>
+        </div>
+        <div class="row bg-info" style="padding-top:3px">
+            <div class="col-sm-3">
+                <label>廠商名稱</label>
+                <input type="text" id="suppliserId" name="supplierId" class="form-control" />
+            </div>
+
+            <div class="col-md-4 date form-group">
+                <label>日報日期</label>
+                <input type="text" id="dtDate_S" name="dtDate_S" class="form-control" style="width:30%" autocomplete="off" />
+                ~<input type="text" id="dtDate_E" name="dtDate_E" class="form-control" style="width:30%" autocomplete="off" />
+            </div>
+            <div class="col-md-2 date form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="only_Material" name="only_Material" />
+                        <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                        材料項目
+                    </label>
+                </div>
+                <button class="btn btn-info">查詢</button>
+            </div>
+        </div>
+        <div class="row bg-info">
+            <div class="col-md-7"></div>
+            <div class="col-md-5">
+                *:勾選材料項目，僅會顯示驗收單之相關估驗資料!!
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--標單項目列表區域-->
+<div class="container-fluid">
+    <div class="container">
+        <h3>驗收估驗項目</h3>
+        @if (null != Model && null != Model.contractItems)
+        {
+            Html.RenderPartial("_SupplierContractList");
+        }
+    </div>
+    <div class="container">
+        <h3>施工估驗項目</h3>
+        @if (null != Model && null != Model.lstEstFromDailyReport)
+        {
+            Html.RenderPartial("_SupplierEstimationList");
+        }
+    </div>
+    <div class="container">
+        <h3>點工估驗項目</h3>
+        @if (null != Model && null != Model.dsTempWorkDailyReport)
+        {
+            Html.RenderPartial("_SupplierTempworker");
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        console.log('initial calander');
+        setCalander("#dtDate_S");
+        setCalander("#dtDate_E");
+        setAutoCompleteSupplier("#suppliserId");
+    });
+    function setCalander(name) {
+        console.log('initial calander:' + name);
+        $(name).datetimepicker({
+            format: 'YYYY/MM/DD',
+            locale: 'zh-TW'
+        });
+    }
+    function setAutoCompleteSupplier(name) {
+        $(name).typeahead({
+            source: function (query, process) {
+                return $.ajax({
+                    url: '/Inquiry/aotoCompleteData',
+                    type: 'post',
+                    dataType: 'json',
+                    success: function (result) {
+                        process(result);
+                    }
+                })
+            },
+            afterSelect: function (data) {
+                // getContactor(data);
+            }
+        });
+    }
+</script>
+

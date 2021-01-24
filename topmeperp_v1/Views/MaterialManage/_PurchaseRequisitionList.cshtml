@@ -1,0 +1,49 @@
+﻿@model IEnumerable<topmeperp.Models.PRFunction>
+<table class="table table-bordered" style="padding-top:5px;">
+    <thead>
+        <tr class="info">
+            <th>項次</th>
+            <th>申購日期</th>
+            <th>申購單編號</th>
+            <th>申購說明</th>
+            <th>注意事項</th>
+            <th>備註</th>
+            <th>狀態</th>
+        </tr>
+    </thead>
+    <tbody>
+    <tbody>
+        @foreach (var item in Model)
+            {
+            <tr>
+                <td>@item.NO</td>
+                <td>@item.CREATE_DATE</td>
+                <td>
+                    <a href="/MaterialManage/SinglePR?id=@item.PR_ID&prjid=@item.PROJECT_ID" target="_blank">
+                        @item.PR_ID
+                    </a>
+                </td>
+                <td>@item.REMARK</td>
+                <td>@item.MEMO</td>
+                <td>
+                    @item.MESSAGE
+                </td>
+                <td>
+                    @switch (item.STATUS.ToString())
+                    {
+                        case "0":<label>草稿/退件</label>
+                            break;
+                        case "10": <label>已送審</label>
+                            break;
+                        case "20": <label>採購中</label>
+                            break;
+                        case "30": <label>待驗收</label>
+                            break;
+                        case "40": <label>結案</label>
+                            break;
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

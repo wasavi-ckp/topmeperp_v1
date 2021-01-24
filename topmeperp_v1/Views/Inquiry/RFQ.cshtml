@@ -1,0 +1,123 @@
+﻿@model IEnumerable<topmeperp.Models.TND_PROJECT_ITEM>
+@using (Html.BeginForm("Create", "Inquiry", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data"}))
+{
+    <!--不好的方式但檔著先屆時設為Hidden-->
+    <input type="hidden" id="prjId" name="prjId" value="@ViewBag.projectid"/>
+    <table class="table">
+        <tr>
+            <th><input type="checkbox" name="CheckAll" id="CheckAll">全選</th>
+            <th>
+                No.
+            </th>
+            <th>
+                項次
+            </th>
+            <th>
+                項目說明
+            </th>
+            <th>
+                單位
+            </th>
+            <th>
+                數量
+            </th>
+            <th>
+                單價
+            </th>
+            <th>
+                複價
+            </th>
+            <th>
+                備註
+            </th>
+            <th>
+                九宮格
+            </th>
+            <th>
+                次九宮格
+            </th>
+            <th>
+                主系統
+            </th>
+            <th>
+                次系統
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <input type="checkbox" id="chkItem" name="chkItem" value="@item.PROJECT_ITEM_ID" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PROJECT_ITEM_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ITEM_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ITEM_DESC)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ITEM_UNIT)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ITEM_QUANTITY)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ITEM_UNIT_PRICE)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MAN_PRICE)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ITEM_REMARK)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TYPE_CODE_1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TYPE_CODE_2)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SYSTEM_MAIN)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SYSTEM_SUB)
+                </td>
+            </tr>
+        }
+    </table><br />
+    <label for="formname">採購項目:</label> <input type="text" id ="formname" name="formname" class="form-control" />
+    <input id="Submit1" type="submit" value="新增詢價單樣本"  class="btn" onclick="return validateForm()"  />
+}
+
+
+<script language="javascript" type="text/javascript">
+    $(document).ready (function () {
+        $("#CheckAll").click(function () {
+            if ($("#CheckAll").prop("checked")) {
+                $("input[name='chkItem']").prop("checked", true);
+            } else
+                $("input[name='chkItem']").prop("checked", false);
+        });
+    });
+</script>
+
+<script language="javascript" type="text/javascript">
+    function GetCheckedValue(checkBoxName) {
+        return $('input:checkbox[name=' + checkBoxName + '][checked=true]').map(function () {
+            return $(this).val();
+        })
+          .get().join(',');
+    }
+    function validateForm() {
+        var formname = $("#formname").val();
+        if (formname.trim() == '') {
+            alert("請輸入採購項目名稱");
+            return false;
+        }
+        return true;
+    }
+</script>

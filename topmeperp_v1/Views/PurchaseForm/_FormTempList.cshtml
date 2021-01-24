@@ -1,0 +1,74 @@
+﻿<div class="page-header">
+    <input id="btnCreateTemplate" name="btnCreateTemplate" type="button" class="btn btn-info" value="批次建立詢價單" onclick="createTemplate()" />
+    <a href="../downloadAllTemplate?projectid=@ViewBag.projectId" class="btn btn-info" target="_blank">下載所有空白詢價單</a>
+    <form id="4formName" name="4formName" action="UpdateFormName" method="post">
+        @if (null != Model.materialTemplateWithBudget)
+        {
+            <h3 class="text-left">
+                材料預算: @if (Model.BudgetSummary.Material_Budget != null)
+                {
+                    @String.Format("{0:#,##}", Model.BudgetSummary.Material_Budget);
+                }
+                else
+                {
+                    @ViewBag.budgetmessage;
+                }
+            </h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>編號</th>
+                        <th>詢價單名稱</th>
+                        <th>預算金額</th>
+                        <th>報價單數量</th>
+                        <th>下載連結</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        decimal BudgetAmt = 0;
+                    }
+                    @foreach (var item in Model.materialTemplateWithBudget)
+                    {
+                        <tr>
+                            <td>
+                                <a href="/PurchaseForm/SinglePrjForm/@item.INQUIRY_FORM_ID?update=Y" target="_blank">@item.INQUIRY_FORM_ID</a>
+                            </td>
+                            <td>@item.FORM_NAME</td>
+                            <td>
+                                @if (null != item.BudgetAmount)
+                                {
+                                    @String.Format("{0:#,##}", item.BudgetAmount);
+                                    BudgetAmt = BudgetAmt + item.BudgetAmount;
+                                }
+                                else
+                                {
+                                    <font class="label-danger">未編預算</font>
+                                }
+                            </td>
+                            <td>@item.CountPO</td>
+                            <td>
+                                <a href="/PurchaseForm/SinglePrjForm/@item.INQUIRY_FORM_ID" target="_blank"><span style="color: deeppink; font-size: 15px;">廠商詢價單</span></a>
+                                <a href="/PurchaseForm/downLoadInquiryForm?formid=@item.INQUIRY_FORM_ID&isTemp=N" target="_blank">下載</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <h3 class="text-left">
+                分項預算總額: @if (ViewBag.budgetdata != null)
+                {
+                    @String.Format("{0:#,##}", BudgetAmt);
+                }
+                else
+                {
+                    @ViewBag.budgetmessage;
+                }
+            </h3>
+                        }
+                        else
+                        {
+                            <p>尚未建立相關詢價單樣板，透過批次建立詢價單或新增詢價單建立空白詢價單!!</p>
+                        }
+    </form>
+</div>

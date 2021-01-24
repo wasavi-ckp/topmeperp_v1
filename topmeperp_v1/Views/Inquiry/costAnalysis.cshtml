@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "備標作業-成本分析檔案下載";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="page-header">
+    <div class="row">
+        <div class="col-md-12 form-group">
+            <form name="FormSearchProject" id="FormSearchProject" action="costAnalysis" method="Post">
+                <div class="row col-md-12">
+                    <label for="id" class="col-md-1 text-right">專案編號</label><input class="form-control col-md-3" id="id" name="id" type="text" value="@ViewBag.projectid" />
+                    <input id="Submit1" type="submit" class="btn btn-info col-md-1" value="查詢" />
+                    <div id="divProcessing" class="col-md-2">
+                        <img src="~/Content/ajax-loader.gif">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--標單項目列表區域-->
+<div class="container-fluid">
+
+    成本分析Excel 檔案連結:<a href="@ViewBag.url">Excel 下載</a><br />
+    處理訊息:@Html.Raw(ViewBag.ErrorMsg)
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+</script>

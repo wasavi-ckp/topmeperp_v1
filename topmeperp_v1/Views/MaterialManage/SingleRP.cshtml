@@ -1,0 +1,188 @@
+﻿@model topmeperp.Models.PurchaseRequisitionDetail
+@{
+    ViewBag.Title = "專案執行-驗收單 ";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="page-header">
+    <form id="formRP" name="formRP" action="RefreshRP" method="post">
+        <div class="row">
+            <div class="col-md-12"><h3 style="height:30px;line-height:20px" class="text-center">協成水電工程事業有限公司-驗收單</h3></div>
+        </div>
+        <div class="row">
+            <div class="col-md-3" style="padding-bottom:10px">
+                <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@Model.prj.PROJECT_NAME" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-3" style="padding-bottom:30px">
+                <label for="receipt_date">驗收日期:</label><input id="receipt_date" name="receipt_date" type="text" value="@ViewBag.receiptDate" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+
+            <div class="col-md-3" style="padding-bottom:30px">
+                <label for="pr_id">驗收單號:</label><input id="pr_id" name="pr_id" type="text" value="@Model.planPR.PR_ID" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-3" style="padding-bottom:30px">
+                <label for="supplier">供應商:</label><input id="supplier" name="supplier" type="text" value="@Model.planPR.SUPPLIER_ID" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+
+            <label class="col-md-2 control-label">收件人 : </label>
+            <div class="col-md-10" style="padding-bottom:10px">
+                <input type="text" class="form-control" name="recipient" id="recipient" value="@Model.planPR.RECIPIENT">
+            </div>
+            <label class="col-md-2 control-label">送貨地址 : </label>
+            <div class="col-md-10" style="padding-bottom:10px">
+                <input type="text" class="form-control" name="location" id="location" value="@Model.planPR.LOCATION">
+            </div>
+            <label class="col-md-2 control-label">注意事項 : </label>
+            <div class="col-md-10" style="padding-bottom:20px">
+                <input type="text" class="form-control" name="caution" id="caution" value="@Model.planPR.REMARK">
+            </div>
+            <input type="hidden" name="projectid" id="projectid" value="@Model.planPR.PROJECT_ID">
+            <input type="hidden" name="parent_pr_id" id="parent_pr_id" value="@Model.planPR.PARENT_PR_ID">
+            <input type="hidden" name="status" id="status" value="@Model.planPR.STATUS">
+        </div>
+
+        <div class="contailer" style="page-break-before: always">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            No.
+                        </th>
+                        <th>
+                            項次
+                        </th>
+                        <th>
+                            項目說明
+                        </th>
+                        <th>
+                            單位
+                        </th>
+                        <th>
+                            合約數量
+                        </th>
+                        <th>
+                            已訂購數量
+                        </th>
+                        <th>
+                            採購數量
+                        </th>
+                        <th>
+                            需求日期
+                        </th>
+                        <th>
+                            備註
+                        </th>
+                        <th>
+                            已驗收數量
+                        </th>
+                        <th>
+                            驗收數量
+                        </th>
+                        <th> </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.planPRItem)
+                    {
+
+                        <tr>
+                            <td>
+                                @Html.TextBox("pr_item_id", @item.PR_ITEM_ID, new { @class = "form-control", style = "width:90px", @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @item.ITEM_ID
+                            </td>
+                            <td>
+                                @item.ITEM_DESC
+                            </td>
+                            <td>
+                                @item.ITEM_UNIT
+                            </td>
+                            <td>
+                                @item.ITEM_FORM_QUANTITY
+                            </td>
+                            <td>
+                                @item.CUMULATIVE_QTY
+                            </td>
+                            <td>
+                                @Html.TextBox("order_qty", item.ORDER_QTY, new { @class = "form-control", style = "width:90px", Name = "order_qty", @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @item.NEED_DATE
+                            </td>
+                            <td>
+                                @item.REMARK
+                            </td>
+                            <td>
+                                @Html.TextBox("all_receipt_qty", item.RECEIPT_QTY_BY_PO, new { @class = "form-control", style = "width:90px", Name = "all_receipt_qty", @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @Html.TextBox("receipt_qty", item.RECEIPT_QTY, new { @class = "form-control", style = "width:120px" })
+                            </td>
+                            <td><input type="hidden" name="original_receipt_qty" id="original_receipt_qty" value="@item.RECEIPT_QTY"></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12" style="padding-bottom:30px;">
+            <div class="col-md-6">
+                採購需求說明:<textarea class="form-control" rows="5" id="message" name="message" readonly>@Model.planPR.MESSAGE</textarea>
+            </div>
+            <div class="col-md-6">
+                驗收備忘錄:<textarea class="form-control" rows="5" id="memo" name="memo" style="color: red; font-size: 15px; background-color:Highlight">@Model.planPR.MEMO</textarea>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="" col-md-12">
+        <input type="button" value="修改" class="btn btn-default" id="updateRP" />
+    </div>
+</div>
+
+<script language="javascript" type="text/javascript">
+
+    $("#updateRP").click(function () {
+
+        var boolOver = false;
+        $('table > tbody > tr').each(function () {
+            var receipt = 0;
+            var all_receipt = 0;
+            var order = 0;
+            var original_receipt = 0;
+            receipt = parseInt($.trim($(this).find("#receipt_qty").val())); //抓取每筆記錄驗收數量的值
+            all_receipt = parseInt($.trim($(this).find("#all_receipt_qty").val())); //抓取每筆記錄總驗收數量的值
+            order = -parseInt($.trim($(this).find("#order_qty").val())); //抓取每筆記錄採購數量的值
+            original_receipt = -parseInt($.trim($(this).find("#original_receipt_qty").val())); //抓取每筆記錄未修改前驗收數量的值
+            var result = parseInt(all_receipt) + parseInt(receipt) + parseInt(original_receipt) + parseInt(order);
+            if (result > parseInt(0)) {
+                boolOver = true;
+            }
+
+        });
+        if (boolOver == true) {
+            alert("個別項目的總驗收數量大於它的採購數量！");
+            return false;
+        }
+        $.ajax({
+            url: '@Url.Action("RefreshRP", "MaterialManage")',
+            data: $('#formRP').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+</script>
+
+
+
+
+

@@ -1,0 +1,223 @@
+﻿@using topmeperp.Models
+@model SupplierDetail
+@{
+    ViewBag.Title = "供應商修改";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="col-md-12">
+    <form id="formSupplier" name="formSupplier" action="RefreshSupplier" method="post">
+
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <input type="button" class="btn btn-success" onclick="javascript:window.location='@Url.Action("Index", "SupplierManage")'" value="回首頁">
+            </div>
+            <div class="col-md-8 alert-info">
+                @Html.Raw(TempData["result"])
+            </div>
+        </div>
+        <!-- Reg-Form new { enctype = "multipart/form-data" } -->
+        <div class="col-md-8" style="padding-top:20px;">
+            <div class="row ">
+                <label class="col-md-3 control-label">供應商編號 : </label>
+                <div class="col-md-9">
+                    <label class="input">
+                        @Html.TextBox("supplierid", @Model.sup.SUPPLIER_ID, new { @class = "form-control", @readonly = "readonly" })
+                    </label>
+                </div>
+
+                <label class="col-md-3 control-label">供應商統編 : </label>
+                <div class="col-md-9">
+                    <label class="input">
+                        @Html.TextBox("company_id", @Model.sup.COMPANY_ID, new { @class = "form-control" })
+                    </label>
+                </div>
+                <label class="col-md-3 control-label">供應商名稱 : </label>
+                <div class="col-md-9">
+                    <label class="input">
+                        @Html.TextBox("company_name", @Model.sup.COMPANY_NAME, new { @class = "form-control" })
+                    </label>
+                </div>
+                <label class="col-md-3 control-label">九宮格 : </label>
+                <div class="col-md-9">
+                    <label class="input">
+                        @Html.TextBox("type_main", @Model.sup.TYPE_MAIN, new { @class = "form-control" })
+                    </label>
+                </div>
+                <label class="col-md-3 control-label">序號 : </label>
+                <div class="col-md-9">
+                    <label class="input">
+                        @Html.TextBox("type_sub", @Model.sup.TYPE_SUB, new { @class = "form-control" })
+                    </label>
+                </div>
+
+                <label class="col-md-3 control-label">產品類別 : </label>
+                <div class="col-md-9">
+                    <label class="input">
+                        @Html.TextArea("supply_note", @Model.sup.SUPPLY_NOTE, new { rows = 3, cols = 600 })
+                    </label>
+                </div>
+
+                <label class="col-md-3 control-label">公司地址 : </label>
+                <div class="col-md-9">
+                    <label class="input">
+                        @Html.TextBox("contact_address", @Model.sup.CONTACT_ADDRESS, new { @class = "form-control", @style = "width:800px" })
+                    </label>
+                </div>
+
+                <label class="col-md-3 control-label" style="padding-bottom:25px;">稅籍地址 : </label>
+                <div class="col-md-9" style="padding-bottom:25px;">
+                    <label class="input">
+                        @Html.TextBox("register_address", @Model.sup.REGISTER_ADDRESS, new { @class = "form-control", @style = "width:800px" })
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="contailer" style="page-break-before: always">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>聯絡人資料 : </h4><button type="button" class="btn btn-warning" data-toggle="modal" data-target="#contactInfo" onclick="getContact('@Model.sup.SUPPLIER_ID')">新增聯絡人</button>
+                </div>
+            </div>
+            <div class="row" style="padding-top:15px;" id="contactpage">
+                <table class="table">
+                    <tr>
+                        <th>
+                            No.
+                        </th>
+                        <th>
+                            聯絡人 :
+                        </th>
+                        <th>
+                            聯絡人電話 :
+                        </th>
+                        <th>
+                            聯絡人傳真 :
+                        </th>
+                        <th>
+                            聯絡人手機 :
+                        </th>
+                        <th>
+                            聯絡人電子信箱 :
+                        </th>
+                        <th>
+                            備註
+                        </th>
+                    </tr>
+                    @foreach (var item in Model.contactItem)
+                    {
+
+                        <tr>
+                            <td>
+                                @Html.TextBox("contactid", @item.CONTACT_ID, new { @class = "form-control", style = "width:80px", @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @Html.TextBox("contactname", @item.CONTACT_NAME, new { @class = "form-control", style = "width:200px" })
+                            </td>
+                            <td>
+                                @Html.TextBox("contacttel", @item.CONTACT_TEL, new { @class = "form-control", style = "width:150px" })
+                            </td>
+                            <td>
+                                @Html.TextBox("contactfax", @item.CONTACT_FAX, new { @class = "form-control", style = "width:150px" })
+                            </td>
+                            <td>
+                                @Html.TextBox("contactmobil", @item.CONTACT_MOBIL, new { @class = "form-control", style = "width:200px" })
+                            </td>
+                            <td>
+                                @Html.TextBox("contactemail", @item.CONTACT_EMAIL, new { @class = "form-control", style = "width:300px" })
+                            </td>
+                            <td>
+                                @Html.TextBox("contactremark", @item.REMARK, new { @class = "form-control", style = "width:200px" })
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="" col-md-12">
+        <input type="button" value="儲存" class="btn btn-default" id="updateSupplier" />
+    </div>
+</div>
+
+<!-- Modal :對話框-->
+<div class="row" style="padding-top:10px;">
+    <div class="modal fade" id="contactInfo" role="dialog">
+        <div class="modal-dialog" id="contactInfoDialog">
+            <!-- Modal content-->
+            @Html.Partial("_AddContact");
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //由ID 取得資料填入表單
+    function getContact(supplierid) {
+        //alert(userid);
+        $.ajax({
+            url: "/SupplierManage/getContact",
+            type: "GET",
+            data: { supplierid: supplierid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#supplier_id').val(data.SUPPLIER_ID);
+                $('#contact_name').val();
+                $('#contact_tel').val();
+                $('#contact_fax').val();
+                $('#contact_mobil').val();
+                $('#contact_email').val();
+                $('#remark').val();
+
+                $('#contactInfo').modal('show'); // show bootstrap modal when complete loaded
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+
+</script>
+<script type="text/javascript">
+    $("#saveContact").click(function () {
+
+        var URLs = "/SupplierManage/AddContact";
+        $.ajax({
+            url: URLs,
+            data: $('#formContact').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>
+<script language="javascript" type="text/javascript">
+
+    $("#updateSupplier").click(function () {
+        if ($("#company_name").val() == "") { alert("供應商名稱欄位不可空白，請輸入供應商名稱!!"); return false; }
+        $.ajax({
+            url: '@Url.Action("RefreshSupplier", "SupplierManage")',
+            data: $('#formSupplier').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+</script>
+
+

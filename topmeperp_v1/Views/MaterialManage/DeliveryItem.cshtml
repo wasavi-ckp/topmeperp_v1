@@ -1,0 +1,46 @@
+﻿@model IEnumerable<topmeperp.Models.PurchaseRequisition>
+<div class="container">
+    <h3 style="padding-top:40px;">物料進出明細 : </h3>
+    <div class="row" style="padding-top:15px;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>驗收/提領</th>
+                    <th>單據編號</th>
+                    <th>驗收/領收日期</th>
+                    <th>驗收/提領數量</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>@item.NO</td>
+                        @if (item.DELIVERY_ORDER_ID.Substring(0, 2) == "DO")
+                        {
+                            <td>提領</td>
+                        }
+                        else
+                        {
+                            <td>驗收</td>
+                        }
+                        @if (item.DELIVERY_ORDER_ID.Substring(0, 2) == "DO")
+                        {
+                            <td><a href="/MaterialManage/SingleDO/@item.DELIVERY_ORDER_ID" target="_blank">@item.DELIVERY_ORDER_ID</a></td>
+                        }
+                        else
+                        {
+                            <td><a href="/MaterialManage/SingleRP/@item.DELIVERY_ORDER_ID-@item.PARENT_PR_ID" target="_blank">@item.DELIVERY_ORDER_ID</a></td>
+                        }
+                            <td>@item.CREATE_DATE</td>
+                            <td>@item.DELIVERY_QTY</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+

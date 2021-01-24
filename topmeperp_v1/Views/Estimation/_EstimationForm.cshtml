@@ -1,0 +1,37 @@
+﻿ <!--未受審的估驗單清單-->
+<div class="container">
+    <div class="row" style="padding-top:5px;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>付款日期</th>
+                    <th>編號</th>
+                    <th>專案名稱</th>
+                    <th>發包項目名稱</th>
+                    <th>供應商名稱(受款人)</th>
+                    <th>備註</th>
+                    <th>下一步</th>
+                    <!--
+                    <th>選項連結</th>
+                        -->
+                </tr>
+            </thead>
+            <tbody>
+            <tbody>
+            @foreach (var item in Model.lstEstimationForm)
+            {
+                    <tr>
+                        <td>
+                          
+                        </td>
+                        <td><a href="/Estimation/createEstimationOrderInfo?formid=@item.EST_FORM_ID" target="_blank">@item.EST_FORM_ID</a></td>
+                        <td>@item.PROJECT_NAME</td>
+                        <td>@item.PAYEE</td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

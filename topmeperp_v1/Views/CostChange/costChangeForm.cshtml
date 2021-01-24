@@ -1,0 +1,190 @@
+﻿@model topmeperp.Models.CostChangeFormTask
+@{
+    ViewBag.Title = "專案執行-成本異動單";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="page-header">
+    <h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>
+    <form name="CostChangeForm" id="CostChangeForm" class="form-inline" action="/Plan/creatOrModifyChangeForm" method="post">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label class="control-label">專案編號:</label>
+                    <input class="form-control" type="text" id="projectId" name="projectId" value="@ViewBag.projectId" readonly />
+                </div>
+                <div class="col-sm-4">
+                    <label class="control-label">專案名稱:</label>
+                    <label class="info">@ViewBag.projectName</label>
+                </div>
+                <div class="col-sm-3">
+                    @if (Model.FormData.STATUS == "0")
+                    {
+                    <h5 class="text-right">狀態: 退件</h5>
+                    }
+                    else if (Model.FormData.STATUS == "10")
+                    {
+                    <h5 class="text-right">狀態: 草稿</h5>
+                    }
+                    else if (Model.FormData.STATUS == "20")
+                    {
+                    <h5 class="text-right">狀態: 審核中</h5>
+                    }
+                    else if (Model.FormData.STATUS == "30")
+                    {
+                    <h5 class="text-right">狀態: 審核通過</h5>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <label class="control-label">異動單號:</label>
+                    <input class="form-control" type="text" id="txtFormId" name="txtFormId" value="@ViewBag.FormId" readonly />
+                </div>
+                <div class="col-sm-6">
+                    @Html.Raw("<label class=control-label' for='methodcode'>異動原因</label>")
+                    @Html.DropDownList("reasoncode", null, String.Empty, new { @class = "form-control" })
+                    @Html.Raw("<label class=control-label' for='methodcode'>財務處理</label>")
+                    @Html.DropDownList("methodcode", null, String.Empty, new { @class = "form-control" })
+                </div>
+                <div class="col-sm-3">
+                    <a class="btn btn-link" href="/Plan/downloadCostChangeForm?formId=@ViewBag.FormId" target="_blank">下載</a>
+                    @if (ViewBag.formStatus == "10")
+                    {
+                        <button class="btn btn-link" data-toggle="modal" data-target="#formUploadItem" type="button">上傳</button>
+                    }
+                </div>
+            </div>
+
+            <div class="row body-content">
+                @if (null != Model)
+            {
+                Html.RenderPartial("_ChangeOrderItemList");
+            }
+            </div>
+            <div class="row form-inline" style="margin-top:3px">
+                <div class="col-md-12">
+                    <label class="control-label" for="remarkItem">增減原因說明(請針對項目、數量、價格或其他原因詳述)</label>
+                    <textarea class="form-control" rows="3" cols="60" id="remarkItem" name="remarkItem">@Html.DisplayFor(model => model.FormData.REMARK_ITEM)</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!--退件或草稿可進行增修-->
+            @*if (Model.FormData.STATUS == "20")
+    {
+        <div class="col-sm-2">
+            <input name="settlementDate" class="form-control" id="settlementDate" type="text" value="@ViewBag.settlementDate" placeholder="結算日期">
+        </div>
+    }*@
+
+            @Html.Partial("~/Views/include/_WorkFlowFunction.cshtml")
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#btnQuery').click(function () {
+            $("#divProcessing").show();
+        });
+        $(function () {
+            $('#settlementDate').datetimepicker({
+                format: 'YYYY/MM/DD',
+                locale: 'zh-tw'
+            });
+        });
+    });
+    //將ProjectItem 註記刪除
+    function delChangeOrderItem(itemid) {
+        if (@Model.FormData.STATUS != "10" || @Model.FormData.STATUS != "0") {
+            alert("此異動單不可再調整內容!!");
+            return;
+        }
+        $.ajax({
+            url: "/Plan/delChangeOrderItem",
+            type: "POST",
+            data: { itemid: itemid },
+            dataType: "text",
+            success: function (data) {
+                alert(data);
+                location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error del data by ajax');
+            }
+        });
+    }
+
+    /**
+    //作業流程功能區塊
+    */
+    //儲存
+    $("#updateForm").click(function () {
+        document.getElementById("CostChangeForm").submit();
+    });
+
+    //送審、通過
+    $("#SendForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("SendForm", "Plan")',
+            data: $('#CostChangeForm').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                if(msg=="更新成功!!"){
+                    window.close();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    //退件
+    $("#RejectForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("RejectForm", "Plan")',
+            data: $('#CostChangeForm').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.close();
+                //window.location.replace("/CashFlow/ExpenseForm");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    //中止
+    $("#CancelForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("CancelForm", "Plan")',
+            data: $('#CostChangeForm').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.close();
+                // window.location.replace("/CashFlow/ExpenseForm");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    /**
+    //作業流程功能區塊
+    ****/
+
+    function cancelTrans() {
+        window.opener = null;
+        window.close();
+    }
+</script>

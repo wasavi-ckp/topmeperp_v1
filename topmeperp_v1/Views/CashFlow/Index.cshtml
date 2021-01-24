@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "財務管理-專案清單";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--專案執行表頭-->
+<div class="container">
+    <h1>財務管理主頁 : </h1>
+</div>
+<!--專案列表區域-->
+<div class="container">
+    @ViewBag.SearchResult
+    <div class="row">
+        <div class="col-md-12 col-sm-6">
+            @if (null != Model)
+            {
+                Html.RenderPartial("_ProjectList");
+            }
+        </div>
+    </div>
+</div>

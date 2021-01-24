@@ -1,0 +1,427 @@
+﻿body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input {
+    max-width: 280px;
+}
+
+textarea {
+    max-width: 500px;
+}
+
+/*表头固定*/
+.fixed_headers thead tr {
+    display: block;
+    position: relative;
+}
+
+.fixed_headers tbody {
+    display: block;
+    overflow: auto;
+    height: 500px;
+}
+/* 每列宽度
+//每列宽度*/
+.fixed_headers td:nth-child(1),
+.fixed_headers th:nth-child(1) {
+    width: 70px; /**功能 */
+}
+
+.fixed_headers td:nth-child(2),
+.fixed_headers th:nth-child(2) {
+    width: 150px; /**No. */
+}
+
+.fixed_headers td:nth-child(3),
+.fixed_headers th:nth-child(3) {
+    width: 70px; /**項次 . */
+    overflow: auto;
+}
+
+.fixed_headers td:nth-child(4),
+.fixed_headers th:nth-child(4) {
+    width: 350px; /**項目說明  . */
+}
+
+.fixed_headers td:nth-child(5),
+.fixed_headers th:nth-child(5) {
+    width: 50px; /**單位  . */
+}
+
+.fixed_headers td:nth-child(6),
+.fixed_headers th:nth-child(6) {
+    width: 100px; /**數量  . */
+}
+
+.fixed_headers td:nth-child(7),
+.fixed_headers th:nth-child(7) {
+    width: 100px; /**單價   . */
+}
+
+.fixed_headers td:nth-child(8),
+.fixed_headers th:nth-child(8) {
+    width: 150px; /**備註   . */
+}
+
+.fixed_headers td:nth-child(9),
+.fixed_headers th:nth-child(9) {
+    width: 50px; /**九宮格   . */
+}
+
+.fixed_headers td:nth-child(10),
+.fixed_headers th:nth-child(10) {
+    width: 50px; /**次九宮格   . */
+}
+
+.fixed_headers td:nth-child(11),
+.fixed_headers th:nth-child(11) {
+    min-width: 120px; /**主系統  . */
+}
+
+.fixed_headers td:nth-child(12),
+.fixed_headers th:nth-child(12) {
+    width: 80px;
+}
+
+.fixed_headers1 thead tr {
+    display: block;
+    position: relative;
+}
+
+.fixed_headers1 tbody {
+    display: block;
+    overflow: auto;
+    height: 400px;
+}
+/* 每列宽度
+//每列宽度*/
+.fixed_headers1 td:nth-child(1),
+.fixed_headers1 th:nth-child(1) {
+    width: 100px; /**九宮格 */
+}
+
+.fixed_headers1 td:nth-child(2),
+.fixed_headers1 th:nth-child(2) {
+    width: 100px; /**次九宮格 */
+}
+
+.fixed_headers1 td:nth-child(3),
+.fixed_headers1 th:nth-child(3) {
+    width: 100px; /**名稱 */
+}
+
+.fixed_headers1 td:nth-child(4),
+.fixed_headers1 th:nth-child(4) {
+    width: 100px; /**合約金額 */
+}
+
+.fixed_headers1 td:nth-child(5),
+.fixed_headers1 th:nth-child(5) {
+    width: 100px; /**材料成本*/
+}
+
+.fixed_headers1 td:nth-child(6),
+.fixed_headers1 th:nth-child(6) {
+    width: 60px; /**材料預算比率*/
+}
+
+.fixed_headers1 td:nth-child(7),
+.fixed_headers1 th:nth-child(7) {
+    width: 120px; /**材料預算*/
+}
+
+.fixed_headers1 td:nth-child(8),
+.fixed_headers1 th:nth-child(8) {
+    width: 100px; /**工資成本*/
+}
+
+.fixed_headers1 td:nth-child(9),
+.fixed_headers1 th:nth-child(9) {
+    width: 60px; /**工資預算比率*/
+}
+
+.fixed_headers1 td:nth-child(10),
+.fixed_headers1 th:nth-child(10) {
+    width: 100px; /**工資預算*/
+}
+
+.fixed_headers1 td:nth-child(11),
+.fixed_headers1 th:nth-child(11) {
+    width: 150px; /**預算總金額*/
+}
+/**RWD Table CSS*/
+.rwd-table {
+    background: #fff;
+    overflow: hidden;
+}
+
+    .rwd-table tr:nth-of-type(2n) {
+        background: #eee;
+    }
+
+    .rwd-table th,
+    .rwd-table td {
+        margin: 0.5em 1em;
+    }
+
+.rwd-table {
+    min-width: 100%;
+}
+
+    .rwd-table th {
+        display: none;
+    }
+
+    .rwd-table td {
+        display: block;
+    }
+
+        .rwd-table td:before {
+            content: attr(data-th) " ";
+            font-weight: bold;
+            width: 6.5em;
+            display: inline-block;
+        }
+
+    .rwd-table th, .rwd-table td {
+        text-align: left;
+    }
+
+        .rwd-table th, .rwd-table td:before {
+            color: #D20B2A;
+            font-weight: bold;
+        }
+
+@media (min-width: 736px) {
+    .rwd-table td:before {
+        display: none;
+    }
+
+    .rwd-table th, .rwd-table td {
+        display: table-cell;
+        padding: 0.25em 0.5em;
+    }
+
+        .rwd-table th:first-child,
+        .rwd-table td:first-child {
+            padding-left: 0;
+        }
+
+        .rwd-table th:last-child,
+        .rwd-table td:last-child {
+            padding-right: 0;
+        }
+
+    .rwd-table th,
+    .rwd-table td {
+        padding: 1em !important;
+    }
+}
+/*公司費用預算表头固定*/
+.fixed_headers2 thead tr {
+    display: block;
+    position: relative;
+}
+
+.fixed_headers2 tbody {
+    display: block;
+    overflow: auto;
+    height: 500px;
+}
+/* 每列宽度
+//每列宽度*/
+.fixed_headers2 td:nth-child(1),
+.fixed_headers2 th:nth-child(1) {
+    width: 100px; /**項目名稱 */
+}
+
+.fixed_headers2 td:nth-child(2),
+.fixed_headers2 th:nth-child(2) {
+    width: 100px; /**項目代碼 */
+}
+
+.fixed_headers2 td:nth-child(3),
+.fixed_headers2 th:nth-child(3) {
+    width: 100px; /**1月 */
+}
+
+.fixed_headers2 td:nth-child(4),
+.fixed_headers2 th:nth-child(4) {
+    width: 100px; /**2月 */
+}
+
+.fixed_headers2 td:nth-child(5),
+.fixed_headers2 th:nth-child(5) {
+    width: 100px; /**3月 */
+}
+
+.fixed_headers2 td:nth-child(6),
+.fixed_headers2 th:nth-child(6) {
+    width: 100px; /**4月 */
+}
+
+.fixed_headers2 td:nth-child(7),
+.fixed_headers2 th:nth-child(7) {
+    width: 100px; /**5月 */
+}
+
+.fixed_headers2 td:nth-child(8),
+.fixed_headers2 th:nth-child(8) {
+    width: 100px; /**6月 */
+}
+
+.fixed_headers2 td:nth-child(9),
+.fixed_headers2 th:nth-child(9) {
+    width: 100px; /**7月 */
+}
+
+.fixed_headers2 td:nth-child(10),
+.fixed_headers2 th:nth-child(10) {
+    width: 100px; /**8月 */
+}
+
+.fixed_headers2 td:nth-child(11),
+.fixed_headers2 th:nth-child(11) {
+    width: 100px; /**9月*/
+}
+
+.fixed_headers2 td:nth-child(12),
+.fixed_headers2 th:nth-child(12) {
+    width: 100px; /**10月*/
+}
+
+.fixed_headers2 td:nth-child(13),
+.fixed_headers2 th:nth-child(13) {
+    width: 100px; /**11月*/
+}
+
+.fixed_headers2 td:nth-child(14),
+.fixed_headers2 th:nth-child(14) {
+    width: 100px; /**12月*/
+}
+
+.fixed_headers2 td:nth-child(15),
+.fixed_headers2 th:nth-child(15) {
+    width: 80px; /**合計*/
+}
+
+
+/*公司費用預算執行彙整表头固定*/
+.fixed_headers3 thead tr {
+    display: block;
+    position: relative;
+}
+
+.fixed_headers3 tbody {
+    display: block;
+    overflow: auto;
+    height: 500px;
+}
+/* 每列宽度
+//每列宽度*/
+.fixed_headers3 td:nth-child(1),
+.fixed_headers3 th:nth-child(1) {
+    width: 100px; /**項目名稱 */
+}
+
+.fixed_headers3 td:nth-child(2),
+.fixed_headers3 th:nth-child(2) {
+    width: 100px; /**項目代碼 */
+}
+
+.fixed_headers3 td:nth-child(3),
+.fixed_headers3 th:nth-child(3) {
+    width: 90px; /**預算/實際 */
+}
+
+.fixed_headers3 td:nth-child(4),
+.fixed_headers3 th:nth-child(4) {
+    width: 100px; /**1月 */
+}
+
+.fixed_headers3 td:nth-child(5),
+.fixed_headers3 th:nth-child(5) {
+    width: 100px; /**2月 */
+}
+
+.fixed_headers3 td:nth-child(6),
+.fixed_headers3 th:nth-child(6) {
+    width: 100px; /**3月 */
+}
+
+.fixed_headers3 td:nth-child(7),
+.fixed_headers3 th:nth-child(7) {
+    width: 100px; /**4月 */
+}
+
+.fixed_headers3 td:nth-child(8),
+.fixed_headers3 th:nth-child(8) {
+    width: 100px; /**5月 */
+}
+
+.fixed_headers3 td:nth-child(9),
+.fixed_headers3 th:nth-child(9) {
+    width: 100px; /**6月 */
+}
+
+.fixed_headers3 td:nth-child(10),
+.fixed_headers3 th:nth-child(10) {
+    width: 100px; /**7月 */
+}
+
+.fixed_headers3 td:nth-child(11),
+.fixed_headers3 th:nth-child(11) {
+    width: 100px; /**8月 */
+}
+
+.fixed_headers3 td:nth-child(12),
+.fixed_headers3 th:nth-child(12) {
+    width: 100px; /**9月*/
+}
+
+.fixed_headers3 td:nth-child(13),
+.fixed_headers3 th:nth-child(13) {
+    width: 100px; /**10月*/
+}
+
+.fixed_headers3 td:nth-child(14),
+.fixed_headers3 th:nth-child(14) {
+    width: 100px; /**11月*/
+}
+
+.fixed_headers3 td:nth-child(15),
+.fixed_headers3 th:nth-child(15) {
+    width: 100px; /**12月*/
+}
+
+.fixed_headers3 td:nth-child(16),
+.fixed_headers3 th:nth-child(16) {
+    width: 80px; /**合計*/
+}
+
+.printTable {
+    border-style: solid;
+    border-width: 2px;
+    width: 100%;
+}
+
+.printTh {
+    border-style: solid;
+    border-width: 1px;
+}

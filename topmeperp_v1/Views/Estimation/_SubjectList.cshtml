@@ -1,0 +1,67 @@
+﻿@model IEnumerable<topmeperp.Models.FIN_SUBJECT>
+
+@using (Html.BeginForm("AddExpense", "Estimation", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <label class="col-md-2 control-label">費用發生年月: </label>
+    <div class='col-md-10'>
+        <input style="width:200px" type="text" class="form-control" name="occurreddate" id="occurreddate" value="">
+    </div>
+    <label class="col-md-2 control-label">費用支付日期: </label>
+    <div class='col-md-10'>
+        <input style="width:200px" type="date" class="form-control" name="paymentdate" id="paymentdate" value="">
+    </div>
+    <label class="col-md-2 control-label">說明事項: </label>
+    <div class='col-md-10' style="padding-bottom:20px">
+        <input style="width:300px" type="text" class="form-control" name="remark" id="remark" value="">
+        <input type="hidden" name="projectid" id="projectid" value="@ViewBag.projectid">
+    </div>
+    <table class="table">
+        <tr>
+            <th>
+                項目名稱
+            </th>
+            <th>
+                項目代碼
+            </th>
+            <th>
+                金額
+            </th>
+            <th>
+                備註
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SUBJECT_NAME)
+                </td>
+                <td>
+                    @Html.TextBox("subject", item.FIN_SUBJECT_ID, new { style = "width:80px" })
+                </td>
+                <td>
+                    <input style="width:150px" type="text" class="form-control" name="expense_amount" id="expense_amount" value="">
+                </td>
+                <td>
+                    <input style="width:300px" type="text" class="form-control" name="item_remark" id="item_remark" value="">
+                </td>
+            </tr>
+        }
+    </table><br />
+    <div class="row">
+        <div class="col-md-12">
+            <input id="Submit1" type="submit" value="新增工地費用" class="btn btn-warning" />
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        $(function () {
+            $('#occurreddate').datetimepicker({
+                format: 'YYYY/MM'
+            });
+        });
+    });
+</script>

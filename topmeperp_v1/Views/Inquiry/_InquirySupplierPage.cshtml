@@ -1,0 +1,100 @@
+﻿<div class="container">
+    <div class="row">
+        <form id="UploadForm" name="UploadForm" action="/Inquiry/FileUpload" method="post" enctype="multipart/form-data">
+            <div class="col-md-2">
+                <label for="file">廠商報價單匯入:</label>
+                <input type="hidden" name="projectid" id="projectid" value="@ViewBag.projectid" />
+            </div>
+            <div class="col-md-3"><input type="file" name="file" id="file" /> </div>
+            <div class="col-md-2"> 工資報價:<input type="checkbox" name="isWage" id="isWage" value="Y" /></div>
+            <div class="col-md-3 pull-left">
+                <input id="btnUploadfile" name="btnUploadfile" type="submit" class="btn-primary" value="匯入檔案" />
+            </div>
+        </form>
+
+    </div>
+    @if (null != Model.tndProjectFormFromSupplier)
+    {
+        <div class="row" style="padding-top:5px;">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>項次</th>
+                        <th>編號</th>
+                        <th>詢價單名稱</th>
+                        <th>供應商名稱</th>
+                        <th>總價</th>
+                        <th>種類</th>
+                        <th>狀態</th>
+                        <th>選項連結</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tbody>
+                    @foreach (var item in Model.tndProjectFormFromSupplier)
+                    {
+                        <tr>
+                            <th>@item.NO</th>
+                            <td><a href="/Inquiry/SinglePrjForm/@item.FORM_ID" target="_blank">@item.FORM_ID</a></td>
+                            <td>@item.FORM_NAME</td>
+                            <td>@item.SUPPLIER_ID</td>
+                            <td>
+                                @if (item.TOTAL_PRICE == null)
+                                {
+                                    <span style="font-weight:bold;color:dodgerblue">
+                                        @item.TOTAL_PRICE
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span style="font-weight:bold;color:dodgerblue">
+                                        @item.TOTAL_PRICE.ToString("N0")
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                @{ 
+                                    var type="材料";
+                                    if (item.ISWAGE=="Y" )
+                                    {
+                                        type = "工資";
+                                    }
+                                }
+                                @type
+                            </td>
+                            <td>@item.STATUS</td>
+                            <td><a href="/Inquiry/downLoadInquiryForm?formid=@item.FORM_ID" target="_blank">下載</a></td>          
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#UploadForm").ajaxForm({
+            iframe: true,
+            dataType: "text",
+            beforeSubmit: function () {
+                var fileContent = $.trim($('#file').val());
+                if (fileContent.length == 0) {
+                    alert('請選擇要上傳的檔案.');
+                    return false;
+                }
+                $("#divProcessing").show();
+                return true;
+            },
+            success: function (result) {
+                $('#UploadForm').resetForm();
+                alert(result);
+                $("#divProcessing").hide();
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                $('#UploadForm').resetForm();
+                alert('檔案上傳錯誤.');
+                $("#divProcessing").hide();
+            }
+        });
+    });
+</script>

@@ -1,0 +1,48 @@
+﻿@model IEnumerable<topmeperp.Models.ProjectList>
+<table class="rwd-table">
+    <tr>
+        <th>
+            專案編號
+        </th>
+        <th>
+            專案名稱
+        </th>
+        <th>
+            業主
+        </th>
+        <th>
+            專案狀態
+        </th>
+        <th>
+            收入管理
+        </th>
+        <th>
+            廠商帳款管理
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td data-th="專案編號">
+                @Html.DisplayFor(modelItem => item.PROJECT_ID)
+            </td>
+            <td data-th="專案名稱">
+                @Html.DisplayFor(modelItem => item.PROJECT_NAME)
+            </td>
+            <td data-th="業主">
+                @Html.DisplayFor(modelItem => item.OWNER_NAME)
+            </td>
+            <td data-th="專案狀態">
+                @Html.DisplayFor(modelItem => item.STATUS)
+            </td>
+            <td data-th="收入管理">
+                <button type="button" class="btn btn-warning" onclick="location.href='@Url.Action("Valuation4Owner", "Estimation", new { id = item.PROJECT_ID })'; ">收入管理</button>
+            </td>
+            <td data-th="廠商帳款管理">
+              <button type="button" class="btn btn-info" onclick="location.href='@Url.Action("ContractItems", "Estimation", new { projectid = item.PROJECT_ID })'; ">廠商計價</button>
+                <button type="button" class="btn btn-info" @ViewBag.F10005 onclick="location.href='@Url.Action("Index", "PaymentManagement", new { id = item.PROJECT_ID })'">付款作業
+                </button>
+            </td>
+        </tr>
+    }
+</table>

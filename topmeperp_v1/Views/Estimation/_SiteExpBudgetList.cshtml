@@ -1,0 +1,490 @@
+﻿@model topmeperp.Models.ExpenseBudgetModel
+
+<div class="row">
+    <div class="row info">
+        <div class="col-md-3 text-left">
+            <span style="color:darkgreen; font-size: 18px;">年度 : @ViewBag.BudgetYear</span>
+        </div>
+        <div class="col-md-3 text-right">
+            <span style="color:darkgreen; font-size: 18px;">年度預算 : @String.Format("{0:#,##0.#}", TempData["TotalBudgetPerYear"])</span>
+        </div>
+        <div class="col-md-3 text-right">
+            <span style="color:darkgreen; font-size: 18px;">年度費用金額 : @String.Format("{0:#,##0.#}", TempData["TotalExpensePerYear"])</span>
+        </div>
+        <div class="col-md-3 text-right">
+            @{
+                decimal? excuRatio = Convert.ToDecimal(TempData["TotalExpensePerYear"]) / Convert.ToDecimal(TempData["TotalBudgetPerYear"]) * 100;
+            }
+            <span style="color: red; font-size: 20px;">執行率 : @String.Format("{0:0.00}", excuRatio) %</span>
+        </div>
+    </div>
+
+</div>
+<table id="tableSum" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
+    <thead>
+        <tr style="background-color:#FFBB66">
+            <th>
+                項目名稱
+            </th>
+            <th>
+                項目代碼
+            </th>
+            <th>
+                預算/實際
+            </th>
+            <th>
+                1月
+            </th>
+            <th>
+                2月
+            </th>
+            <th>
+                3月
+            </th>
+            <th>
+                4月
+            </th>
+            <th>
+                5月
+            </th>
+            <th>
+                6月
+            </th>
+            <th>
+                7月
+            </th>
+            <th>
+                8月
+            </th>
+            <th>
+                9月
+            </th>
+            <th>
+                10月
+            </th>
+            <th>
+                11月
+            </th>
+            <th>
+                12月
+            </th>
+
+            <th>
+                合計
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            decimal? julBudgetAmt = 0;
+            decimal? augBudgetAmt = 0;
+            decimal? sepBudgetAmt = 0;
+            decimal? octBudgetAmt = 0;
+            decimal? novBudgetAmt = 0;
+            decimal? decBudgetAmt = 0;
+            decimal? janBudgetAmt = 0;
+            decimal? febBudgetAmt = 0;
+            decimal? marBudgetAmt = 0;
+            decimal? aprBudgetAmt = 0;
+            decimal? mayBudgetAmt = 0;
+            decimal? junBudgetAmt = 0;
+            decimal? totalBudget = 0;
+
+            decimal? julExpenseAmt = 0;
+            decimal? augExpenseAmt = 0;
+            decimal? sepExpenseAmt = 0;
+            decimal? octExpenseAmt = 0;
+            decimal? novExpenseAmt = 0;
+            decimal? decExpenseAmt = 0;
+            decimal? janExpenseAmt = 0;
+            decimal? febExpenseAmt = 0;
+            decimal? marExpenseAmt = 0;
+            decimal? aprExpenseAmt = 0;
+            decimal? mayExpenseAmt = 0;
+            decimal? junExpenseAmt = 0;
+            decimal? totalExpense = 0;
+            ExpenseBudgetSummary exp = null;
+        }
+        @foreach (var item in Model.BudgetSummary)
+        {
+            @* 輸出預算數 Budget *@
+            <tr style="background-color:#BBFF66">
+                <td>
+                    <span style="">
+                        @item.SUBJECT_NAME
+                    </span>
+                </td>
+                <td>
+                    <span style="">
+                        @item.SUBJECT_ID
+                    </span>
+                </td>
+                <td>
+                    <span style="">預算數</span>
+                </td>
+                <td style="text-align:right;">
+                    @String.Format("{0:#,##0.#}", item.JAN)
+                    @if (item.JAN != null)
+                    {
+                        janBudgetAmt = janBudgetAmt + item.JAN;
+                    }
+                </td>
+                <td style="text-align:right;">
+                    @String.Format("{0:#,##0.#}", item.FEB)
+                    @if (item.FEB != null)
+                    {
+                        febBudgetAmt = febBudgetAmt + item.FEB;
+                    }
+                </td>
+                <td style="text-align:right;">
+                    @String.Format("{0:#,##0.#}", item.MAR)
+                    @if (item.MAR != null)
+                    {
+                        marBudgetAmt = marBudgetAmt + item.MAR;
+                    }
+                </td>
+                <td style="text-align:right;">
+                    @String.Format("{0:#,##0.#}", item.APR)
+                    @if (item.APR != null)
+                    {
+                        aprBudgetAmt = aprBudgetAmt + item.APR;
+                    }
+                </td>
+                <td style="text-align:right;">
+                    @String.Format("{0:#,##0.#}", item.MAY)
+                    @if (item.MAY != null)
+                    {
+                        mayBudgetAmt = mayBudgetAmt + item.MAY;
+                    }
+                </td>
+                <td style="text-align:right;">
+                    @String.Format("{0:#,##0.#}", item.JUN)
+                    @if (item.JUN != null)
+                    {
+                        junBudgetAmt = junBudgetAmt + item.JUN;
+                    }
+                </td>
+                <td style="text-align:right;">
+                    @String.Format("{0:#,##0.#}", item.JUL)
+                    @if (item.JUL != null)
+                    {
+                        julBudgetAmt = julBudgetAmt + item.JUL;
+                    }
+                </td>
+                <td style="text-align:right;">
+                    @String.Format("{0:#,##0.#}", item.AUG)
+                    @if (item.AUG != null)
+                    {
+                        augBudgetAmt = augBudgetAmt + item.AUG;
+                    }
+                </td>
+                <td style="text-align:right;">
+                    @String.Format("{0:#,##0.#}", item.SEP)
+                    @if (item.SEP != null)
+                    {
+                        sepBudgetAmt = sepBudgetAmt + item.SEP;
+                    }
+                </td>
+                <td style="text-align:right;">
+                    @String.Format("{0:#,##0.#}", item.OCT)
+                    @if (item.OCT != null)
+                    {
+                        octBudgetAmt = octBudgetAmt + item.OCT;
+                    }
+                </td>
+                <td style="text-align:right;">
+                    @String.Format("{0:#,##0.#}", item.NOV)
+                    @if (item.NOV != null)
+                    {
+                        novBudgetAmt = novBudgetAmt + item.NOV;
+                    }
+                </td>
+                <td style="text-align:right;">
+                    @String.Format("{0:#,##0.#}", item.DEC)
+                    @if (item.DEC != null)
+                    {
+                        decBudgetAmt = decBudgetAmt + item.DEC;
+                    }
+                </td>
+                <td style="text-align:right;">
+                    <span style="color: blue; ">
+                        @String.Format("{0:#,##0.#}", item.HTOTAL)
+                        @if (item.HTOTAL != null)
+                        {
+                            totalBudget = totalBudget + item.HTOTAL;
+                        }
+                    </span>
+                </td>
+            </tr>
+            @* 輸出發生數 ExpenseSummary *@
+        {
+            List<ExpenseBudgetSummary> modelExpenseSummary = Model.ExpenseSummary.Where(x => x.SUBJECT_ID.Equals(item.SUBJECT_ID)).ToList();
+            if (null != modelExpenseSummary && modelExpenseSummary.Count > 0)
+            {
+                exp = modelExpenseSummary[0];
+            }
+        }
+        <tr style="background-color:#77DDFF">
+            <td></td>
+            <td></td>
+            <td>
+                <span >實際數</span>
+            </td>
+            <td style="text-align:right;">
+                @String.Format("{0:#,##0.#}", exp.JAN)
+                @if (exp.JAN != null)
+                {
+                    janExpenseAmt = janExpenseAmt + exp.JAN;
+                }
+            </td>
+            <td style="text-align:right;">
+                @String.Format("{0:#,##0.#}", exp.FEB)
+                @if (exp.FEB != null)
+                {
+                    febExpenseAmt = febExpenseAmt + exp.FEB;
+                }
+            </td>
+            <td style="text-align:right;">
+                @String.Format("{0:#,##0.#}", exp.MAR)
+                @if (exp.MAR != null)
+                {
+                    marExpenseAmt = marExpenseAmt + exp.MAR;
+                }
+            </td>
+            <td style="text-align:right;">
+                @String.Format("{0:#,##0.#}", exp.APR)
+                @if (exp.APR != null)
+                {
+                    aprExpenseAmt = aprExpenseAmt + exp.APR;
+                }
+            </td>
+            <td style="text-align:right;">
+                @String.Format("{0:#,##0.#}", exp.MAY)
+                @if (exp.MAY != null)
+                {
+                    mayExpenseAmt = mayExpenseAmt + exp.MAY;
+                }
+            </td>
+            <td style="text-align:right;">
+                @String.Format("{0:#,##0.#}", exp.JUN)
+                @if (exp.JUN != null)
+                {
+                    junExpenseAmt = junExpenseAmt + exp.JUN;
+                }
+            </td>
+            <td style="text-align:right;">
+                @String.Format("{0:#,##0.#}", exp.JUL)
+                @if (exp.JUL != null)
+                {
+                    julExpenseAmt = julExpenseAmt + exp.JUL;
+                }
+            </td>
+            <td style="text-align:right;">
+                @String.Format("{0:#,##0.#}", exp.AUG)
+                @if (exp.AUG != null)
+                {
+                    augExpenseAmt = augExpenseAmt + exp.AUG;
+                }
+            </td>
+            <td style="text-align:right;">
+                @String.Format("{0:#,##0.#}", exp.SEP)
+                @if (exp.SEP != null)
+                {
+                    sepExpenseAmt = sepExpenseAmt + exp.SEP;
+                }
+            </td>
+            <td style="text-align:right;">
+                @String.Format("{0:#,##0.#}", exp.OCT)
+                @if (exp.OCT != null)
+                {
+                    octExpenseAmt = octExpenseAmt + exp.OCT;
+                }
+            </td>
+            <td style="text-align:right;">
+                @String.Format("{0:#,##0.#}", exp.NOV)
+                @if (exp.NOV != null)
+                {
+                    novExpenseAmt = novExpenseAmt + exp.NOV;
+                }
+            </td>
+            <td style="text-align:right;">
+                @String.Format("{0:#,##0.#}", exp.DEC)
+                @if (exp.DEC != null)
+                {
+                    decExpenseAmt = decExpenseAmt + exp.DEC;
+                }
+            </td>
+            <td style="text-align:right;">
+                <span >
+                    @String.Format("{0:#,##0.#}", exp.HTOTAL)
+                    @if (exp.HTOTAL != null)
+                    {
+                        totalExpense = totalExpense + exp.HTOTAL;
+                    }
+                </span>
+            </td>
+        </tr>
+        }
+    </tbody>
+    <tfoot>
+        <!--預算數加總-->
+        <tr style="background-color:#BBFF66">
+            <td>
+                <span>
+                    合計 :
+                </span>
+            </td>
+            <td></td>
+            <td>
+                <span >
+                    預算數
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @junBudgetAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @febBudgetAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @marBudgetAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @aprBudgetAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @mayBudgetAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @junBudgetAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @julBudgetAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @augBudgetAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @sepBudgetAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @octBudgetAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @novBudgetAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @decBudgetAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+               <span>
+                    @String.Format("{0:#,##0.#}", @totalBudget)
+                </span>
+            </td>
+        </tr>
+        <!--實際數加總-->
+        <tr style="background-color:#77DDFF">
+            <td>
+                <span style="color: blue; font-size: 15px;">
+                    合計 :
+                </span>
+            </td>
+            <td></td>
+            <td>
+                <span style="color: blue; font-size: 15px;">
+                    實際數
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @janExpenseAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @febExpenseAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @marExpenseAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @aprExpenseAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @mayExpenseAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @junExpenseAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @julExpenseAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @augExpenseAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @sepExpenseAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @octExpenseAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @novExpenseAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @decExpenseAmt)
+                </span>
+            </td>
+            <td style="text-align:right;">
+                <span style="color: blue; ">
+                    @String.Format("{0:#,##0.#}", @totalExpense)
+                </span>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+

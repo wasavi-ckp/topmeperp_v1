@@ -1,0 +1,142 @@
+﻿@{
+    ViewBag.Title = "部門資料管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<link href="../../Content/bootstrap-treeview.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../../Scripts/bootstrap-treeview.js"></script>
+<!--搜尋條件區域-->
+<div class="jumbotron">
+    <div class="row form-group">
+        <form name="formSearch" id="formSearch" class="form-inline">
+            <div class="col-md-12">
+                    <label for="deptName">部門名稱:</label>
+                    <input id="deptName" name="deptName" type="text" class="form-control" />
+                    <!--<button class="btn btn-info" id="btnQuery" name="btnQuery">查詢</button>-->
+                    <div id="divProcessing">
+                        <img src="~/Content/ajax-loader.gif">
+                    </div>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#deptInfo" onclick="clearDialog()">新增</button>
+                </div>
+        </form>
+    </div>
+
+    <!-- Modal :對話框-->
+    <div class="modal fade" id="deptInfo" role="dialog">
+        <div class="modal-dialog" id="deptInfoDialog">
+            <!-- Modal content-->
+            @Html.Partial("_Dept");
+        </div>
+    </div>
+</div>
+<!--帳號資料清單，透過AJAX 更新相關頁面資料-->
+
+<!--樹狀圖區塊-->
+
+<div class="col-md-12">
+    <h2 id="deptTree">部門樹狀圖</h2>
+    <div id="treeview" style="height:500px;overflow-x:auto;"></div>
+</div>
+
+<script type="text/javascript">
+    var chkNodeId;
+    var defaultData = [@Html.Raw(ViewBag.TreeString)];
+    $('#treeview').treeview({
+        data: defaultData,
+        showIcon: true,
+        showCheckbox: true,
+        showTags: true,
+        nodeIcon: "glyphicon glyphicon-user",
+        //uncheckedIcon: "glyphicon glyphicon-user",
+        onNodeChecked: function (event, node) {
+            $('#treeview').treeview('uncheckAll', { silent: true });
+            $('#checkable-output').prepend('<p>' + node.text + ' was checked</p>');
+            $('#treeview').treeview('checkNode', [node.nodeId, { silent: true }]);
+            $('#checkNodeId').val(node.href);
+        },
+        onNodeUnchecked: function (event, node) {
+            $('#checkable-output').prepend('<p>' + node.text + ' was unchecked</p>');
+            $('#checkNodeId').val("");
+        },
+        onNodeSelected: function (event, data) {
+            getDept(data.text);
+        }
+    });
+    $('#treeview').treeview('expandAll', { levels: 3, silent: $('#chk-expand-silent').is(':checked') });
+
+    //新增部門
+    $("#saveDept").click(function () {
+        //Ajax 功能範例
+        var URLs = "addDepartment";
+        $.ajax({
+            url: URLs,
+            data: $('#formDept').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    ///刪除部門
+    $("#delDept").click(function () {
+        var dep = $("#d_depId").val();
+        if (dep == '') {
+            alert("部門不存在!!");
+            return;
+        }
+        var URLs = "delDepartment";
+        $.ajax({
+            url: URLs,
+            data: $('#formDept').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+    
+    // Hide the "busy" Gif at load:
+    $("#divProcessing").hide();
+
+    //由ID 取得資料填入表單
+    function getDept(deptid) {
+        $.ajax({
+            url: "getDept",
+            type: "GET",
+            data: { deptid: deptid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#d_depId').val(data.DEP_ID);
+                $('#d_deptCode').val(data.DEPT_CODE);
+                $('#d_deptName').val(data.DEPT_NAME);
+                $('#d_Manager').val(data.MANAGER);
+                $('#d_desc').val(data.DESC);
+                //使用Jqery selector 選定對話框內的droplist
+                $('#formDept #d_parentId').val(data.PARENT_ID);
+                $('#deptInfo').modal('show'); // show bootstrap modal when complete loaded
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('讀取資料失敗!!');
+            }
+        });
+    }
+    function clearDialog() {
+        $('#d_depId').val('');
+        $('#d_deptCode').val('');
+        $('#d_deptName').val('');
+        $('#d_desc').val('');
+        //使用Jqery selector 選定對話框內的droplist
+        $('#formDept #d_parentId').val('');
+    }
+</script>

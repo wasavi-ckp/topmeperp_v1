@@ -1,0 +1,36 @@
+﻿@model IEnumerable<topmeperp.Models.ExpenseFlowTask>
+<div class="row">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>付款日期</th>
+                <th>編號</th>
+                <th>專案名稱</th>
+                <th>發包項目名稱</th>
+                <th>供應商名稱(受款人)</th>
+                <th>備註</th>
+                <th>下一步</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @(null == item.PAYMENT_DATE ? "" : item.PAYMENT_DATE.Value.ToString("yyyy/MM/dd"))
+                    </td>
+                    <td><a href="/Estimation/SingleEST/@item.EST_FORM_ID" target="_blank">@item.EST_FORM_ID</a></td>
+                    <td>@item.PROJECT_NAME</td>
+                    <td>@item.FORM_NAME</td>
+                    <td>@item.PAYEE</td>
+                    <td>@item.REJECT_DESC</td>
+                    <td>
+                        <a href='@(item.FORM_URL+"id="+item.EST_FORM_ID)'>@item.NOTE</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

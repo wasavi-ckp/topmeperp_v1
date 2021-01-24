@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "領料單查詢 :";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+<h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>
+<div class="jumbotron">
+    <form name="deliverySearch" id="deliverySearch" action="" method="Post" class="form-inline">
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label for="id">專案編號:</label><input id="id" name="id" type="text" value="@ViewBag.projectid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-6">
+                <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+        </div>
+        <hr style="border-top: 1px solid #8c8b8b;" />
+        <div class="row">
+            <div class='col-md-3 form-group'>
+                <label for="caution">領料說明 : </label>
+                <input id="caution" name="caution" class="form-control" />
+            </div>
+            <div class="col-md-3 form-group">
+                <label for="recipient">領收單位/公司 :</label>
+                <input id="recipient" name="recipient" type="text" value="" class="form-control" />
+            </div>
+            <div class='col-md-3 form-group'>
+                <label for="caution">領料單編號 : </label>
+                <input id="prid" name="prid" type="text" value="" class="form-control" />
+            </div>
+                <div class="col-md-3 form-group" style="padding-top:20px">
+                    <input id="Submit2" type="submit" class="btn btn-info" value="查詢" />
+                    <input type="button" class="btn btn-success" onclick="javascript:window.location='@Url.Action("Index", "Plan")'" value="回上一頁">
+                </div>
+           
+            </div>
+        <div class="col-md-6">
+            <div id="divProcessing">
+                <img src="~/Content/ajax-loader.gif">
+            </div>
+        </div>
+    </form>
+</div>
+<!--領料單列表區域-->
+<div class="container-fluid">
+    @ViewBag.SearchResult
+    @if (null != Model)
+    {
+        Html.RenderPartial("_DeliveryList");
+    }
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit6').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+
+</script>

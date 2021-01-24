@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "專案任務管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<link href="../../Content/bootstrap-treeview.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../../Scripts/bootstrap-treeview.js"></script>
+<!--條件區域-->
+<div class="page-header">
+    <form name="FormCompareProject" id="FormCompareProject" action="uploadFile" method="Post" enctype="multipart/form-data">
+        <div class="row">
+            <label class="col-md-2 control-label">專案編號: </label>
+            <div class='col-md-9'>
+                <input type="text" name="projectid" id="projectid" value="@ViewBag.projectId" />
+                <input type="checkbox" name="roottag" id="roottag" value="Y" checked />僅含合約任務
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-md-2 control-label">專案規劃(Project File): </label>
+            <div class='col-md-4'>
+                <input type="file" name="file" id="file" />
+            </div>
+            <div class='col-md-3'>
+                <input type="submit" value="上傳" class="btn btn-default" />
+                <a href="ManageTaskDetail?projectid=@ViewBag.projectId" class="btn-link">編輯</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <div class="row" id="projectTask">
+        @Html.Raw(ViewBag.htmlResult)
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#btnQuery').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+    function setRootTask(prjuid) {
+        var URLs = "setRootFlag"; 
+        $.ajax({
+            url: URLs,
+            data: { "projectid": $("#projectid").val(), "prjuid": prjuid },
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                location = location;
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    }
+</script>

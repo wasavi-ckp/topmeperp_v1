@@ -1,0 +1,205 @@
+﻿@model topmeperp.Models.PurchaseRequisitionDetail
+@{
+    ViewBag.Title = "專案執行-領料單 ";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+<div class="page-header">
+    <input type="button" class="btn btn-success" onclick="javascript:window.location='@Url.Action("Index", "Plan")'" value="回上一頁">
+    <a class="btn btn-link" href="/MaterialManage/downLoadMaterialForm?key=@Model.planPR.PROJECT_ID-@Model.planPR.PR_ID-@Model.planPR.PARENT_PR_ID" target="_blank">下載領料單</a>
+    <form id="formDO" name="formDO" action="" method="post">
+        <div class="row" id="printarea">
+            <div class="row">
+                @if (Model.planPR.PR_ID.Substring(0, 2) == "DO")
+                {
+                    <div class="col-md-12"><h3 style="height:30px;line-height:20px" class="text-center">協成水電工程事業有限公司-領料單</h3></div>
+                }
+                else
+                {
+                    <div class="col-md-12"><h3 style="height:30px;line-height:20px" class="text-center">協成水電工程事業有限公司-領料單(無標單品項)</h3></div>
+                }
+            </div>
+            <!-- Reg-Form new { enctype = "multipart/form-data" } -->
+            <div class="row">
+                <div class="col-md-3" style="padding-bottom:10px">
+                    <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@Model.prj.PROJECT_NAME" class="form-control" style="background-color:#cccccc;"/>
+                </div>
+                <div class="col-md-3" style="padding-bottom:30px">
+                    <label for="receipt_date">領收日期:</label><input id="delivery_date" name="delivery_date" type="text" value="@Model.planPR.CREATE_DATE" class="form-control" style="background-color:#cccccc;"/>
+                </div>
+
+                <div class="col-md-3" style="padding-bottom:30px">
+                    <label for="pr_id">領料單號:</label><input id="pr_id" name="pr_id" type="text" value="@Model.planPR.PR_ID" class="form-control" style="background-color:#cccccc;"/>
+                </div>
+                <div class="col-md-3" style="padding-bottom:30px">
+                    <label for="recipient">領收人所屬單位/公司:</label><input id="recipient" name="recipient" type="text" value="@Model.planPR.RECIPIENT" class="form-control" style="background-color:#cccccc;"/>
+                </div>
+                <input type="hidden" name="projectid" id="projectid" value="@Model.planPR.PROJECT_ID">
+            </div>
+            @if (Model.planPR.PR_ID.Substring(0, 2) == "DO")
+            {
+                <div class="contailer" style="page-break-before: always">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    No.
+                                </th>
+                                <th>
+                                    項次
+                                </th>
+                                <th>
+                                    項目說明
+                                </th>
+                                <th>
+                                    備註
+                                </th>
+                                <th>
+                                    單位
+                                </th>
+                                <th>
+                                    主系統
+                                </th>
+                                <th>
+                                    領收數量
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.planDOItem)
+                            {
+
+                                <tr>
+                                    <td>
+                                        @item.PLAN_ITEM_ID
+                                    </td>
+                                    <td>
+                                        @item.ITEM_ID
+                                    </td>
+                                    <td>
+                                        @item.ITEM_DESC
+                                    </td>
+                                    <td>
+                                        @item.REMARK
+                                    </td>
+                                    <td>
+                                        @item.ITEM_UNIT
+                                    </td>
+                                    <td>
+                                        @item.SYSTEM_MAIN
+                                    </td>
+                                    <td>
+                                        @item.DELIVERY_QTY
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="contailer" style="page-break-before: always">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    No.
+                                </th>
+                                <th>
+                                    項次
+                                </th>
+                                <th>
+                                    項目說明
+                                </th>
+                                <th>
+                                    備註
+                                </th>
+                                <th>
+                                    單位
+                                </th>
+                                <th>
+                                    主系統
+                                </th>
+                                <th>
+                                    驗收數量
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.planPRItem)
+                            {
+
+                                <tr>
+                                    <td>
+                                        @item.PLAN_ITEM_ID
+                                    </td>
+                                    <td>
+                                        @item.ITEM_ID
+                                    </td>
+                                    <td>
+                                        @item.ITEM_DESC
+                                    </td>
+                                    <td>
+                                        @item.REMARK
+                                    </td>
+                                    <td>
+                                        @item.ITEM_UNIT
+                                    </td>
+                                    <td>
+                                        @item.SYSTEM_MAIN
+                                    </td>
+                                    <td>
+                                        @item.RECEIPT_QTY
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            <div class="row">
+                <div class="col-md-12" style="padding-bottom:30px;">
+                    <div class="col-md-6">
+                        領料說明:<textarea class="form-control" rows="5" id="caution" name="caution">@Model.planPR.CAUTION</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script language="javascript" type="text/javascript">
+
+    $("#updateDO").click(function () {
+        var boolOver = false;
+        $('table > tbody > tr').each(function () {
+            var inventory = 0;
+            var delivery = 0;
+            inventory = parseInt($.trim($(this).find("#inventory_qty").val())); //抓取每筆記錄採購數量的值
+            delivery = parseInt($.trim($(this).find("#delivery_qty").val())); //抓取每筆記錄申購數量的值
+            if (parseInt(delivery) > parseInt(inventory)) {
+                boolOver = true;
+            }
+
+        });
+        if (boolOver == true) {
+            alert("提領數量大於庫存數量！");
+            return false;
+        }
+        $.ajax({
+            url: '@Url.Action("RefreshDelivery", "MaterialManage")',
+            data: $('#formDO').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+</script>

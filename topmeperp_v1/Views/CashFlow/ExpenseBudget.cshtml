@@ -1,0 +1,84 @@
+﻿@model topmeperp.Models.ExpenseBudgetModel
+@{
+    ViewBag.Title = "公司費用預算作業";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+
+    <h3 style="padding-bottom:15px;">公司費用預算作業 : </h3>
+    <form name="formSearch" id="formSearch" action="Search" method="Post" class="form-inline">
+        <div class="row col-md-12" style="padding-bottom : 20px">
+            <div class="row col-md-4">
+                <label for="budgetyear">預算年度 :</label> <input id="budgetyear" name="budgetyear" type="text" placeholder="請輸入預算年度" class="form-control" />
+            </div>
+            <div class="col-md-2 pull-left">
+                <input type="submit" value="查詢年度預算" class="btn btn-info" id="Submit1" onclick="return Confirm_Form()" />
+            </div>
+            
+            <div class="row col-md-5 pull-right">
+                <label>🎪公司費用預算填寫表連結 : </label>
+                <a href="/CashFlow/downLoadExpBudgetForm" target="_blank">下載</a>
+            </div>
+            <div id="divProcessing" class="col-md-1">
+                <img src="~/Content/ajax-loader.gif">
+            </div>
+        </div>
+        <div class="col-md-6 alert-dismissable pull-right">
+                <span style="color:orangered; font-size:20px;">@Html.Raw(TempData["result"])</span>
+            </div>
+    </form>
+<div style="padding-bottom : 30px">
+    <form id="UploadFile" name="UploadFile" action="/CashFlow/uploadExpBudgetTable" method="post" enctype="multipart/form-data">
+        <label for="file">🎪公司費用預算匯入:</label>
+        <input type="file" name="fileBudget" id="fileBudget" />
+        <input type="hidden" name="year" id="year" />
+        <input id="btnUploadfile" name="btnUploadfile" type="submit" class="btn-primary" value="匯入檔案" onclick="return Confirm_Form()" />
+    </form>
+</div>
+
+
+<!--年度費用項目預算列表區域-->
+<div class="container-fluid">
+    
+    @if (null != Model)
+    {
+        Html.RenderPartial("_ExpenseBudgetList");
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+    });
+    });
+    function Confirm_Form() {
+        if ($("#budgetyear").val() == "") {
+            alert("預算年度欄位不可空白，請輸入要查詢/上傳的預算年度!!");
+            return false;
+        }
+        if ($("#budgetyear").val() != "" || null != $("#budgetyear").val()) {
+            var year = $("#budgetyear").val();
+            return $("#year").val(year);
+        }
+    }
+
+    $("#saveForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateExpBudget", "CashFlow")',
+            data: $('#formExpBudget').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>

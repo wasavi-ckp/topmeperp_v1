@@ -1,0 +1,69 @@
+﻿@model IEnumerable<topmeperp.Models.ProjectList>
+<table class="rwd-table">
+    <tr>
+        <th>
+            專案編號
+        </th>
+        <th>
+            專案名稱
+        </th>
+        <th>
+            專案負責人
+        </th>
+        <th>
+            專案狀態
+        </th>
+        <th>
+            專案執行日期
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td data-th="專案編號">
+                @Html.DisplayFor(modelItem => item.PROJECT_ID)
+            </td>
+            <td data-th="專案名稱">
+                @Html.DisplayFor(modelItem => item.PROJECT_NAME)
+            </td>
+            <td data-th="專案負責人">
+                @Html.DisplayFor(modelItem => item.OWNER_USER_ID)
+            </td>
+            <td data-th="專案狀態">
+                @Html.DisplayFor(modelItem => item.STATUS)
+            </td>
+            <td data-th="專案執行日期">
+                @Html.DisplayFor(modelItem => item.PLAN_CREATE_DATE)
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <div class="row">
+                    <div class="col-md-3 hidden-xs">
+                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Index", "ProjectPlan", new { projectid = item.PROJECT_ID ,roottag="Y"})'">Project匯入與設定</button>
+                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("ManageTaskDetail", "ProjectPlan", new { projectid = item.PROJECT_ID})'">任務項目管理</button>
+
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PurchaseRequisition","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">申購</button>
+                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PurchaseOrderIndex","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">驗收</button>
+                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("InventoryIndex","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">庫存查詢</button>
+                    </div>   <div class="col-md-3">
+                        <!--<button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("ReceiptSearch","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">驗收單領料</button>-->
+                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("DeliveryIndex","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">領料</button>
+                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("DeliverySearch","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">領料單查詢</button>
+                    </div><div class="col-md-3">
+    <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("dailyReport","ProjectPlan", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">填寫日報</button>
+    <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("dailyReport4Estimation","ProjectPlan", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">施工日報</button>
+</div>
+                </div>
+                <div class="row" style="padding-top:8px">
+                    <div class="col-md-3 hidden-xs">
+                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PlanItemChange", "Plan", new { projectid = item.PROJECT_ID})'">成本異動作業</button>
+                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("costControllerIndex", "Plan", new { id = item.PROJECT_ID })'; ">成本預算管制表</button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,86 @@
+﻿@model topmeperp.Models.InquiryFormModel
+@{
+    ViewBag.Title = "備標作業-詢價單管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="page-header">
+    <div class="row">
+        <div class="col-md-12 form-group">
+            <form name="formInquirySearch" id="formInquirySearch" action="" class="form-inline">
+                <div id="id" class="col-md-2 text-left">
+                    <label for="id" style="text-align:right">專案編號 :</label>
+                    <input id="id" name="id" type="text" value="@ViewBag.projectid" class="form-control" style="width:50%"/>
+                </div>
+                <div id="name" class="col-md-4 text-left">
+                    <label style="text-align:right">專案名稱 :@ViewBag.projectName</label>
+                </div>
+                <label for="status" class="col-md-1" style="text-align:right">狀態 :</label>
+                <div id="status" class="col-md-2 text-left">
+                    <select id="status" name="status">
+                        <option value="有效">有效</option>
+                        <option value="註銷">註銷</option>
+                    </select>
+                </div>
+                <div id="divProcessing" class="col-md-1">
+                    <img src="~/Content/ajax-loader.gif">
+                </div>
+                <div class="col-md-3">
+                    <input id="Submit1" class="btn btn-info" type="submit" value="查詢" />
+                    <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Index","Inquiry", new { id = @ViewBag.projectid})'; ">新增詢價單 </button>
+                    <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+                </div>
+ˋ
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#inquiry">廠商報價單</a></li>
+        <li><a data-toggle="tab" href="#inquiryTemplate">空白詢價單</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="inquiry" class="tab-pane fade in active">
+            @{
+                Html.RenderPartial("_InquirySupplierPage");
+            }
+        </div>
+        <div id="inquiryTemplate" class="tab-pane fade">
+            @{
+                Html.RenderPartial("_InquiryMainPage");
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+    function createTemplate() {
+        var projectid = $("input[id=id]").val();
+        var URLs = "/Inquiry/createEmptyForm";
+        $("#divProcessing").show();
+        $.ajax({
+            url: URLs,
+            data: { "projectid": projectid },
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                $("#divProcessing").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+                $("#divProcessing").hide();
+            }
+        });
+    }
+</script>

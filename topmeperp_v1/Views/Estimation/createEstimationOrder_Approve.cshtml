@@ -1,0 +1,191 @@
+﻿@model topmeperp.Models.ContractModels
+@{
+    ViewBag.Title = "估驗請款單";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+    decimal? CurTotal = 0.0M;
+    decimal? CurAmount = 0.0M;
+    //設定Viewbage 傳遞子頁變數
+    ViewBag.ParentViewBag = ViewBag;
+}
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+<form id="formESTMain" name="formESTMain" action="" method="post" enctype="multipart/form-data" class="form-inline">
+    <!--表頭-->
+    @Html.Partial("~/Views/include/_PaymentHead.cshtml")
+    <!--請款明細資料-->
+    <div class="contailer">
+        <!--物料清單-->
+        <table class="table" align="left">
+            <thead>
+                <tr class="bg-info">
+                    <th>
+                        No.
+                    </th>
+                    <th>
+                        項次
+                    </th>
+                    <th>
+                        項目說明
+                    </th>
+                    <th>
+                        單位
+                    </th>
+                    <th>
+                        合約數量
+                    </th>
+                    <th>
+                        單價
+                    </th>
+                    <th>
+                        前期數量
+                    </th>
+                    <th>
+                        本期數量
+                    </th>
+                    <th>
+                        本期金額
+                    </th>
+                    <th>
+                        累計數量
+                    </th>
+                    <th>
+                        累計金額
+                    </th>
+                    <th>
+                        累計%
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.EstimationItems)
+                {
+                <tr>
+                    <td>
+                        @item.PLAN_ITEM_ID
+                    </td>
+                    <td>
+                        @item.ITEM_ID
+                    </td>
+                    <td>
+                        @item.ITEM_DESC
+                    </td>
+                    <td>
+                        @item.ITEM_UNIT
+                    </td>
+                    <td>
+                        @String.Format("{0:N2}", item.ITEM_QUANTITY)
+                    </td>
+                    <td>
+                        @String.Format("{0:N0}", item.ITEM_UNIT_PRICE)
+                    </td>
+                    <td>
+                        @String.Format("{0:N2}", item.PriorQty)
+                    </td>
+                    <td>
+                        @String.Format("{0:N2}", item.EstimationQty)
+                        @if (item.EstimationQty != null)
+                            {
+                                CurTotal = CurTotal + item.EstimationQty;
+                            }
+                    </td>
+                    <td>
+                        @String.Format("{0:N0}", item.EstimationAmount)
+                        @if (item.EstimationQty != null)
+                            {
+                                CurAmount = CurAmount + item.EstimationAmount;
+                            }
+                    </td>
+                    <td>
+                        @String.Format("{0:N2}", ((item.PriorQty == null ? 0 : item.PriorQty) + item.EstimationQty))
+                    </td>
+                    <td>
+                        @String.Format("{0:N0}", ((item.PriorQty == null ? 0 : item.PriorQty) + item.EstimationQty) * item.ITEM_UNIT_PRICE)
+                    </td>
+                    <th>
+                        @String.Format("{0:N2}", ((item.PriorQty == null ? 0 : item.PriorQty) + item.EstimationQty) / item.ITEM_QUANTITY * 100) %
+                    </th>
+                </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr class="bg-success">
+                    <th colspan="7" style="text-align:right">
+                        合計
+                    </th>
+                    <th>
+                        @String.Format("{0:N2}", @CurTotal)
+                    </th>
+                    <th>
+                        @String.Format("{0:N0}", @CurAmount)
+                    </th>
+                    <th colspan="3">
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <!--憑證資料-->
+    @Html.Partial("~/Views/include/_PaymentInvoices.cshtml")
+    @Html.Partial("~/Views/include/_PaymentDetails.cshtml")
+    <hr />
+    <div class="row">
+        <div class="col-md-2">
+            <a href="~/Estimation/createEstimationOrderInfo?formid=@Model.planEST.EST_FORM_ID" class="btn btn-default">明細</a>
+            <a href="~/PaymentManagement/downLoadExpenseForm?formid=@Model.planEST.EST_FORM_ID" class="btn btn-default">下載</a>
+        </div>
+        <!--依據流程任務與部門設定功能-->
+        @Html.Partial("~/Views/include/_WorkFlowFunction.cshtml")
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //請款憑證明細資料 ///計數器由子頁傳回
+        var counterInvoice = @ViewBag.invoiceCount;
+        $("#addInvoicerow").on("click", function () {
+            var newRow = $("<tr>");
+            var cols = "";
+            cols += '<td><input type="button" class="ibtnDelInvoice btn btn-md btn-danger"  value="刪除" /></td>';
+            cols += '<td><input type="text" id="invoiceNo.' + counterInvoice + '" name="invoiceNo" class="form-control" autocomplete="off" style="max-width:none;width:100%" /></td>';
+            cols += '<td><input type="date" id="invoiceDate.' + counterInvoice + '" name="invoiceDate" class="form-control" style="max-width:none;width:90%" /></td>';
+            cols += '<td><input type="text" id="inoviceAmt.' + counterInvoice + '" name="invoiceAmt" class="form-control" style="max-width:none;width:90%"  /></td>';
+            cols += '<td><input type="text" id="inoviceTax.' + counterInvoice + '" name="invoiceTax" class="form-control" style="max-width:none;width:90%"  /></td>';
+            cols += '<td>';
+            cols += '<select class="form-control" id="invoicetype.' + counterInvoice + '" name="invoicetype" required><option value="二聯式">二聯式</option><option value="三聯式">三聯式</option><option value="收據">收據</option><option value="工資單">工資單</option><option value="對開發票">對開發票</option><option value="折讓單">折讓單</option><option value="其他扣款">其他扣款</option></select>';
+            cols += '</td>';
+            cols += '<td  width="30%"><input type="text" id="invoiceNote.' + counterInvoice +'" name="invoiceNote" class="form-control" autocomplete="off" style="max-width:none;width:100%" value="" /></td>';
+            cols += '</tr>';
+            cols += '</tr>';
+            newRow.append(cols);
+            $("table.Invoice-list").append(newRow);
+            counterInvoice++;
+        });
+
+        $("table.Invoice-list").on("click", ".ibtnDelInvoice", function (event) {
+            $(this).closest("tr").remove();
+            counterInvoice -= 1
+        });
+
+    });
+    //修改估驗單資料:憑證與彙整資料
+    $("#updateForm").click(function () {
+        console.log("send estimation order !!");
+        //$.ajax({
+        //    url: '/Estimation/saveEstimationOrder',
+        //    data: $('#formESTMain').serialize(),
+        //    type: "POST",
+        //    dataType: 'text',
+        //    success: function (msg) {
+        //        window.location.href = "/Estimation/createEstimationOrderInfo?formid=" + msg;
+        //    },
+        //    error: function (xhr, ajaxOptions, thrownError) {
+        //        alert(thrownError);
+        //    }
+        //})
+    });
+</script>
+   @Scripts.Render("~/Scripts/topmep_EstimationFlow.js")
+<style>
+    .typeahead {
+        position: sticky;
+    }
+</style>

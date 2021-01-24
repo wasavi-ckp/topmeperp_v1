@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "專案執行-成本異動作業";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="page-header">
+    <h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>
+    <form name="formSearch" id="formSearch" action="" method="Post">
+        <div class="container">
+            <div class="row form-group">
+                <label class="col-sm-1 control-label">專案編號:</label>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" id="txtProjectId" name="txtProjectId" value="@ViewBag.projectId" readonly />
+                </div>
+                <label class="col-sm-1 control-label">專案名稱:</label>
+                <label class="col-sm-8 info">@ViewBag.projectName</label>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-6">
+                    <div class="col-sm-2"> <label class="control-label">說明:</label></div>
+                    <div class="col-sm-10"><input type="text" id="remark" name="remark" class="form-control" /></div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="col-sm-4">
+                        <label class="control-label">狀態:</label>
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.DropDownList("status", null, String.Empty, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <button type="submit" class="btn btn-info">查詢</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="panel panel-info">
+    <div class="panel-heading">
+        成本異動作業
+        <a href="@Url.Action("createChangeForm", "Plan", new { action="new",projectId=@ViewBag.projectId})" target="_blank" class="btn btn-primary">新增</a>
+    </div>
+    <div class="panel-body">
+        @ViewBag.SearchResult
+        @if (null != Model)
+            {
+                Html.RenderPartial("_ChangeFormList");
+            }
+    </div>
+</div>

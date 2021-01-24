@@ -1,0 +1,94 @@
+﻿@{
+    var vb = ViewBag.ParentViewBag;
+    var invoiceCount = 0;
+    decimal invoiceAmount = 0.0M;
+    decimal taxAmount = 0.0M;
+}
+<div class="contailer">
+    <!--由業管人員輸入-->
+    <label>請款憑證資料</label>
+    <input type="button" class="btn btn btn-warning" id="addInvoicerow" value="新增" />
+    <table class="table Invoice-list">
+        <thead>
+            <tr class="bg-info">
+                <th>功能</th>
+                <th>憑證號碼</th>
+                <th>憑證日期</th>
+                <th>憑證金額</th>
+                <th>稅金</th>
+                <th>憑證類型</th>
+                <th>備註</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (null != Model.EstimationInvoices && Model.EstimationInvoices.Count != 0)
+            {
+                foreach (var item in Model.EstimationInvoices)
+                {
+                    <tr>
+                        <td width="5%">
+                            <input type="button" class="ibtnDelInvoice btn btn-md btn-danger" value="刪除" />
+                        </td>
+                        <td width="12%">
+                            <input type="text" id="invoiceNo.@invoiceCount" name="invoiceNo" class="form-control" autocomplete="off" style="max-width:none;width:100%" value="@item.INVOICE_NUMBER" />
+                        </td>
+                        <td width="13%">
+                            <input type="text" data-date-format="YYYY/MM/DD" id="invoiceDate.@invoiceCount"
+                                   name="invoiceDate" class="form-control" autocomplete="off" style="max-width:none;width:100%"
+                                   value='@item.INVOICE_DATE.ToString("yyyy/MM/dd")' />
+                        </td>
+                        <td width="15%">
+                            <input type="text" id="inoviceAmt.@invoiceCount" name="invoiceAmt" class="form-control" autocomplete="off" style="max-width:none;width:100%" value="@item.AMOUNT" />
+                            @{
+                                invoiceAmount = invoiceAmount + item.AMOUNT;
+                            }
+                        </td>
+                        <td width="10%">
+                            <input type="text" id="inoviceTax.@invoiceCount" name="invoiceTax" class="form-control" autocomplete="off" style="max-width:none;width:100%" value="@item.TAX" />
+                            @{
+                                taxAmount = taxAmount + item.TAX;
+                            }
+                        </td>
+                        <td>
+                            <select class="form-control" id="invoicetype.@invoiceCount" name="invoicetype" required>
+                                <option value="二聯式" @(item.TYPE == "二聯式" ? "selected" : "")>二聯式</option>
+                                <option value="三聯式" @(item.TYPE == "三聯式" ? "selected" : "")>三聯式</option>
+                                <option value="收據" @(item.TYPE == "收據" ? "selected" : "")>收據</option>
+                                <option value="工資單" @(item.TYPE == "工資單" ? "selected" : "")>工資單</option>
+                                <option value="對開發票" @(item.TYPE == "對開發票" ? "selected" : "")>對開發票</option>
+                                <option value="折讓單" @(item.TYPE == "折讓單-溢開折讓" ? "selected" : "")>折讓單-溢開折讓</option>
+                                <option value="折讓單" @(item.TYPE == "折讓單-扣款折讓" ? "selected" : "")>折讓單-扣款折讓</option>
+                                <option value="其他扣款" @(item.TYPE == "其他扣款" ? "selected" : "")>其他扣款</option>
+                            </select>
+                        </td>
+                        <td width="30%">
+                            <input type="text" id="invoiceNote.@invoiceCount" name="invoiceNote" class="form-control" autocomplete="off" style="max-width:none;width:100%" value="@item.NOTE" />
+                        </td>
+                    </tr>
+                                        invoiceCount = invoiceCount + 1;
+                                    }
+                                    vb.invoiceCount = invoiceCount;
+                                }
+                                else
+                                {
+                                    vb.invoiceCount = 0;
+                                }
+        </tbody>
+        <tfoot>
+            <tr class="bg-success">
+                <th colspan="3" style="text-align:right">
+                    小計
+                </th>
+                <th>
+                  @String.Format("{0:N2}", invoiceAmount)  
+                </th>
+                <th>
+                    @String.Format("{0:N2}", taxAmount)
+                </th>
+                <th colspan="2">
+                    合計  @String.Format("{0:N2}", invoiceAmount + taxAmount)
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+</div>

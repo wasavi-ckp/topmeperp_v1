@@ -1,0 +1,138 @@
+﻿@model IEnumerable<topmeperp.Models.PlanItem4Map>
+@using (Html.BeginForm("Create", "PurchaseForm", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <!--不好的方式但檔著先屆時設為Hidden-->
+    <input type="hidden" id="prjId" name="prjId" value="@ViewBag.projectid" />
+    <input type="hidden" id="emptyform" name="emptyform" value="" />
+    <table class="table">
+        <tr>
+            <th><input type="checkbox" name="CheckAll" id="CheckAll">全選</th>
+            <th>
+                No.
+            </th>
+            <th>
+                項次
+            </th>
+            <th>
+                項目說明
+            </th>
+            <th>
+                單位
+            </th>
+            <th>
+                發包數量
+            </th>
+            <th>
+                單價
+            </th>
+            <th>
+                複價
+            </th>
+            <th>
+                備註
+            </th>
+            <th>
+                九宮格
+            </th>
+            <th>
+                次九宮格
+            </th>
+            <th>
+                主系統
+            </th>
+            <th>
+                次系統
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <input type="checkbox" id="chkItem" name="chkItem" value="@item.PLAN_ITEM_ID" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PLAN_ITEM_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ITEM_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ITEM_DESC)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ITEM_UNIT)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MAP_QTY)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ITEM_UNIT_PRICE)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MAN_PRICE)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ITEM_REMARK)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TYPE_CODE_1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TYPE_CODE_2)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SYSTEM_MAIN)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SYSTEM_SUB)
+                </td>
+            </tr>
+        }
+    </table><br />
+    <div class="row">
+        <div class="col-md-3"><input type="text" id="formName" name="formName" value="" class="form-control" placeholder="請輸入詢價單名稱" /></div>
+        <div class="col-md-1"><input type="checkbox" id="isWage" name="isWage" checked value="Y" /><labe>工資</labe></div>
+        <div class="col-md-1 pull-left">
+            <input id="Submit1" type="submit" value="新增詢價單樣本" onclick="return Confirm_Form()"/>
+        </div>
+    </div>
+}
+
+
+<script language="javascript" type="text/javascript">
+    $(document).ready(function () {
+        $("#CheckAll").click(function () {
+            if ($("#CheckAll").prop("checked")) {
+                $("input[name='chkItem']").prop("checked", true);
+            } else
+                $("input[name='chkItem']").prop("checked", false);
+        });
+    });
+
+    function Confirm_Form() {
+        var method1 = $('input[name=chkItem]:checkbox:checked').val();
+        if (typeof (method1) == "undefined") { // 注意檢查完全沒有選取的寫法，這行是精華
+            alert("沒有選取要詢價的品項，請勾選品項後重新按下新增鈕！");
+            return false;
+        }
+        if (confirm("空白詢價單新增成功後，要繼續輸入廠商詢價單資料！") == true) {
+            return $("#emptyform").val('S');
+            
+        }
+        else
+        {
+            return $("#emptyform").val('E');
+        }
+    }
+</script>
+<script language="javascript" type="text/javascript">
+    function GetCheckedValue(checkBoxName) {
+        return $('input:checkbox[name=' + checkBoxName + '][checked=true]').map(function () {
+            return $(this).val();
+        })
+          .get().join(',');
+    }
+</script>
+
+

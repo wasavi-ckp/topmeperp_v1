@@ -1,0 +1,338 @@
+﻿@model topmeperp.Models.InquiryFormDetail
+@{
+    ViewBag.Title = "備標作業-詢價單/報價單 ";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="page-header">
+    <form id="formSupplier" name="formSupplier" action="UpdatePrjForm" method="post">
+        <div class="row">
+            <div class="col-md-8"><h3 class="text-center">協成水電工程事業有限公司-採購詢價單</h3></div>
+            <div class="col-md-3">
+                <h5 class="text-right">
+                    工資:
+                    @if (@Model.prjForm.ISWAGE == "Y")
+                    {
+                        <input type="checkbox" name="isWage" id="isWage" value="Y" checked />}
+                    else
+                    {
+                        <input type="checkbox" name="isWage" id="isWage" value="Y" />
+                    }
+                </h5>
+            </div>
+            <div class="col-md-1 alert-warning"><h5 class="text-right">狀態:@Model.prjForm.STATUS</h5></div>
+
+        </div>
+        <!-- Reg-Form new { enctype = "multipart/form-data" } -->
+
+        <div class="row">
+            <div class="form-group">
+                <label for="inputprojectname" class="col-md-2 control-label">專案名稱</label>
+                <div class="col-md-4">
+                    @Model.prj.PROJECT_NAME
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputsuppliername" class="col-md-2 control-label">廠商名稱 </label>
+                <div class="col-md-4 ">
+                    @if (Model.prjForm.SUPPLIER_ID != null)
+                    {
+                        <input type="text" class="form-control" id="supplier"  name="supplier" value="@Model.prjForm.SUPPLIER_ID" readonly="readonly">
+                    }
+                    else
+                    {
+                        <input type="text" class="typeahead form-control" id="supplier" name="supplier" value=""  autocomplete="off">
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="inputitem" class="col-md-2 control-label">採購項目</label>
+                <div class="col-md-4">
+                    @if (Model.prjForm.FORM_NAME != null)
+                    {
+                        <input type="text" class="form-control" name="formname" id="formname" value="@Model.prjForm.FORM_NAME" readonly="readonly">
+                    }
+                    else
+                    {
+                        <input type="text" id="formname" name="formname" class="form-control" value="" />
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputcontact" class="col-md-2 control-label">聯絡人</label>
+                <div class="col-md-4">
+                    @if (Model.prjForm.CONTACT_NAME != null)
+                    {
+                        <input type="text" class="form-control" name="inputcontact" id="inputcontact" value="@Model.prjForm.CONTACT_NAME" readonly="readonly">
+                    }
+                    else
+                    {
+                        <select class="form-control" id="inputcontact" name="inputcontact"></select>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="inputowner" class="col-md-2 control-label">承辦人</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="inputowner" id="inputowner" value="@Model.prjForm.OWNER_NAME">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputemail" class="col-md-2 control-label">E-mail</label>
+                <div class="col-md-4">
+                    @if (Model.prjForm.CONTACT_EMAIL != null)
+                    {
+                        <input type="text" class="form-control" name="inputemail" id="inputemail" value="@Model.prjForm.CONTACT_EMAIL" readonly="readonly">
+                    }
+                    else
+                    {
+                        <input type="text" class="form-control" id="inputemail" style="background: #CCC" readonly="readonly" placeholder="不須輸入，由系統自動帶入" value="">
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="inputphone" class="col-md-2 control-label">聯絡電話</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="inputphone" id="inputphone" value="@Model.prjForm.OWNER_TEL">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputdeteline" class="col-md-2 control-label">報價期限</label>
+                <div class="col-md-4">
+                    @if (Model.prjForm.DUEDATE != null)
+                    {
+                        <input type="text" class="form-control" name="inputdateline" id="inputdateline" value="@Model.prjForm.DUEDATE.Value.ToString("yyyy/MM/dd")">
+                    }
+                    else
+                    {
+                        <input type="text" class="form-control" name="inputdateline" id="inputdateline" value="">
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="inputowneremail" class="col-md-2 control-label">承辦人E-mail</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="inputowneremail" id="inputowneremail" value="@Model.prjForm.OWNER_EMAIL">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputformnumber" class="col-md-2 control-label">詢價單編號</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="inputformnumber" id="inputformnumber" value="@Model.prjForm.FORM_ID" readonly="readonly">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="inputownerfax" class="col-md-2 control-label">承辦人傳真</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="inputownerfax" id="inputownerfax" value="@Model.prjForm.OWNER_FAX">
+                </div>
+                <input type="hidden" name="projectid" id="projectid" value="@Model.prjForm.PROJECT_ID" />
+                <input type="hidden" name="createid" id="createid" value="@Model.prjForm.CREATE_ID" />
+                <input type="hidden" name="createdate" id="createdate" value="@Model.prjForm.CREATE_DATE" />
+            </div>
+        </div>
+        <br /><br />
+        <div class="contailer">
+            <table class="table">
+                <tr>
+                    <th>
+                        No.
+                    </th>
+                    <th>
+                        項次
+                    </th>
+                    <th>
+                        項目說明
+                    </th>
+                    <th>
+                        單位
+                    </th>
+                    <th>
+                        數量
+                    </th>
+                    <th>
+                        單價
+                    </th>
+                    <th>
+                        複價
+                    </th>
+                    <th>
+                        備註
+                    </th>
+                    <th></th>
+
+                </tr>
+                @foreach (var item in Model.prjFormItem)
+                {
+
+                    <tr>
+                        <td>
+                            @Html.TextBox("formitemid", @item.FORM_ITEM_ID, new { style = "width:50px", @readonly = "readonly" })
+                        </td>
+                        <td>
+                            @item.ITEM_ID
+                        </td>
+                        <td>
+                            @item.ITEM_DESC
+                        </td>
+                        <td>
+                            @item.ITEM_UNIT
+                        </td>
+                        <td>
+                            @item.ITEM_QTY
+                        </td>
+                        <td>
+                            @if (@item.ITEM_UNIT_PRICE != null)
+                            {
+                                <input type="text" class="form-control" name="formunitprice" id="formunitprice" value="@item.ITEM_UNIT_PRICE" style="width:100px">
+                            }
+                            else
+                            {
+                                <input type="text" class="form-control" name="formunitprice" id="formunitprice" value="" style="width:100px">
+                            }
+                        </td>
+
+                        <td></td>
+                        <td>@Html.TextBox("remark", @item.ITEM_REMARK, new { style = "width:500px", @class = "form-control" })</td>
+                        <td>
+                            <input type="hidden" name="project_item_id" id="project_item_id" value="@item.PROJECT_ITEM_ID">
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </form>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (Model.prjForm.DUEDATE != null)
+        {
+            <input type="button" value="更新" class="btn btn-default" id="updateForm" />
+        }
+        else
+        {
+            <input type="button" value="新增" class="btn btn-default" id="saveForm" />
+        }
+        @if (Model.prjForm.STATUS != "有效")
+        {
+            <input type="button" value="回復" class="btn btn-info" id="disableBtn" onclick="chaneFormStatus('有效')" />
+        }
+        else
+        {
+            <input type="button" value="註銷" class="btn btn-warning" id="disableBtn" onclick="chaneFormStatus('註銷')" />
+        }
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(function () {
+            $('#inputdateline').datetimepicker({
+                format: 'YYYY/MM/DD'
+            });
+        });
+    })
+</script>
+<script type="text/javascript">
+    ///Auto Complete 公司名稱
+    $('#supplier').typeahead({
+        source: function (query, process) {
+            return $.ajax({
+                url: '/Inquiry/aotoCompleteData',
+                type: 'post',
+                dataType: 'json',
+                success: function (result) {
+                    process(result);
+                }
+            })
+        },
+        afterSelect: function (data) {
+            getContactor(data);
+        }
+    }
+    );
+    ///依據廠商資料取得聯絡人資訊
+    function getContactor(supid) {
+        $.ajax({
+            dataType: "json",
+            type: "POST",
+            async: false,
+            data: { "Supplier": supid },
+            url: '/Inquiry/getContactor',
+            cache: false,
+            success: function (data) {
+                console.log(data);
+                $("#inputcontact").empty();
+                for (var i = 0; i < data.length; i++) {
+                    $("#inputcontact").append("<option value='" + data[i].CONTACT_ID + "'>" + data[i].CONTACT_ID + "-" + data[i].CONTACT_NAME + "</option>");
+                }
+            }
+        });
+    };
+
+</script>
+<script type="text/javascript">
+    $("#saveForm").click(function () {
+        //if ($("#supplier").val() == "") { alert("廠商名稱欄位不可空白，請輸入廠商名稱!!"); return false; }
+        //if ($("#inputdateline").val() == "") { alert("報價期限欄位不可為空白!!"); return false; }
+        if ($("#formname").val() == "") { alert("採購項目欄位不可為空白!!"); return false; }
+        //if ($("#inputownerfax").val() == "") { alert("承辦人傳真欄位不可為空白!!"); return false; }
+        //if ($("#inputowneremail").val() == "") { alert("承辦人E-mail欄位不可為空白!!"); return false; }
+        //if ($("#inputphone").val() == "") { alert("聯絡電話欄位不可為空白!!"); return false; }
+        //alert($("#supplier").val());
+        $.ajax({
+            url: '@Url.Action("UpdatePrjForm", "Inquiry")',
+            data: $('#formSupplier').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    $("#updateForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("RefreshPrjForm", "Inquiry")',
+            data: $('#formSupplier').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+    function chaneFormStatus(status) {
+        $.ajax({
+            url: '@Url.Action("changeStatus", "Inquiry")',
+            data: { formId: $("#inputformnumber").val(), status: status },
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                //window.location.href=@Url.Action("Inquiry/SinglePrjForm/")'";
+                location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,75 @@
+﻿@model topmeperp.Models.PurchaseFormModel
+@{
+    ViewBag.Title = "專案執行-詢價單管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="jumbotron">
+    <div class="row">
+        <form name="formInquirySearch" id="formInquirySearch" action="" method="Post">
+            <div class="col-md-12 form-group">
+                <label for="id" class="col-md-2" style="text-align:right">專案編號 :</label>
+                <div id="id" class="col-md-2 text-left">
+                    <input id="id" name="id" type="text" value="@ViewBag.projectid" class="form-control" readonly="readonly" />
+                </div>
+                <label for="name" class="col-md-2" style="text-align:right">專案名稱 :</label>
+                <div id="name" class="col-md-4 text-left">
+                    <input id="name" name="name" type="text" value="@ViewBag.projectName" class="form-control" readonly="readonly" />
+                </div>
+                <div id="name" class="col-md-2 text-left">
+                    <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+                </div>
+            </div>
+            <div class="col-md-12 form-group">
+                <label for="formname" class="col-md-2" style="text-align:right">詢價單名稱 :</label>
+                <div class="col-md-3 text-left">
+                    <input id="formname" name="formname" type="text" value="" class="form-control" />
+                </div>
+                <label for="type" class="col-md-1" style="text-align:right">種類 :</label>
+                <div id="type" class="col-md-1 text-left">
+                    <select id="type" name="type">
+                        <option value="N">材料</option>
+                        <option value="Y">工資</option>
+                    </select>
+                </div>
+                <label for="status" class="col-md-1" style="text-align:right">狀態 :</label>
+                <div id="status" class="col-md-1 text-left">
+                    <select id="status" name="status">
+                        <option value="有效">有效</option>
+                        <option value="註銷">註銷</option>
+                    </select>
+                </div>
+                <div id="divProcessing" class="col-md-1">
+                    <img src="~/Content/ajax-loader.gif">
+                </div>
+                <div class="col-md-2 pull-right">
+                    <input id="Submit12" class="btn btn-info" type="submit" value="查詢" />
+
+                </div>
+            </div>
+            <div style="padding-top:20px;">
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("FormIndex","PurchaseForm", new { id = @ViewBag.projectid})'; ">新增詢價單</button>
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("FormTemplateMgr","PurchaseForm", new { id = @ViewBag.projectid})'; ">空白詢價單</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <h3>廠商報價單</h3>
+    @{
+        Html.RenderPartial("_PurchaseSupplierPage");
+    }
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+</script>
+

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "topmeperp_v1", "topmeperp_v1\topmeperp_v1.csproj", "{9CB69760-2BFA-475E-99C4-037F88075182}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		ReleaseTest|Any CPU = ReleaseTest|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CB69760-2BFA-475E-99C4-037F88075182}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CB69760-2BFA-475E-99C4-037F88075182}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CB69760-2BFA-475E-99C4-037F88075182}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CB69760-2BFA-475E-99C4-037F88075182}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CB69760-2BFA-475E-99C4-037F88075182}.ReleaseTest|Any CPU.ActiveCfg = ReleaseTest|Any CPU
+		{9CB69760-2BFA-475E-99C4-037F88075182}.ReleaseTest|Any CPU.Build.0 = ReleaseTest|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

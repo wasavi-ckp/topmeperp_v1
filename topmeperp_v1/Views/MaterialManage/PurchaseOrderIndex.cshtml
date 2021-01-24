@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "採購單查詢";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="page-header">
+    <form name="poSearch" id="poSearch" action="Search" method="Post" class="form-inline">
+        <div class="row">
+            <div class="col-md-3"> <h4>@ViewBag.Title</h4></div>
+            <div class="col-md-3 form-group">
+                <label for="id">專案編號:</label><input id="id" name="id" type="text" value="@ViewBag.projectid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-6">
+                <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc; width:250px;" readonly="readonly" />
+            </div>
+        </div>
+        <hr style="border-top: 1px solid #8c8b8b;" />
+        <div class="row">
+            <div class='col-md-4 date form-group'>
+                <label for="create_date">採購年月 : </label>
+                <input id="create_date" name="create_date" class="form-control" />
+            </div>
+            <div class='col-md-4 form-group'>
+                <label for="parent_prid">申購單編號 :</label>
+                <input id="parent_prid" name="parent_prid" type="text" value="" class="form-control" />
+            </div>
+            <div class='col-md-4 form-group'>
+                <label for="prid">採購單編號 :</label>
+                <input id="prid" name="prid" type="text" value="" class="form-control" />
+            </div>
+        </div>
+        <div class="row" style="padding-top:5px">
+            <div class='col-md-4 form-group'>
+                <label for="supplier">供應商名稱 :</label>
+                <input id="supplier" name="supplier" type="text" value="" class="form-control" style="max-width:none;width:60%" />
+            </div>
+            <div class="col-md-4 form-group">
+                <label for="keyname">關鍵字 :</label>
+                <input id="keyname" name="keyname" type="text" value="" class="form-control"  style="max-width:none;width:60%" />
+            </div>
+            <div class='col-md-4 form-group'>
+                <div id="divProcessing">
+                    <img src="~/Content/ajax-loader.gif">
+                </div>
+                <input id="Submit2" type="submit" class="btn btn-info" value="查詢" />
+                <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+            </div>
+        </div>
+    </form>
+</div>
+<!--採購單列表區域-->
+<div class="container-fluid">
+    @ViewBag.SearchResult
+    @if (null != Model)
+    {
+        Html.RenderPartial("_PurchaseOrderList");
+    }
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit2').click(function () {
+            $("#divProcessing").show();
+        });
+
+        $(function () {
+            $('#create_date').datetimepicker({
+                format: 'YYYY/MM',
+                locale: 'zh-tw'
+            });
+        });
+    })
+</script>
+

@@ -1,0 +1,29 @@
+﻿@model IEnumerable<topmeperp.Models.PLAN_ITEM>
+<div class="container" style="width:auto;height:auto;overflow-x:hidden;overflow-y:auto;padding-top:5px;">
+    <label id="Message" class="alert-danger">@ViewBag.Message</label>
+    @if (Model != null)
+    {
+        <div class="row">
+            <div class="row panel-heading label-info">項目</div>
+            <table class="table" width="100%">
+                <tr>
+                    <th width="10%">主鍵值</th>
+                    <th width="10%">標單項次</th>
+                    <th>品項</th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.PLAN_ITEM_ID</td>
+                        <td>@item.ITEM_ID </td>
+                        <td>@Html.DisplayFor(modelItem => item.ITEM_DESC)</td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+    } else {
+    <div class="row alert-danger">尚未設定施作項目!!</div>
+    }
+</div>

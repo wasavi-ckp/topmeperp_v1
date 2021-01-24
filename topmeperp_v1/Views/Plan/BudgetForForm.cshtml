@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewBag.Title = "專案執行-詢價單預算";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-12 form-group">
+            <form name="FormSearchProject" id="FormSearchProject" action="" method="Post">
+                <div class="row col-md-12">
+                    <label for="projectid" class="col-md-2 text-right">專案編號</label><input class="form-control col-md-3" id="projectid" name="projectid" type="text" value="@ViewBag.projectid" style="background-color:#cccccc;" readonly="readonly" />
+                </div>
+                <div class="row col-md-12" style="padding-top:5px;">
+                    <label for="textCode1" class="col-md-2  text-right" style="padding-top:15px;">九宮格</label><input class="form-control col-md-3" id="textCode1" name="textCode1" type="text" />
+                    <label for="textCode2" class="col-md-2  text-right" style="padding-top:15px;">次九宮格</label><input class="form-control col-md-3" id="textCode2" name="textCode2" type="text" />
+                </div>
+                <div class="row col-md-12">
+                    <label for="textSystemMain" class="col-md-2  text-right" style="padding-top:15px;">主系統</label> <input class="form-control col-md-3" id="textSystemMain" name="textSystemMain" type="text" />
+                    <label for="textSystemSub" class="col-md-2 text-right" style="padding-top:15px;">次系統</label> <input class="form-control col-md-3" id="textSystemSub" name="textSystemSub" type="text" />
+                </div>
+                <div class="row col-md-12">
+                    <label for="formName" class="col-md-2 text-right" style="padding-top:15px;">採購項目</label> <input class="form-control col-md-3" id="formName" name="formName" type="text" />
+                    <div id="divProcessing" class="col-md-2">
+                        <img src="~/Content/ajax-loader.gif">
+                    </div>
+                    <div class="col-md-1 pull-right">
+                        <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+                    </div>
+                    <div class="col-md-1 pull-right">
+                        <input id="Submit1" type="submit" class="btn btn-info" value="查詢" />
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--標單項目列表區域-->
+<div class="container-fluid">
+    @ViewBag.SearchResult
+    @if (null != Model)
+    {
+        Html.RenderPartial("_PlanItemBudget");
+    }
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+</script>
+<script type="text/javascript">
+    $("#Submit2").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdatePlanBudget", "Plan")',
+            data: $('#formBudget').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>
+

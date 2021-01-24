@@ -1,0 +1,64 @@
+﻿
+@model IEnumerable<topmeperp.Models.PurchaseOrderFunction>
+@{
+    ViewBag.Title = "專案執行-申購單查詢 ";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+<div class="container">
+    <div class="row" style="padding-top:5px;">
+        <h2>@ViewBag.Title </h2>
+        <div class="row">
+            <div class="col-md-5 form-group" style="padding-top:10px">
+                <label for="id">專案編號:</label><input id="id" name="id" type="text" value="@ViewBag.projectid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-5" style="padding-top:10px">
+                <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-2" style="padding-top:35px">
+                <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+            </div>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>申購單編號</th>
+                    <th>申購日期</th>
+                    <th>供應商名稱</th>
+                    <th>項目最早需求日</th>
+                    <th>功能</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tbody>
+                @foreach (var item in Model)
+            {
+                    <tr>
+                        <th><a href="/MaterialManage/SinglePR/@item.PR_ID" target="_blank">@item.PR_ID</a></th>
+                        <th>@item.CREATE_DATE</th>
+                        @if (null != item.SUPPLIER_ID && item.SUPPLIER_ID != "")
+                        {
+                            <td>@item.SUPPLIER_ID</td>
+                        }
+                        else
+                        {
+                            <td>
+                                <span style="color: red; font-size: 15px;">尚未發包</span>
+                            </td>
+                        }
+                        <td>@item.NEED_DATE</td>
+                        @if (null != item.SUPPLIER_ID && item.SUPPLIER_ID != "")
+                        {
+                            <td><a href="/MaterialManage/PurchaseOperation?prjid=@item.PROJECT_ID&prid=@item.PR_ID&sup=@item.SUPPLIER_ID" target="_blank">執行採購作業</a></td>
+                        }
+                        else
+                        {
+                            <td><a href="/MaterialManage/PurchaseOperation?prjid=@item.PROJECT_ID&prid=@item.PR_ID&sup=@item.SUPPLIER_ID" target="_blank">查看未發包項目</a></td>
+                        }
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

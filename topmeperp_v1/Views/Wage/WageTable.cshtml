@@ -1,0 +1,53 @@
+﻿@model IEnumerable<topmeperp.Models.TND_WAGE>
+@{
+    ViewBag.Title = "備標作業-工率上傳";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row"><br/><br/>
+        <div class="row col-md-12">
+            <div class="col-md-4">
+                <fieldset disabled>
+                    <label for="projectid">專案編號:</label>
+                    <input type="text" name="projectid" id="projectid" value="@ViewBag.projectid" />
+                </fieldset>
+            </div>
+            <div class="col-md-8">
+                <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+            </div>
+            </div>
+    </div>
+        <div class="col-md-12">
+            <div class="col-md-8"></div>
+            <div class="col-md-4 alert-info">
+                @Html.Raw(TempData["result"])
+            </div>
+    </div><br/>
+    <div class="row col-md-12">
+        <h3>工率資料</h3>
+        <h5>@ViewBag.Result</h5>
+    </div><br />
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>PK</th>
+                <th>工率</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PROJECT_ITEM_ID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RATIO)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+

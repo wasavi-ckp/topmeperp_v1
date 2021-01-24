@@ -1,0 +1,77 @@
+﻿<div class="page-header">
+    <form id="4formName" name="4formName" action="UpdateFormName" method="post">
+
+        @if (null != Model.planTemplateForm)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>編號</th>
+                        <th>詢價單名稱</th>
+                        <th>下載連結</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.planTemplateForm)
+                {
+                    if (@item.FORM_NAME == null || item.FORM_NAME == "")
+                    {
+                            <tr>
+                                <td>
+                                    <a href="/PurchaseForm/SinglePrjForm/@item.INQUIRY_FORM_ID" target="_blank">@item.INQUIRY_FORM_ID</a>
+                                    @*<a href="/PurchaseForm/SinglePrjForm/@item.INQUIRY_FORM_ID" target="_blank">[含工帶料]</a>-->*@
+                                    <input type="hidden" name="inquiryformid" id="inquiryformid" value="@item.INQUIRY_FORM_ID">
+                                </td>
+                                <td><input type="text" class="form-control" name="formname" id="formname" value="" style="width:500px"></td>
+                                <td>
+                                    <a href="/PurchaseForm/downLoadInquiryForm?formid=@item.INQUIRY_FORM_ID" target="_blank">下載</a>
+                                    @*<a href="/PurchaseForm/downLoadInquiryForm4All?formid=@item.INQUIRY_FORM_ID" target="_blank">含工帶料</a>*@
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>
+                                    <a href="/PurchaseForm/SinglePrjForm/@item.INQUIRY_FORM_ID" target="_blank">@item.INQUIRY_FORM_ID</a>
+                                    @* <a href="/PurchaseForm/SinglePrjForm/@item.INQUIRY_FORM_ID" target="_blank">[含工帶料]</a>*@
+                                </td>
+                                <td>@item.FORM_NAME</td>
+                                <td>
+                                    <a href="/PurchaseForm/downLoadInquiryForm?formid=@item.INQUIRY_FORM_ID&isTemp=N" target="_blank">下載</a>
+                                    @*<a href="/PurchaseForm/downLoadInquiryForm4All?formid=@item.INQUIRY_FORM_ID" target="_blank">含工帶料</a>*@
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>尚未建立相關詢價單樣板，透過批次建立詢價單或新增詢價單建立空白詢價單!!</p>
+        }
+    </form>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <input type="button" value="新增空白詢價單名稱" class="btn btn-default" id="saveForm" />
+    </div>
+</div>
+<script type="text/javascript">
+    $("#saveForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateFormName", "PurchaseForm")',
+            data: $('#4formName').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>

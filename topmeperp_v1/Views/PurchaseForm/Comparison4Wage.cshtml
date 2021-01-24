@@ -1,0 +1,147 @@
+﻿
+@{
+    ViewBag.Title = "工資比價";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="jumbotron">
+    <h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>
+    <form name="formSearch" id="formSearch" method="post" class="form-inline">
+        <div class="row">
+            <div class="col-md-6 form-group" style="padding-top:10px">
+                <label for="id">專案編號:</label><input id="id" name="id" type="text" value="@ViewBag.id" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-6" style="padding-top:10px">
+                <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+        </div>
+        <hr style="border-top: 1px solid #8c8b8b;" />
+        <div class="row">
+            <div class="col-md-4">
+                <label for="typeCode1">九宮格:</label><input id="typeCode1" name="typeCode1" type="text" value="" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label for="typeCode2">次九宮格:</label><input id="typeCode2" name="typeCode2" type="text" value="" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label for="formName">採購項目:</label><input id="formName" name="formName" type="text" value="" class="form-control" />
+            </div>
+        </div>
+        <div class="row" style="padding-top:10px">
+            <div class="col-md-4">
+                <label for="systemMain">主系統:</label>
+                @Html.DropDownList("SystemMain", (IEnumerable<SelectListItem>)ViewBag.SystemMain, String.Empty, new { @class = "form-control selectpicker" })
+            </div>
+            <div class="col-md-4">
+                <label for="systemSub">次系統:</label>
+                @Html.DropDownList("systemSub", (IEnumerable<SelectListItem>)ViewBag.SystemSub, String.Empty, new { @class = "form-control selectpicker" })
+            </div>
+
+            <div class="col-md-4">
+                <div id="divProcessing">
+                    <img src="~/Content/ajax-loader.gif">
+                </div>
+                <input id="btnQuery" class="btn btn-info" type="button" onclick="getComparisonData()" value="查詢" />
+                <input type="button" class="btn btn-success" onclick="closewin();" value="關閉">
+            </div>
+        </div>
+    </form>
+    <!--進度對話框-->
+    <div class="modal fade" id="progressInfo">
+        <div class="modal-dialog" id="pleaseWaitDialog">
+            <div class="progress progress-striped active" style="height:44px;">
+                <div id="progressBar" class="bar" style="height:44px;width:1%;background-color:green"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row" id="comparisonData"></div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#btnQuery').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+    function getComparisonData() {
+        //Ajax 功能範例:置換部分網頁內容
+        var URLs = "/PurchaseForm/ComparisonData4Wage";
+        $("#divProcessing").show();
+        $.ajax({
+            url: URLs,
+            data: $('#formSearch').serialize(),
+            type: "POST",
+            dataType: 'html',
+            success: function (result) {
+                $("#comparisonData").html(result);
+                $("#divProcessing").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+                $("#divProcessing").hide();
+            }
+        });
+    }
+
+    function removeSupplier(formid) {
+        jQuery.ajax({
+            url: "/PurchaseForm/RemoveSupplierForm",
+            async: true,
+            data: { "formid": formid },
+            type: "POST",
+            dataType: 'text',
+            success: function (result) {
+                alert(result);
+                getComparisonData();
+            },
+        });
+    }
+
+    function clickSupplier(formid, iswage) {
+        jQuery.ajax({
+            url: "/PurchaseForm/BatchUpdateCost",
+            async: true,
+            data: { "formid": formid, "iswage": iswage },
+            type: "POST",
+            dataType: 'text',
+            success: function (result) {
+                alert(result);
+                getComparisonData();
+            },
+        });
+    }
+
+    function updateProgress(percentage) {
+        if (percentage > 100) percentage = 100;
+        $('#progressBar').css('width', percentage + '%');
+        $('#progressBar').html(percentage + '%');
+    }
+
+    //$.ajax({
+    //    type: 'GET',
+    //    url: 'js/scanhelper.php',
+    //    async: true,
+    //    data: {
+    //        ip: ipToCheck
+    //    }
+    //}).done(function (msg) {
+    //    hostsDone++;
+    //    updateProgress((hostsDone / hosts) * 100);
+    //    if (msg != 0) {
+    //        logSuccess(ipToCheck);
+    //    }
+    //});
+    //http://stackoverflow.com/questions/13973781/asynchronously-updating-a-bootstrap-progress-bar-with-jquerys-ajax
+</script>
+<script type="text/javascript">
+function closewin()
+{
+window.open('', '_self', ''); window.close();
+}
+</script>
+

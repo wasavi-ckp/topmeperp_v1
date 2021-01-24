@@ -1,0 +1,87 @@
+﻿@{
+    ViewBag.Title = "備標作業-發包數量查詢";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-4">
+                <form name="FormMapInfo" id="FormMapInfo">
+                        <label for="projectid">專案編號:</label>
+                        <input type="text" style="background-color:#cccccc;" name="id" id="id" value="@ViewBag.projectid" />
+                    <br />
+                </form>
+            </div>
+            <div class="col-md-8">
+                <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+            </div>
+            <div id="divProcessing">
+                <img src="~/Content/ajax-loader.gif">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-8"></div>
+        <div class="col-md-4 alert-info">
+            @Html.Raw(TempData["result"])
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#MapFP">消防電</a></li>
+        <li><a data-toggle="tab" href="#MapFW">消防水</a></li>
+        <li><a data-toggle="tab" href="#MapPLU">給排水</a></li>
+        <li><a data-toggle="tab" href="#MapPEP">電氣管線</a></li>
+        <li><a data-toggle="tab" href="#MapLCP">弱電管線</a></li>
+        <li><a data-toggle="tab" href="#MapDEVICE">設備清單</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="MapFP" class="tab-pane fade in active">
+            @{
+                Html.RenderPartial("_MapFPMainPage");
+            }
+        </div>
+        <div id="MapFW" class="tab-pane fade">
+            @{
+                Html.RenderPartial("_MapFWPage");
+            }
+
+        </div>
+        <div id="MapPLU" class="tab-pane fade">
+            @{
+                Html.RenderPartial("_MapPLUPage");
+            }
+        </div>
+        <div id="MapLCP" class="tab-pane fade">
+            @{
+                Html.RenderPartial("_MapLCPPage");
+            }
+        </div>
+        <div id="MapPEP" class="tab-pane fade">
+            @{
+                Html.RenderPartial("_MapPEPPage");
+            }
+        </div>
+        <div id="MapDEVICE" class="tab-pane fade">
+            @{
+                Html.RenderPartial("_MapDevicePage");
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#login').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+</script>
+

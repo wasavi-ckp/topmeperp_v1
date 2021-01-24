@@ -1,0 +1,54 @@
+﻿@model IEnumerable<topmeperp.Models.TND_PROJECT>
+<table class="table">
+    <tr>
+        <th>
+            專案編號
+        </th>
+        <th>
+            專案名稱
+        </th>
+        <th>
+            專案負責人
+        </th>
+        <th>
+            整理後標單檔名稱
+        </th>
+        <th>
+            整理後標單起始欄
+        </th>
+        <th>
+            專案狀態
+        </th>
+        <th>
+            專案建立日期
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <a href="/Tender/Details/@Html.DisplayFor(modelItem => item.PROJECT_ID)">@Html.DisplayFor(modelItem => item.PROJECT_ID)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PROJECT_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OWNER_USER_ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EXCEL_FILE_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.START_ROW_NO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.STATUS)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CREATE_DATE)
+            </td>
+        </tr>
+    }
+
+</table>

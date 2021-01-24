@@ -1,0 +1,104 @@
+﻿@model IEnumerable<topmeperp.Models.PLAN_ITEM>
+@ViewBag.Result
+<button class="btn-xs" type="button" onclick="switchDivQuery()">
+    <span class="glyphicon glyphicon-menu-up"></span>
+</button>
+<div class="row">
+    <table class="table table-bordered">
+        <thead >
+            <tr  class="info">
+                <th>
+                    功能
+                </th>
+                <th>
+                    No.
+                </th>
+                <th>
+                    項次
+                </th>
+                <th>
+                    項目說明
+                </th>
+                <th>
+                    單位
+                </th>
+                <th>
+                    數量
+                </th>
+                <th>
+                    單價
+                </th>
+                <th>
+                    備註
+                </th>
+                <th>
+                    九宮格
+                </th>
+                <th>
+                    次九宮格
+                </th>
+                <th>
+                    主系統
+                </th>
+                <th>
+                    次系統
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-default btn-xs" onclick="getPlanItem('@item.PLAN_ITEM_ID')">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </button>
+                        <button type="button" class="btn btn-default btn-xs" onclick="addPlanItemAfter('@item.PLAN_ITEM_ID')">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </button>
+                        <button type="button" class="btn btn-default btn-xs" onclick="delPlanItem('@item.PLAN_ITEM_ID')">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color:red"></span>
+                        </button>
+                        <button type="button" class="btn btn-default btn-xs" @ViewBag.F100010 onclick="getPlanItem4Owner('@item.PLAN_ITEM_ID')">
+                            <span class="glyphicon glyphicon-usd" aria-hidden="true" style="color:red"></span>
+                        </button>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PLAN_ITEM_ID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITEM_ID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITEM_DESC)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITEM_UNIT)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITEM_QUANTITY)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITEM_UNIT_PRICE)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITEM_REMARK)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TYPE_CODE_1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TYPE_CODE_2)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SYSTEM_MAIN)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SYSTEM_SUB)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

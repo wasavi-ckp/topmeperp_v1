@@ -1,0 +1,64 @@
+﻿@model topmeperp.Models.ContractModels
+<table class="table">
+    <tr>
+        <th>
+            付款條件設定
+        </th>
+        <th>
+            NO.
+        </th>
+        <th>
+            採購項目
+        </th>
+        <th>
+            廠商名稱
+        </th>
+        <th>
+            材料預算
+        </th>
+        <th>
+            發包金額
+        </th>
+        <th>
+            毛利
+        </th>
+    </tr>
+
+    @if (ViewBag.result > 0)
+            {
+                foreach (var item in Model.contractItems)
+                {
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#paymentInfo" onclick="getPaymentTerm('@item.CONTRACT_ID')">新增 / 修改</button>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NO)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FORM_NAME)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SUPPLIER_ID)
+                </td>
+               
+                <td>
+                    <span style="color: blue; font-size: 15px;">
+                        @String.Format("{0:N0}", item.BUDGET)
+                    </span>
+                </td>
+                <td>
+                    <span style="color: blue; font-size: 15px;">
+                        @String.Format("{0:N0}", item.MATERIAL_COST)
+                    </span>
+                </td>
+                <td>
+                    <span style="color: blue; font-size: 15px;">
+                        @String.Format("{0:N0}", item.BUDGET- item.MATERIAL_COST)
+                    </span>
+                </td>
+            </tr>
+        }
+    }
+</table>
+

@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "供應商管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--搜尋條件區域-->
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-12">
+            <form name="FormSearchSupplier" id="FormSearchSupplier" action="Search" method="Post">
+                <div class="col-md-12 form-group">
+                    <label class="control-label col-md-2" for="textTypeMain">九宮格:</label>
+                    <input class="form-control col-md-4" id="textTypeMain" name="textTypeMain" type="text" />
+                    <label class="control-label col-md-2" for="textSupplierName">供應商名稱:</label>
+                    <input class="form-control col-md-4" id="textSupplierName" name="textSupplierName" type="text" />
+                </div>
+                <div class="col-md-12 form-group">
+                    <label class="control-label col-md-2" for="textSupplierName">產品類別:</label>
+                    <input class="form-control col-md-4" id="textSuppyNote" name="textSuppyNote" type="text" />
+                    <div class="col-md-2  pull-right">
+                        <div id="divProcessing">
+                            <img src="~/Content/ajax-loader.gif">
+                        </div>
+                        <input id="Submit1" type="submit" class="btn btn-info" value="查詢" />
+                    </div>
+                    <div class="col-md-2">
+                        <a href="AddSupplier" class="btn btn-warning">新增供應商</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--供應商基本資料區域-->
+<div class="container-fluid">
+    @*
+        <a href="/SupplierManage/downloadAllSupplier" class="btn btn-warning" target="_blank">下載所有供應商</a>
+        <input id="btnPrint" type="button" class="btn btn-info" value="列印供應商資料" onclick="javascript: printpage('printarea')" />
+            <div class="row" id="printarea" style="padding-top:10px;">
+                <div style="padding-bottom:30px;">
+                    <span id="JustPrint" style="color: blue; font-size: 20px;">供應商資料表如下 : </span>
+                </div>
+    *@
+    @ViewBag.SearchResult
+    @if (null != Model)
+            {
+                Html.RenderPartial("SupplierList");
+            }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+</script>
+<script language="javascript" type="text/javascript">
+
+    function printpage(printarea) {
+
+        //var newstr = document.all.item(printarea).innerHTML;
+        var newstr = document.getElementById(printarea).innerHTML;
+        var oldstr = document.body.innerHTML;
+        document.body.innerHTML = newstr;
+        window.print();
+        document.body.innerHTML = oldstr;
+        return false;
+    }
+
+</script>
+
+

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<topmeperp.Models.RePaymentFunction>
+
+@{
+    ViewBag.Title = "代付支出-選商 : ";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+@using (Html.BeginForm("AddRePayment", "Estimation", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="row" style="padding-top : 15px">
+        <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+        <input type="hidden" id="formid" name="formid" value="@ViewBag.formid" />
+        <input type="hidden" id="contractid" name="contractid" value="@ViewBag.contractid" />
+    </div>
+    <div style="padding-top : 20px">
+        <table class="table">
+            <tr>
+                <th><input type="checkbox" name="Check" id="Check">勾選</th>
+                <th>
+                    廠商名稱
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        <input type="checkbox" id="chkItem" name="chkItem" value="@item.CONTRACT_NAME" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.COMPANY_NAME)
+                    </td>
+                </tr>
+            }
+        </table>
+        <div style="padding-top : 10px">
+            <input id="Submit1" type="submit" class="btn btn-warning" value="挑選" />
+        </div>
+    </div>
+}
+<script language="javascript" type="text/javascript">
+    function GetCheckedValue(checkBoxName) {
+        return $('input:checkbox[name=' + checkBoxName + '][checked=true]').map(function () {
+            return $(this).val();
+        })
+          .get().join(',');
+    }
+</script>

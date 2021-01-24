@@ -1,0 +1,46 @@
+﻿@model IEnumerable<topmeperp.Models.PrivilegeFunction>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>
+            功能編號
+        </th>
+        <th>
+            模組名稱
+        </th>
+        <th>
+            功能名稱
+        </th>
+        <th>
+            URL
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @if (null == item.ROLE_ID || item.ROLE_ID == "")
+                {
+                    <input type="checkbox" id="hadPrivilege" name="hadPrivilege" value="@item.FUNCTION_ID"  />
+                }
+                else
+                {
+                    <input type="checkbox" id="hadPrivilege" name="hadPrivilege" value="@item.FUNCTION_ID" checked/>
+                }
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUNCTION_ID )
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MODULE_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUNCTION_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUNCTION_URI )
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "系統參數管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--搜尋條件區域-->
+<div class="jumbotron">
+    <div class="row"><h5>@ViewBag.Title</h5></div>
+    <div class="row form-group">
+        <form name="formSearch" id="formSearch" class="form-inline">
+            <div class="col-md-12">
+                <div class="col-md-3">
+                    功能: @Html.DropDownList("paraFunction", null, String.Empty, new { @class = "form-control" })
+                </div>
+                <div class="col-md-3">
+                    欄位：<select id="paraField" name="paraField" class="form-control"><option>---</option></select>
+                </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-info" id="btnQuery" name="btnQuery" onclick="getKeyValue()">查詢</button>
+                    </div>
+                </div>
+        </form>
+    </div>
+    <div class="row body-content">
+        <form id="formSysPara" name="formSysPara">
+            <div id="sysParaArea" name="sysParaArea">
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $('#paraFunction').change(function () { ChangeFunction(); });
+    });
+
+    function ChangeFunction() {
+        var selectedValue = $('#paraFunction option:selected').val();
+        if ($.trim(selectedValue).length > 0) {
+            GetField(selectedValue);
+        }
+    }
+
+    function GetField(functionId) {
+        $.ajax({
+            url: '@Url.Action("GetFields", "SystemParameter")',
+            data: { functionId: functionId },
+            type: 'post',
+            cache: false,
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                if (data.length > 0) {
+                    $('#paraField').empty();
+                    $('#paraField').append($('<option></option>').val('').text('---'));
+                    $.each(data, function (i, item) {
+                        $('#paraField').append($('<option></option>').val(item.Key).text(item.Value));
+                    });
+                }
+            }
+        });
+    }
+    function getKeyValue() {
+        //Ajax 功能範例:置換部分網頁內容
+        var URLs = "/SystemParameter/getKeyValues";
+        $.ajax({
+            url: URLs,
+            data: $('#formSearch').serialize(),
+            type: "POST",
+            dataType: 'html',
+            success: function (result) {
+                $("#sysParaArea").html(result);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    }
+    function updateSysPara() {
+        var URLs = "/SystemParameter/updateSysPara";
+        $.ajax({
+            url: URLs,
+            data: $('#formSysPara').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (result) {
+                alert(result);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    }
+</script>

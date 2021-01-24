@@ -1,0 +1,53 @@
+﻿@model topmeperp.Models.ExpenseBudgetModel
+@{
+    ViewBag.Title = "公司費用預算執行彙整表";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="page-header">
+    <h3 style="padding-bottom:10px;">公司費用預算執行彙整表 : </h3>
+    <form name="formSearchExpSummary" id="formSearchExpSummary" action="SearchExpSummary" method="Post" class="form-inline">
+        <div class="row" style="padding-bottom : 5px">
+            <div class="col-md-4">
+                <label for="budgetyear">預算年度 :</label> <input id="budgetyear" name="budgetyear" type="text" placeholder="請輸入要查詢的預算年度" class="form-control" />
+            </div>
+            <div class="col-md-2 pull-left">
+                <input type="submit" value="查詢" class="btn btn-info" id="Submit1" onclick="return Confirm_Form()" />
+            </div>
+            <div id="divProcessing" class="col-md-2">
+                <img src="~/Content/ajax-loader.gif">
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--公司費用預算執行列表區域-->
+<div class="pager body-content">
+    @if (null != Model)
+    {
+        Html.RenderPartial("_OperationExpBudgetList");
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            if ($("#budgetyear").val() != "") {
+                $("#divProcessing").show();
+            }
+    });
+    });
+    function Confirm_Form() {
+        if ($("#budgetyear").val() == "") {
+            alert("預算年度欄位不可空白，請輸入要查詢的預算年度!!");
+            return false;
+        }
+        if ($("#budgetyear").val() != "" || null != $("#budgetyear").val()) {
+            var year = $("#budgetyear").val();
+            return $("#year").val(year);
+        }
+    }
+</script>
+

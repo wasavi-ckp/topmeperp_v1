@@ -1,0 +1,59 @@
+﻿@model topmeperp.Models.InquiryFormDetail
+<form id="formSupplier" name="formSupplier" action="UpdatePrjForm" method="post">
+    <table class="table">
+        <tr>
+            <th>
+                No.
+            </th>
+            <th>
+                項次
+            </th>
+            <th>
+                項目說明
+            </th>
+            <th>
+                單位
+            </th>
+            <th>
+                數量
+            </th>
+            <th>
+                單價
+            </th>
+            <th>
+                複價
+            </th>
+            <th>
+                備註
+            </th>
+
+        </tr>
+        @foreach (var item in Model.prjFormItem)
+        {
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FORM_ITEM_ID, new { id = item.FORM_ITEM_ID })
+                </td>
+                <td>
+                    @item.ITEM_ID
+                </td>
+                <td>
+                    @item.ITEM_DESC
+                </td>
+                <td>
+                    @item.ITEM_UNIT
+                </td>
+                <td>
+                    @item.ITEM_QTY
+                </td>
+                <td>
+                    @item.ITEM_UNIT_PRICE
+                </td>
+
+                <td></td>
+                <td>@item.ITEM_REMARK</td>
+            </tr>
+        }
+    </table>
+</form>

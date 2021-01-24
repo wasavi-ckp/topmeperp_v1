@@ -1,0 +1,202 @@
+﻿@using topmeperp.Models
+@model TND_MAP_LCP
+@{
+    ViewBag.Title = "備標作業-修改弱電管線發包數量";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="col-md-12">
+    <!-- Reg-Form new { enctype = "multipart/form-data" } -->
+    @using (Html.BeginForm("EditForLCP", "Tender", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="row">
+            <br />
+            <div class="row col-md-12" style="padding-bottom:30px;">
+                <div class="col-md-4">
+                    <h3>弱電管線發包數量</h3>
+                </div>
+                <div class="col-md-8" style="padding-top:10px;">
+                    <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row ">
+                    @Html.HiddenFor(m => m.LCP_ID)
+                    @Html.HiddenFor(m => m.PROJECT_ID)
+                    <label class="col-md-2 control-label">項次 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.EXCEL_ITEM, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">圖號 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.MAP_NO, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">棟別 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.BUILDING_NO, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">一次側位置 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.PRIMARY_SIDE, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">一次側名稱 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.PRIMARY_SIDE_NAME, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">二次側名稱 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.SECONDARY_SIDE, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">二次側位置 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.SECONDARY_SIDE_NAME, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">線材名稱 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.WIRE_NAME, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">條數/組 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.WIRE_QTY_SET, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">線組數 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.WIRE_SET_CNT, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">線長度/條數 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.WIRE_LENGTH, new { @class = "form-control" })
+                        </label>
+                    </div>
+                    <label class="col-md-2 control-label">線總長 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.WIRE_TOTAL_LENGTH, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">地線名稱 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.GROUND_WIRE_NAME, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">地線條數 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.GROUND_WIRE_QTY, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">地線總長 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.GROUND_WIRE_TOTAL_LENGTH, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">管材名稱1 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.PIPE_1_NAME, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">管長1 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.PIPE_1_LENGTH, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">管組數1 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.PIPE_1_SET, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">管總長1 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.PIPE_1_TOTAL_LEN, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">管材名稱2 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.PIPE_2_NAME, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">管長2 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.PIPE_2_LENGTH, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">管組數2 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.PIPE_2_SET, new { @class = "form-control" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">管總長2 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.PIPE_2_TOTAL_LEN, new { @class = "form-control" })
+                        </label>
+                    </div>
+                    @Html.HiddenFor(m => m.CREATE_ID)
+                    @Html.HiddenFor(m => m.CREATE_DATE)
+                </div>
+            </div>
+            <div class="col-md-4 alert-info">@Html.Raw(ViewBag.result)</div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="" col-md-12">
+                <input type="submit" value="儲存" class="btn btn-default" />
+            </div>
+        </div>
+    }
+</div>
+
+
+

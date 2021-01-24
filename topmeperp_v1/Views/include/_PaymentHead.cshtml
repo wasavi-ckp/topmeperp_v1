@@ -1,0 +1,69 @@
+﻿<div class="contailer">
+    <table class="table table-bordered">
+        <tr class="bg-primary">
+            <td colspan="2">
+            @ViewBag.Title
+            </td>
+            <td width="10%">估驗次數</td>
+            <td></td>
+            <td width="10%">估驗日期</td>
+            <td colspan="2">
+                @if (null != @Model.planEST.CONTRACT_ID)
+                {
+                    @Model.planEST.CREATE_DATE.ToString("yyyy/MM/dd")
+                }
+            </td>
+        </tr>
+        <tr class="bg-primary">
+            <td width="10%">專案名稱</td>
+            <td>
+                @Model.project.PROJECT_NAME (@Model.project.PROJECT_ID )
+            </td>
+            <td width="10%">憑單編號</td>
+            <td>
+                @if (null != @Model.planEST.CONTRACT_ID)
+                {
+                    @Model.planEST.EST_FORM_ID
+                }
+
+            </td>
+            <td>請款人</td>
+            <td colspan="2">
+                @Model.supplier.COMPANY_NAME
+            </td>
+        </tr>
+        <tr class="bg-primary">
+            <td style="text-align:right">估驗單類型</td>
+            <td>
+                <select class="form-control" id="indirect_cost_type" name="indirect_cost_type">
+                    <option value=""></option>
+                    <option value="P">預付款</option>
+                    <option value="M">界面維保費用</option>
+                    <option value="O">其他費用</option>
+                </select>
+            </td>
+            <td>預計付款日期</td>
+            <td>
+                @if (null != @Model.planEST.PAYMENT_DATE)
+                {
+                    <input type="date" data-date-format="YYYY/MM/DD" id="payment_date" name="payment_date" class="form-control" autocomplete="off" style="max-width:none;width:60%" value='@Model.planEST.PAYMENT_DATE.ToString("yyyy-MM-dd")' />
+                }
+                else
+                {
+                    <input type="date" data-date-format="YYYY/MM/DD" id="payment_date" name="payment_date" class="form-control" autocomplete="off" style="max-width:none;width:60%" value='' />
+                }
+
+            </td>
+            <td colspan="3">
+            狀態: @**(new HtmlString(_funFormStatus.shwoStatus((Model.planEST.STATUS.ToString()))))*@
+            </td>
+        </tr>
+    </table>
+    <input type="hidden" id="formId" name="formId" value="@Model.planEST.EST_FORM_ID" />
+    <input type="hidden" id="projectId" name="projectId" value="@Model.project.PROJECT_ID" />
+    <input type="hidden" id="contractId" name="contractId" value="@ViewBag.contracId" />
+    <input type="hidden" id="supplierId" name="supplierId" value="@Model.supplier.SUPPLIER_ID" />
+    <input type="hidden" id="prid_s" name="prid_s" value="@ViewBag.prid_s" />
+    <input type="hidden" id="prid_e" name="prid_e" value="@ViewBag.prid_e" />
+    <input type="hidden" id="status" name="status" value="@Model.planEST.STATUS" />
+</div>

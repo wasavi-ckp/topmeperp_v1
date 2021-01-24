@@ -1,0 +1,64 @@
+﻿@model IEnumerable<topmeperp.Models.SummaryDailyReport>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>協成水電-施工日報彙整</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/themes/base/css")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
+</head>
+<body>
+    <div class="container">
+        <div class="panel panel-default" style="text-align:center">
+            <div class="panel-heading"><h5>協成水電工程事業有限公司-日報彙總表</h5></div>
+            <div class="panel-body">
+                <table class="table-bordered" style="width:100%">
+                    <!--
+                    <tr><th>工程名稱</th><th colspan="4">@**@Model.project.PROJECT_NAME</th><th>報告日期</th><th colspan="2">@**@ViewBag.RptDate</th></tr>
+                    <tr><th>工程地點</th><th colspan="3">@**@Model.project.LOCATION</th><th>業主名稱</th><th>@**@Model.project.OWNER_NAME</th><th>專案編號</th><td>@**@Model.project.PROJECT_ID</td></tr>
+                    <tr><th>施工內容</th><th colspan="7">@**@ViewBag.taskName</th></tr>
+                        -->
+                    <!--施作的標單內容-->
+                    <tr>
+                        <td style="width:15%">編號</td>
+                        <td style="width:6%">項次</td>
+                        <td style="width:30%">名稱</td>
+                        <td style="width:10%">發包數量</td>
+                        <td style="width:10%">累計數量</td>
+                        <td>完成比例</td>
+                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        decimal? percentage = 0;
+                        decimal? AccumlateQty = item.ACCUMULATE_QTY;
+                        if (item.QTY > 0)
+                        {
+                            percentage = (AccumlateQty == null ? 0 : AccumlateQty) / item.QTY;
+                        }
+                        <tr>
+                            <td style="text-align:left">@item.PROJECT_ITEM_ID</td>
+                            <td style="text-align:left">@item.ITEM_ID</td>
+                            <td style="text-align:left">@item.ITEM_DESC</td>
+                            <td>@item.QTY</td>
+                            <td>
+                                @string.Format("{0:0}", @item.ACCUMULATE_QTY)
+                            </td>
+                            <td>@string.Format("{0:P}", percentage)</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

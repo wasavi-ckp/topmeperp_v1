@@ -1,0 +1,312 @@
+﻿@model topmeperp.Models.SiteBudgetModels
+
+<div class="container-fluid">
+    @if (null != Model)
+    {
+        <form id="formSiteBudget_5" name="formSiteBudget_5" action="UpdateSiteBudgetOfFifthYear" method="post">
+            <input type="hidden" name="fifthYear" id="fifthYear" value="@ViewBag.FifthYear" />
+            <input type="hidden" name="projectId" id="projectId" value="@ViewBag.projectid" />
+            <div class="row" style="padding-bottom:10px">
+                <div class="col-md-12" style="padding-top:5px">
+                    <div class="col-md-3">
+                        <span style="color: blue; font-size: 25px;">預算年度 : @ViewBag.FifthYear</span>
+                    </div>
+                    <div class="col-md-1">
+                        <span font-size 30px;"><input type="button" value="修改" class="btn btn-warning" id="saveFifthYear" /></span>
+                    </div>
+                </div>
+            </div>
+            <table class="table fixed_headers2">
+                <thead>
+                    <tr>
+                        <th>
+                            項目名稱
+                        </th>
+                        <th>
+                            項目代碼
+                        </th>
+                        <th>
+                            1月
+                        </th>
+                        <th>
+                            2月
+                        </th>
+                        <th>
+                            3月
+                        </th>
+                        <th>
+                            4月
+                        </th>
+                        <th>
+                            5月
+                        </th>
+                        <th>
+                            6月
+                        </th>
+                        <th>
+                            7月
+                        </th>
+                        <th>
+                            8月
+                        </th>
+                        <th>
+                            9月
+                        </th>
+                        <th>
+                            10月
+                        </th>
+                        <th>
+                            11月
+                        </th>
+                        <th>
+                            12月
+                        </th>
+                        <th>
+                            合計
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.fifthYear)
+                    {
+                        <tr>
+                            <td>
+                                <span style="color: blue; font-size: 15px;">
+                                    <input type="text" style="width:80px" value="@item.SUBJECT_NAME" readonly="readonly" />
+                                </span>
+                            </td>
+                            <td>
+                                <span style="color: blue; font-size: 15px;">
+                                    <input type="text" style="width:60px" name="subjctid" id="subjctid" value="@item.SUBJECT_ID" readonly="readonly" />
+                                </span>
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="janAmt5" id="janAmt5" value="@String.Format("{0:#,##0.#}", item.JAN)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="febAmt5" id="febAmt5" value="@String.Format("{0:#,##0.#}", item.FEB)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="marAmt5" id="marAmt5" value="@String.Format("{0:#,##0.#}", item.MAR)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="aprAmt5" id="aprAmt5" value="@String.Format("{0:#,##0.#}", item.APR)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="mayAmt5" id="mayAmt5" value="@String.Format("{0:#,##0.#}", item.MAY)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="junAmt5" id="junAmt5" value="@String.Format("{0:#,##0.#}", item.JUN)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="julAmt5" id="julAmt5" value="@String.Format("{0:#,##0.#}", item.JUL)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="augAmt5" id="augAmt5" value="@String.Format("{0:#,##0.#}", item.AUG)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="sepAmt5" id="sepAmt5" value="@String.Format("{0:#,##0.#}", item.SEP)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="octAmt5" id="octAmt5" value="@String.Format("{0:#,##0.#}", item.OCT)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="novAmt5" id="novAmt5" value="@String.Format("{0:#,##0.#}", item.NOV)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="decAmt5" id="decAmt5" value="@String.Format("{0:#,##0.#}", item.DEC)" />
+                            </td>
+                            <td>
+                                <span style="color: blue; font-size: 15px;">
+                                    <input type="text" style="width:80px;text-align:right" name="htotal_5" id="htotal_5" value="@String.Format("{0:#,##0.#}", item.HTOTAL)" readonly="readonly" />
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <table class="table fixed_headers2">
+                <tr>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:80px;text-align:right" name="" id="" value="合計 :" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:60px" name="" id="" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="janVTotal_5" id="janVTotal_5" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="febVTotal_5" id="febVTotal_5" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="marVTotal_5" id="marVTotal_5" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="aprVTotal_5" id="aprVTotal_5" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="mayVTotal_5" id="mayVTotal_5" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="junVTotal_5" id="junVTotal_5" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="julVTotal_5" id="julVTotal_5" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="augVTotal_5" id="augVTotal_5" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="sepVTotal_5" id="sepVTotal_5" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="octVTotal_5" id="octVTotal_5" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="novVTotal_5" id="novVTotal_5" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="decVTotal_5" id="decVTotal_5" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:80px;text-align:right" name="VTotal_5" id="VTotal_5" value="" />
+                        </span>
+                    </th>
+                </tr>
+            </table>
+        </form>
+    }
+    else
+    {
+        <p></p>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        var total1 = 0;
+        var sum1 = 0;
+        var total2 = 0;
+        var sum2 = 0;
+        var total3 = 0;
+        var sum3 = 0;
+        var total4 = 0;
+        var sum4 = 0;
+        var total5 = 0;
+        var sum5 = 0;
+        var total6 = 0;
+        var sum6 = 0;
+        var total7 = 0;
+        var sum7 = 0;
+        var total8 = 0;
+        var sum8 = 0;
+        var total9 = 0;
+        var sum9 = 0;
+        var total0 = 0;
+        var sum10 = 0;
+        var total11 = 0;
+        var sum11 = 0;
+        var total12 = 0;
+        var sum12 = 0;
+        var sum13 = 0;
+        $('table > tbody > tr').each(function () {
+            var atm1 = 0; var atm2 = 0; var atm3 = 0;
+            var atm4 = 0; var atm5 = 0; var atm6 = 0;
+            var atm7 = 0; var atm8 = 0; var atm9 = 0;
+            var atm10 = 0; var atm11 = 0; var atm12 = 0;
+
+            if ($.trim($(this).find("#janAmt5").val()) != "") {
+                atm1 = parseInt($.trim($(this).find("#janAmt5").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#febAmt5").val()) != "") {
+                atm2 = parseInt($.trim($(this).find("#febAmt5").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#marAmt5").val()) != "") {
+                atm3 = parseInt($.trim($(this).find("#marAmt5").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#aprAmt5").val()) != "") {
+                atm4 = parseInt($.trim($(this).find("#aprAmt5").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#mayAmt5").val()) != "") {
+                atm5 = parseInt($.trim($(this).find("#mayAmt5").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#junAmt5").val()) != "") {
+                atm6 = parseInt($.trim($(this).find("#junAmt5").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#julAmt5").val()) != "") {
+                atm7 = parseInt($.trim($(this).find("#julAmt5").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#augAmt5").val()) != "") {
+                atm8 = parseInt($.trim($(this).find("#augAmt5").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#sepAmt5").val()) != "") {
+                atm9 = parseInt($.trim($(this).find("#sepAmt5").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#octAmt5").val()) != "") {
+                atm10 = parseInt($.trim($(this).find("#octAmt5").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#novAmt5").val()) != "") {
+                atm11 = parseInt($.trim($(this).find("#novAmt5").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#decAmt5").val()) != "") {
+                atm12 = parseInt($.trim($(this).find("#decAmt5").val().replace(",", "")));
+            }
+
+            total1 = atm1; total2 = atm2; total3 = atm3;
+            total4 = atm4; total5 = atm5; total6 = atm6;
+            total7 = atm7; total8 = atm8; total9 = atm9;
+            total10 = atm10; total11 = atm11; total12 = atm12;
+
+            sum1 += total1; sum2 += total2; sum3 += total3;
+            sum4 += total4; sum5 += total5; sum6 += total6;
+            sum7 += total7; sum8 += total8; sum9 += total9;
+            sum10 += total10; sum11 += total11; sum12 += total12;
+            sum13 += total1 + total2 + total3 + total4 + total5 + total6 + total7 + total8 + total9 + total10 + total11 + total12;
+
+        });
+        $("#janVTotal_5").val(numeral(sum1).format('0,0'));
+        $("#febVTotal_5").val(numeral(sum2).format('0,0'));
+        $("#marVTotal_5").val(numeral(sum3).format('0,0'));
+        $("#aprVTotal_5").val(numeral(sum4).format('0,0'));
+        $("#mayVTotal_5").val(numeral(sum5).format('0,0'));
+        $("#junVTotal_5").val(numeral(sum6).format('0,0'));
+        $("#julVTotal_5").val(numeral(sum7).format('0,0'));
+        $("#augVTotal_5").val(numeral(sum8).format('0,0'));
+        $("#sepVTotal_5").val(numeral(sum9).format('0,0'));
+        $("#octVTotal_5").val(numeral(sum10).format('0,0'));
+        $("#novVTotal_5").val(numeral(sum11).format('0,0'));
+        $("#decVTotal_5").val(numeral(sum12).format('0,0'));
+        $("#VTotal_5").val(numeral(sum13).format('0,0'));
+    });
+
+</script>

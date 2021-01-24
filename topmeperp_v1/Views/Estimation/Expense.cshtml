@@ -1,0 +1,195 @@
+﻿
+@{
+    ViewBag.Title = "工地費用新增作業 : ";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular.min.js"></script>
+
+<div class="row col-md-12" style="padding-bottom:10px;"><h4>@ViewBag.Title</h4></div>
+@using (Html.BeginForm("AddExpense", "CashFlow", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-inline" }))
+{
+    <div class="row">
+        <div class="col-md-4 form-group" style="padding-bottom:15px;">
+            <label for="id">專案編號:</label><input id="projectid" name="projectid" type="text" value="@ViewBag.projectid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+        </div>
+        <div class="col-md-4" style="padding-bottom:15px;">
+            <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+        </div>
+    </div>
+    <div class="row"  style="padding-bottom:10px">
+        <div class='col-md-4'>
+            <label class="control-label">費用申請日期: </label>
+            <input type="text" class="form-control" name="occurreddate" id="occurreddate" value="">
+        </div>
+        <div class='col-md-4'>
+            <label class="control-label">支付日期: </label>
+            <input type="text" class="form-control" name="paymentdate" id="paymentdate" value="">
+        </div>
+    </div>
+    <div class="row">
+        <div class='col-md-4'>
+            <label class="control-label">受款人: </label>
+            <input type="text" class="typeahead form-control" id="supplier" name="supplier" autocomplete="off">
+        </div>
+        <div class='col-md-8'>
+            <label class="control-label">說明事項: </label>
+            <input style="width:300px" type="text" class="form-control" name="remark" id="remark" value="">
+        </div>
+    </div>
+    <div ng-app="" ng-controller="MyCtrl">
+        <div class="container" ng-submit="submit()">
+            <div class="row col-md-12"><h4 style="padding-bottom:10px; color:blue">工地費用項目內容，請按"新增"鈕來新增資料</h4></div>
+            <div style="padding-bottom : 10px">
+                <span ng-show="count < 59">
+                    <input type="submit" value="新增" ng-click="addKey()" class="btn btn-warning" />
+                </span>
+                <span style="color: deeppink; font-size: 20px;" ng-show="count >= 59">*費用項目個數已超過58項，其餘內容請另外新增費用單來加入*</span>
+            </div>
+            <div class="row">
+                <ng-form ng-repeat="m in model">
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="btn btn-info">
+                                    <button type="button" class="close" ng-click="remove($index)">&times;</button>
+                                </span>
+                                No.{{$index +1}}
+                            </td>
+                            <td>
+                                項目名稱：
+                                <select id="subjectid" name="subjectid" style="height:27px" ng-model="m.SUBJECT" ng-options="(key.FIN_SUBJECT_ID + ' - ' + key.SUBJECT_NAME) for key in keys" required>
+                                    <option value="" required>-- 請選擇 --</option>
+                                </select>
+                            </td>
+                            <td>
+                                品名/摘要：
+                                <input type="text" style="width:300px" id="item_remark" name="item_remark" ng-model="m.REMARK" required>
+                            </td>
+                            <td>
+                                單位：
+                                <input type="text" style="width:50px" id="unit" name="unit" ng-model="m.ITEM_UNIT">
+                            </td>
+                            <td>
+                                數量：
+                                <input type="number" style="width:90px" id="item_quantity" name="item_quantity" ng-model="m.ITEM_QUANTITY">
+                            </td>
+                            <td>
+                                單價：
+                                <input type="text" style="width:90px" id="unit_price" name="unit_price" ng-model="m.ITEM_UNIT_PRICE" onblur="thousands(this)">
+                            </td>
+                            <td>
+                                金額：
+                                <input type="text" style="width:90px" id="input_amount" name="input_amount" ng-model="m.AMOUNT" onblur="thousands(this)" required>
+                            </td>
+                        </tr>
+                    </table>
+                </ng-form>
+
+                <ng-form ng-repeat="key in keys">
+                    <input type="hidden" id="subjectlist" name="subjectlist" value="{{key.FIN_SUBJECT_ID}}">
+                </ng-form>
+
+            </div>
+        </div>
+    </div>
+        <div class="row" style="padding-top :50px">
+            <input id="Submit1" type="submit" value="送出" class="btn btn-default" onclick="return Confirm_Form()" />
+        </div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(function () {
+            $('#occurreddate').datetimepicker({
+                format: 'YYYY/MM/DD',
+                locale: 'zh-tw'
+            });
+            $('#paymentdate').datetimepicker({
+                format: 'YYYY/MM/DD',
+                locale: 'zh-tw'
+            });
+        });
+    });
+
+    function MyCtrl($scope) {
+        $scope.keys = @Html.Raw(ViewData["items"]);
+        $scope.model =[];
+        var count=0;
+        $scope.count=count;
+        $scope.addKey = function () {
+            $scope.model.push({ amount: null, remark: '' });
+            $scope.count++;
+        };
+        $scope.remove = function (index) {
+            $scope.model.splice(index, 1);
+            $scope.count--;
+        };
+    }
+    //失去焦点成千分位
+    function　thousands(thi){
+        //    获取当前ng-model变量
+        //    $(angular.element(thi))转化为jquery对象
+        var qGetModel = $(angular.element(thi)).attr("ng-model");
+        //    获取$scope变量
+        var $scope = angular.element(thi).scope();
+
+        var num = Math.round(thi.value * 100) / 100;  // 做保留两位数字的四舍五入
+        num = num.toString();   //将输入的数字转换为字符串
+
+        if(/^-?\d+\.?\d+$/.test(num)){  //判断输入内容是否为整数或小数
+            if(/^-?\d+$/.test(num)){    //判断输入内容是否为整数 包含负数和正数
+                num =num + ",0";   //将整数转为精度为2的小数，并将小数点换成逗号
+            }else{
+                num = num.toString().replace(/\./,',');    //将小数的小数点换成逗号
+            }
+
+            while(/\d{4}/.test(num)){ //
+                /***
+                 *判断是否有4个相连的数字，如果有则需要继续拆分，否则结束循环；
+                 *将4个相连以上的数字分成两组，第一组$1是前面所有的数字（负数则有符号），
+                 *第二组第一个逗号及其前面3个相连的数字；
+                 * 将第二组内容替换为“,3个相连的数字，”
+                 ***/
+                num = num.replace(/(\d+)(\d{3}\,)/,'$1,$2');
+            }
+
+            num = num.replace(/\,(\d*)$/,'.$1');   //将最后一个逗号换成小数点
+            //            console.log(num);
+            //            console.log(thi.value = num)
+            thi.value = num;
+            $scope[qGetModel] = num;  // 将数据赋值给ng-model变量 省去$apply()方法
+            //            return num;
+        }else {
+            thi.value = '0';
+            // $scope[qGetModel] = "0.00";
+        }
+        //    $scope.infot();  // 调用angularjs中的$scope.infot()函数
+    }
+    function Confirm_Form() {
+        var paymentdate = $('input[name=paymentdate]').val();
+        var occurreddate = $('input[name=occurreddate]').val();
+        //if (null == paymentdate  || paymentdate == "") {
+        //    alert("沒有輸入費用支付日期，請填寫完整後再送出！");
+        //    return false;
+        //}
+        if (null == occurreddate  || occurreddate == "") {
+            alert("沒有輸入費用發生年月，請填寫完整後再送出！");
+            return false;
+        }
+    }
+    ///Auto Complete 公司名稱
+    $('#supplier').typeahead({
+        source: function (query, process) {
+            return $.ajax({
+                url: '/PurchaseForm/aotoCompleteData',
+                type: 'post',
+                dataType: 'json',
+                success: function (result) {
+                    process(result);
+                }
+            })
+        },
+    }
+    );
+
+</script>

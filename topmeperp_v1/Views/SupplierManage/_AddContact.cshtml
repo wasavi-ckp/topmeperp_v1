@@ -1,0 +1,23 @@
+﻿<!-- Modal content-->
+<div class="modal-content">
+    <form id="formContact" name="formContact" action="addContact" method="post">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">供應商聯絡人資料</h4>
+        </div>
+        <div class="modal-body form-group">
+            <input type="hidden" id="contact_id" name="contactid_id" />
+            <div class="row form-group"><div class="col-md-4">供應商編號</div><div class="col-md-8"><input type="text" id="supplier_id" name="supplier_id" class="form-control" readonly /></div></div>
+            <div class="row form-group"><div class="col-md-4">聯絡人</div><div class="col-md-8"><input type="text" id="contact_name" name="contact_name" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">聯絡人電話</div><div class="col-md-8"><input type="text" id="contact_tel" name="contact_tel" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-sm-4">聯絡人傳真</div><div class="col-md-8"><input type="text" id="contact_fax" name="contact_fax" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-sm-4">聯絡人手機</div><div class="col-md-8"><input type="text" id="contact_mobil" name="contact_mobil" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-sm-4">聯絡人電子信箱</div><div class="col-md-8"><input type="text" id="contact_email" name="contact_email" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-sm-4">備註</div><div class="col-md-8"><input type="text" id="remark" name="remark" class="form-control" /></div></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+            <button type="submit" class="btn btn-default" data-dismiss="modal" id="saveContact">新增</button>
+        </div>
+    </form>
+</div>

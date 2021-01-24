@@ -1,0 +1,382 @@
+﻿@model topmeperp.Models.CostChangeFormTask
+@{
+    ViewBag.Title = "專案執行-成本異動單";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="page-header">
+    <div class="row">
+        <div class="col-sm-8" style="vertical-align:middle"><h3>@ViewBag.Title</h3></div>
+        <div class="col-sm-1" style="vertical-align:middle">
+            <a class="btn btn-success btn-sm" href="javascript:window.close();">關閉</a>
+        </div>
+    </div>
+
+    <form name="CostChangeForm" id="CostChangeForm" class="form-inline" action="/Plan/creatOrModifyChangeForm" method="post">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label class="control-label">專案編號:</label>
+                    <input class="form-control" type="text" id="projectId" name="projectId" value="@ViewBag.projectId" readonly />
+                </div>
+                <div class="col-sm-4">
+                    <label class="control-label">專案名稱:</label>
+                    <label class="info">@ViewBag.projectName</label>
+                </div>
+                <div class="col-sm-3">
+                    @if (Model.FormData.STATUS == "0")
+                    {
+                    <h5 class="text-right">狀態: 退件</h5>
+                    }
+                    else if (Model.FormData.STATUS == "10")
+                    {
+                    <h5 class="text-right">狀態: 草稿</h5>
+                    }
+                    else if (Model.FormData.STATUS == "20")
+                    {
+                    <h5 class="text-right">狀態: 審核中</h5>
+                    }
+                    else if (Model.FormData.STATUS == "30")
+                    {
+                    <h5 class="text-right">狀態: 審核通過</h5>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <label class="control-label">異動單號:</label>
+                    <input class="form-control" type="text" id="txtFormId" name="txtFormId" value="@ViewBag.FormId" readonly />
+                </div>
+                <div class="col-sm-6">
+                    @Html.Raw("<label class=control-label' for='methodcode'>異動原因</label>")
+                    @Html.DropDownList("reasoncode", null, String.Empty, new { @class = "form-control" })
+                    @Html.Raw("<label class=control-label' for='methodcode'>財務處理</label>")
+                    @Html.DropDownList("methodcode", null, String.Empty, new { @class = "form-control" })
+                </div>
+                <div class="col-sm-3">
+                    <a class="btn btn-link" href="/Plan/downloadCostChangeForm?formId=@ViewBag.FormId" target="_blank">下載</a>
+                    @if (ViewBag.formStatus == "10")
+                    {
+                        <button class="btn btn-link" data-toggle="modal" data-target="#formUploadItem" type="button">上傳</button>
+                    }
+                    <a class="btn btn-link" href="/Plan/costChangeFormPrint?formId=@ViewBag.FormId" target="_blank">列印</a>
+                </div>
+            </div>
+
+            <div class="row body-content">
+                @if (null != Model)
+            {
+                Html.RenderPartial("_ChangeOrderItemList");
+            }
+            </div>
+            <!--退件或草稿可進行增修-->
+            @if (Model.FormData.STATUS == "10" || Model.FormData.STATUS == "0")
+            {
+                <div class="col-sm-1">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changeOrderItem" onclick="addChangeOrderItem()">新增品項</button>
+                </div>
+            }
+            <div class="row form-inline" style="margin-top:3px">
+                <div class="col-md-12">
+                    <label class="control-label" for="remarkItem">增減原因說明(請針對項目、數量、價格或其他原因詳述)</label>
+                    <textarea class="form-control" rows="3" cols="60" id="remarkItem" name="remarkItem">@Html.DisplayFor(model => model.FormData.REMARK_ITEM)</textarea>
+                </div>
+            </div>
+            <!--
+            <div class="row form-inline">
+                <div class="col-md-12">
+                   <label class="control-label" for="remarkQty">數量增減說明</label>
+                    <textarea class="form-control" rows="3" cols="60" id="remarkQty" name="remarkQty">@Html.DisplayFor(model => model.FormData.REMARK_QTY)</textarea>
+
+                    <label class="control-label" for="remarkQty">價格增減說明</label>
+                    <textarea class="form-control" rows="3" cols="60" id="remarkPrice" name="remarkPrice">@Html.DisplayFor(model => model.FormData.REMARK_PRICE)</textarea>
+                    <label class="control-label" for="remarkQty">其他說明事項</label>
+                    <textarea class="form-control" rows="3" cols="60" id="remarkOther" name="remarkOther">@Html.DisplayFor(model => model.FormData.REMARK_OTHER)</textarea>
+                </div>
+            </div>
+                -->
+        </div>
+        <div class="row">
+            <!--退件或草稿可進行增修-->
+            @*if (Model.FormData.STATUS == "20")
+    {
+        <div class="col-sm-2">
+            <input name="settlementDate" class="form-control" id="settlementDate" type="text" value="@ViewBag.settlementDate" placeholder="結算日期">
+        </div>
+    }*@
+
+            @Html.Partial("~/Views/include/_WorkFlowFunction.cshtml")
+        </div>
+    </form>
+</div>
+
+<!--新增品項對話框-->
+<div class="modal fade" id="changeOrderItem" role="dialog">
+    <div class="modal-dialog" id="changeOrderItem">
+        <div class="modal-content">
+            <form id="formChangeOrderItem" name="formChangeOrderItem" action="/Plan/addChangeOrderItem" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">品項資料</h4>
+                </div>
+                <div class="modal-body">
+                    <!--異動品項基本屬性-->
+                    <input type="hidden" id="dia_form_id" name="dia_form_id" value="@ViewBag.FormId" />
+                    <input type="hidden" id="dia_project_id" name="dia_project_id" value="@ViewBag.projectId" />
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_plan_item_id">編號</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="dia_plan_item_id" name="dia_plan_item_id" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_item_id">項次</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="dia_item_id" name="dia_item_id" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_item_desc">品項名稱<span class="label label-danger">*必填</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" id="dia_item_desc" name="dia_item_desc" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_item_unit">單位<span class="label label-danger">*必填</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" id="dia_item_unit" name="dia_item_unit" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_item_quantity">數量<span class="label label-danger">*必填</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" id="dia_item_quantity" name="dia_item_quantity" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_item_unit_price">單價<span class="label label-danger">*必填</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" id="dia_item_unit_price" name="dia_item_unit_price" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_item_remark">備註</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="dia_item_remark" name="dia_item_remark" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_transFlag">追加減</label>
+                            <div class="col-sm-8">
+                                <select id="dia_transFlag" name="dia_transFlag">
+                                    <option value="1">是</option>
+                                    <option value="0">否</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="saveChangeOrderItem">儲存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal :對話框 上傳檔案-->
+<div class="modal fade" id="formUploadItem" role="dialog">
+    <div class="modal-dialog" id="formUploadItem">
+        <div class="modal-content">
+            <form id="formFileUpload" name="formFileUpload" action="/Plan/uploadCostChangeForm" method="post" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">上傳異動明細資料</h4>
+                </div>
+                <div class="modal-body form-group">
+                    <input id="projectid" name="projectid" type="hidden" value="@ViewBag.projectId" /><br />
+                    <input id="formid" name="formid" type="text" value="@ViewBag.FormId" class="form-control" style="background-color:#cccccc;" readonly="readonly" /><br />
+                    <input type="file" name="file1" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="上傳" onclick="uploadPlanItem()" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#btnQuery').click(function () {
+            $("#divProcessing").show();
+        });
+        $(function () {
+            $('#settlementDate').datetimepicker({
+                format: 'YYYY/MM/DD',
+                locale: 'zh-tw'
+            });
+        });
+    });
+
+    function uploadPlanItem() {
+        $("#divProcessing").show();
+        $("#formFileUpload").submit(function (e) {
+            var formObj = $(this);
+            var formURL = formObj.attr("action");
+            var formData = new FormData(this);
+            $.ajax({
+                url: formURL,
+                type: 'POST',
+                data: formData,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (data, textStatus, jqXHR) {
+                    alert(data);
+                    location.reload();
+                    $("#divProcessing").hide();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR);
+                    $("#divProcessing").hide();
+                }
+            });
+            e.preventDefault(); //Prevent Default action.
+            e.unbind();
+        });
+        $("#formFileUpload").submit(); //Submit the form
+    }
+    //開啟對話框時清空欄位
+    function addChangeOrderItem() {
+        $('#dia_plan_item_id').val("");
+        $('#dia_item_id').val("");
+        $('#dia_item_desc').val("");
+        $('#dia_item_unit').val("");
+        $('#dia_item_quantity').val("");
+        $('#dia_item_unit_price').val("");
+        $('#dia_item_remark').val("");
+        $('#dia_transFlag').val("0");
+    }
+    //將ProjectItem 註記刪除
+    function delChangeOrderItem(itemid) {
+        if (@Model.FormData.STATUS != "10" || @Model.FormData.STATUS != "0") {
+            alert("此異動單不可再調整內容!!");
+            return;
+        }
+        $.ajax({
+            url: "/Plan/delChangeOrderItem",
+            type: "POST",
+            data: { itemid: itemid },
+            dataType: "text",
+            success: function (data) {
+                alert(data);
+                location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error del data by ajax');
+            }
+        });
+    }
+    //將對話框Form 送出
+    $("#saveChangeOrderItem").click(function () {
+        var s = $('#formChangeOrderItem').serialize();
+        var URLs = "/Plan/addChangeOrderItem";
+        $.ajax({
+            url: URLs,
+            data: $('#formChangeOrderItem').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+    /**
+    //作業流程功能區塊
+    */
+    //儲存
+    $("#updateForm").click(function () {
+        document.getElementById("CostChangeForm").submit();
+    });
+
+    //送審、通過
+    $("#SendForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("SendForm", "Plan")',
+            data: $('#CostChangeForm').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                if(msg=="更新成功!!"){
+                    window.close();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    //退件
+    $("#RejectForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("RejectForm", "Plan")',
+            data: $('#CostChangeForm').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.close();
+                //window.location.replace("/CashFlow/ExpenseForm");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    //中止
+    $("#CancelForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("CancelForm", "Plan")',
+            data: $('#CostChangeForm').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.close();
+                // window.location.replace("/CashFlow/ExpenseForm");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    /**
+    //作業流程功能區塊
+    ****/
+
+    function cancelTrans() {
+        window.opener = null;
+        window.close();
+    }
+</script>

@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "專案執行-設備採購前置時間新增與查詢";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-12 form-group">
+            <form name="FormSearchLeadTime" id="FormSearchLeadTime" action="SearchLeadTime" method="Post">
+                <div class="row col-md-12">
+                    <label for="projectid" class="col-md-2 text-right">專案編號</label><input class="form-control col-md-3" id="projectid" name="projectid" type="text" value="@ViewBag.projectid" style="background-color:#cccccc;" readonly="readonly" />
+                </div>
+                <div class="row col-md-12" style="padding-top:5px;">
+                    <label for="textCode1" class="col-md-2 text-right" style="padding-top:15px;">九宮格</label><input class="form-control col-md-3" id="textCode1" name="textCode1" type="text" />
+                    <label for="textCode2" class="col-md-2 text-right" style="padding-top:15px;">次九宮格</label><input class="form-control col-md-3" id="textCode2" name="textCode2" type="text" />
+                    <div class="col-md-1 pull-left"><input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁"></div>
+                    </div>
+                <div class="row col-md-12" style="padding-top:5px;">
+                    <label for="supplier" class="col-md-2 text-right">供應商</label>@Html.DropDownList("supplier", (IEnumerable<SelectListItem>)ViewBag.supplier, String.Empty, new { @class = "form-control selectpicker" })
+                </div>
+                <div class="row col-md-12" style="padding-top:10px;">
+                    <label for="textSystemMain" class="col-md-2 text-right" style="padding-top:15px;">主系統</label> <input class="form-control col-md-3" id="textSystemMain" name="textSystemMain" type="text" />
+                    <label for="textSystemSub" class="col-md-2 text-right" style="padding-top:15px;">次系統</label> <input class="form-control col-md-3" id="textSystemSub" name="textSystemSub" type="text" />
+                    <div class="col-md-1 pull-left">
+                        <input id="Submit1" type="submit" class="btn btn-info" value="查詢" />
+                    </div>
+                    <div id="divProcessing" class="col-md-1">
+                        <img src="~/Content/ajax-loader.gif">
+                    </div>
+                </div>
+                <div class="row col-md-6 text-right">
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--標單項目列表區域-->
+<div class="container-fluid">
+    @ViewBag.SearchResult
+    @if (null != Model)
+    {
+        Html.RenderPartial("_PlanItemsForLeadTime");
+    }
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+</script>
+<script type="text/javascript">
+    $("#saveForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("AddLeadTime", "PurchaseForm")',
+            data: $('#formLeadTime').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>
+

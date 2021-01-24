@@ -1,0 +1,24 @@
+﻿<!-- Modal content-->
+<div class="modal-content">
+    <form id="formAddSupplierLoan" name="formAddSupplierLoan" action="addSupplierLoan" method="post">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">其他財務資料</h4>
+        </div>
+        <div class="modal-body form-group">
+            <div class="row form-group"><div class="col-md-2">No</div><div class="col-md-8"><input type="text" id="BL_ID" name="BL_ID" class="form-control" readonly /></div></div>
+            <div class="row form-group"><div class="col-sm-2">項目名稱</div><div class="col-md-8"><input type="text" id="BANK_NAME" name="BANK_NAME" class="form-control" /></div></div>
+            <div class="row form-group">
+                <div class="col-sm-2">專案名稱</div><div class="col-md-8">
+                    @Html.DropDownList("plans", null, String.Empty, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="row form-group"><div class="col-md-2">備註</div><div class="col-md-8"><input type="text" id="REMARK" name="REMARK" class="form-control" /></div></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+            <button type="submit" class="btn btn-default" data-dismiss="modal" id="submit">儲存</button>
+        </div>
+    </form>
+</div>
+

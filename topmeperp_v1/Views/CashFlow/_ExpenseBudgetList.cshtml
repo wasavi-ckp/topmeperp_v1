@@ -1,0 +1,275 @@
+﻿@model topmeperp.Models.ExpenseBudgetModel
+
+<form id="formExpBudget" name="formExpBudget" action="UpdateExpBudget" method="post">
+
+    <input type="hidden" name="year" id="year" value="@TempData["budgetYear"]" />
+    <div class="row" style="padding-bottom:10px">
+        <div class="col-md-12" style="padding-top:5px">
+            <div class="col-md-3">
+                <span style="color: blue; font-size: 25px;">預算年度 : @TempData["budgetYear"]</span>
+            </div>
+            <div class="col-md-1">
+                <span font-size 30px;"><input type="button" value="修改" class="btn btn-warning" id="saveForm" /></span>
+            </div>
+            <div class="col-md-8 text-right">
+                <span style="color: dodgerblue; font-size: 25px;">總預算金額 : @String.Format("{0:#,##0.#}", TempData["TotalAmt"])</span>
+            </div>
+        </div>
+    </div>
+    <table class="table fixed_headers2">
+        <thead>
+            <tr>
+                <th>
+                    項目名稱
+                </th>
+                <th>
+                    項目代碼
+                </th>
+                <th>
+                    7月
+                </th>
+                <th>
+                    8月
+                </th>
+                <th>
+                    9月
+                </th>
+                <th>
+                    10月
+                </th>
+                <th>
+                    11月
+                </th>
+                <th>
+                    12月
+                </th>
+                <th>
+                    1月
+                </th>
+                <th>
+                    2月
+                </th>
+                <th>
+                    3月
+                </th>
+                <th>
+                    4月
+                </th>
+                <th>
+                    5月
+                </th>
+                <th>
+                    6月
+                </th>
+                <th>
+                    合計
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                decimal? julAmt = 0;
+                decimal? augAmt = 0;
+                decimal? sepAmt = 0;
+                decimal? octAmt = 0;
+                decimal? novAmt = 0;
+                decimal? decAmt = 0;
+                decimal? janAmt = 0;
+                decimal? febAmt = 0;
+                decimal? marAmt = 0;
+                decimal? aprAmt = 0;
+                decimal? mayAmt = 0;
+                decimal? junAmt = 0;
+                decimal? total = 0;
+            }
+            @foreach (var item in Model.BudgetSummary)
+            {
+                <tr>
+                    <td>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:80px" value="@item.SUBJECT_NAME" readonly="readonly" />
+                        </span>
+                    </td>
+                    <td>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:60px" name="subjectid" id="subjectid" value="@item.SUBJECT_ID" readonly="readonly" />
+                        </span>
+                    </td>
+                    <td>
+                        <input type="text" style="width:70px;text-align:right;" name='@("julAmt" + item.SUBJECT_ID)' id='@("julAmt" + item.SUBJECT_ID)' value="@String.Format("{0:#,##0.#}", item.JUL)" />
+                        @if (item.JUL != null)
+                        {
+                            julAmt = julAmt + item.JUL;
+                        }
+                    </td>
+                    <td>
+                        <input type="text" style="width:70px;text-align:right;" name='@("augAmt" + item.SUBJECT_ID)' id='@("augAmt" + item.SUBJECT_ID)' value="@String.Format("{0:#,##0.#}", item.AUG)" />
+                        @if (item.AUG != null)
+                        {
+                            augAmt = augAmt + item.AUG;
+                        }
+                    </td>
+                    <td>
+                        <input type="text" style="width:70px;text-align:right;" name='@("sepAmt" + item.SUBJECT_ID)' id='@("sepAmt" + item.SUBJECT_ID)' value="@String.Format("{0:#,##0.#}", item.SEP)" />
+                        @if (item.SEP != null)
+                        {
+                            sepAmt = sepAmt + item.SEP;
+                        }
+                    </td>
+                    <td>
+                        <input type="text" style="width:70px;text-align:right;" name='@("octAmt" + item.SUBJECT_ID)' id='@("octAmt" + item.SUBJECT_ID)' value="@String.Format("{0:#,##0.#}", item.OCT)" />
+                        @if (item.OCT != null)
+                        {
+                            octAmt = octAmt + item.OCT;
+                        }
+                    </td>
+                    <td>
+                        <input type="text" style="width:70px;text-align:right;" name='@("novAmt" + item.SUBJECT_ID)' id='@("novAmt" + item.SUBJECT_ID)' value="@String.Format("{0:#,##0.#}", item.NOV)" />
+                        @if (item.NOV != null)
+                        {
+                            novAmt = novAmt + item.NOV;
+                        }                   
+                     </td>
+                    <td>
+                        <input type="text" style="width:70px;text-align:right;" name='@("decAmt" + item.SUBJECT_ID)' id='@("decAmt" + item.SUBJECT_ID)' value="@String.Format("{0:#,##0.#}", item.DEC)" />
+                        @if (item.DEC != null)
+                        {
+                            decAmt = decAmt + item.DEC;
+                        }                        
+                    </td>
+                    <td>
+                        <input type="text" style="width:70px;text-align:right;" name='@("janAmt" + item.SUBJECT_ID)' id='@("janAmt" + item.SUBJECT_ID)' value="@String.Format("{0:#,##0.#}", item.JAN)" />
+                        @if (item.JAN != null)
+                        {
+                            janAmt = janAmt + item.JAN;
+                        }
+                    </td>
+                    <td>
+                        <input type="text" style="width:70px;text-align:right;" name='@("febAmt" + item.SUBJECT_ID)' id='@("febAmt" + item.SUBJECT_ID)' value="@String.Format("{0:#,##0.#}", item.FEB)" />
+                        @if (item.FEB != null)
+                        {
+                            febAmt = febAmt + item.FEB;
+                        }
+                     </td>
+                    <td>
+                        <input type="text" style="width:70px;text-align:right;" name='@("marAmt" + item.SUBJECT_ID)' id='@("marAmt" + item.SUBJECT_ID)' value="@String.Format("{0:#,##0.#}", item.MAR)" />
+                        @if (item.MAR != null)
+                        {
+                            marAmt = marAmt + item.MAR;
+                        }
+                    </td>
+                    <td>
+                        <input type="text" style="width:70px;text-align:right;" name='@("aprAmt" + item.SUBJECT_ID)' id='@("aprAmt" + item.SUBJECT_ID)' value="@String.Format("{0:#,##0.#}", item.APR)" />
+                        @if (item.APR != null)
+                        {
+                            aprAmt = aprAmt + item.APR;
+                        }
+                     </td>
+                    <td>
+                        <input type="text" style="width:70px;text-align:right;" name='@("mayAmt" + item.SUBJECT_ID)' id='@("mayAmt" + item.SUBJECT_ID)' value="@String.Format("{0:#,##0.#}", item.MAY)" />
+                        @if (item.MAY != null)
+                        {
+                            mayAmt = mayAmt + item.MAY;
+                        }
+                    </td>
+                    <td>
+                        <input type="text" style="width:70px;text-align:right;" name='@("junAmt" + item.SUBJECT_ID)' id='@("junAmt" + item.SUBJECT_ID)' value="@String.Format("{0:#,##0.#}", item.JUN)" />
+                        @if (item.JUN != null)
+                        {
+                            junAmt = junAmt + item.JUN;
+                        }
+                    </td>
+                    <td>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:80px;text-align:right;" name="htotal" id="htotal" value="@String.Format("{0:#,##0.#}", item.HTOTAL)" readonly="readonly" />
+                            @if (item.HTOTAL != null)
+                            {
+                                total = total + item.HTOTAL;
+                            }
+                         </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <table class="table fixed_headers2">
+            <tr>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:80px" name="" id="" value="合計 :" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:60px" name="" id="" value="" />
+                    </span>
+                </th>
+
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:70px" name="julVTotal" id="julVTotal" value="@String.Format("{0:#,##0.#}", @julAmt)" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:70px" name="augVTotal" id="augVTotal" value="@String.Format("{0:#,##0.#}", @augAmt)" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:70px" name="sepVTotal" id="sepVTotal" value="@String.Format("{0:#,##0.#}", @sepAmt)" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:70px" name="octVTotal" id="octVTotal" value="@String.Format("{0:#,##0.#}", @octAmt)" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:70px" name="novVTotal" id="novVTotal" value="@String.Format("{0:#,##0.#}", @novAmt)" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:70px" name="decVTotal" id="decVTotal" value="@String.Format("{0:#,##0.#}",@decAmt)" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:70px" name="janVTotal" id="janVTotal" value="@String.Format("{0:#,##0.#}",@janAmt)" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:70px" name="febVTotal" id="febVTotal" value="@String.Format("{0:#,##0.#}", @febAmt)" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:70px" name="marVTotal" id="marVTotal" value="@String.Format("{0:#,##0.#}", @marAmt)" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:70px" name="aprVTotal" id="aprVTotal" value="@String.Format("{0:#,##0.#}", @aprAmt)" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:70px" name="mayVTotal" id="mayVTotal" value="@String.Format("{0:#,##0.#}", @mayAmt)" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:70px" name="junVTotal" id="junVTotal" value="@String.Format("{0:#,##0.#}", @junAmt)" />
+                    </span>
+                </th>
+                <th>
+                    <span style="color: blue; font-size: 15px;">
+                        <input type="text" style="width:80px" name="VTotal" id="VTotal" value="@String.Format("{0:#,##0.#}", @total)" />
+                    </span>
+                </th>
+            </tr>
+    </table>
+</form>

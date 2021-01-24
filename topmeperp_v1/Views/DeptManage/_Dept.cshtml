@@ -1,0 +1,31 @@
+﻿@model topmeperp.Models.UserManageModels
+<!-- Modal content-->
+<div class="modal-content">
+    <form id="formDept" name="formDept" action="addDepartment" method="post">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">部門基本資料</h4>
+        </div>
+        <div class="modal-body form-group">
+            <div class="row form-group"><div class="col-md-4">編號</div><div class="col-md-8"><input type="text" id="d_depId" name="d_depId" class="form-control" readonly="readonly" /></div></div>
+            <div class="row form-group"><div class="col-md-4">部門代號</div><div class="col-md-8"><input type="text" id="d_deptCode" name="d_deptCode" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">部門名稱</div><div class="col-md-8"><input type="text" id="d_deptName" name="d_deptName" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">主管帳號</div><div class="col-md-8"><input type="text" id="d_Manager" name="d_Manager" class="form-control" /></div></div>
+            <div class="row form-group">
+                <div class="col-md-4">說明</div><div class="col-md-8">
+                    <textarea id="d_desc" name="d_desc" class="form-control" rows="5"></textarea>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-4">上級部門</div><div class="col-md-8">
+                    @Html.DropDownList("d_parentId",(SelectList)ViewBag.d_parentId, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+            <button type="submit" class="btn btn-default" data-dismiss="modal" id="saveDept">儲存</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" id="delDept">刪除</button>
+        </div>
+    </form>
+</div>

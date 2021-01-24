@@ -1,0 +1,29 @@
+﻿<!-- Modal content-->
+<div class="modal-content">
+    <form id="formVAPayment" name="formVAPayment" action="addPaymentDate" method="post">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">應收款入帳資料</h4>
+        </div>
+        <div class="modal-body form-group">
+            <input type="hidden" id="projectid" name="projectid" value="@ViewBag.projectid" />
+            <div class="row form-group"><div class="col-md-4">編號</div><div class="col-md-8"><input type="text" id="va_form_id" name="va_form_id" class="form-control" readonly /></div></div>
+            <div class="row form-group"><div class="col-md-4">No.</div><div class="col-md-8"><input type="text" id="number" name="number" class="form-control" readonly /></div></div>
+            <div class="row form-group"><div class="col-md-4">入帳金額(含匯費)</div><div class="col-md-8"><input type="text" id="payment_amount" name="payment_amount" class="form-control" /></div></div>
+            <!-- <div class="row form-group"><div class="col-md-4">備償金額</div><div class="col-md-8"><input type="text" id="loan_payback_amount" name="loan_payback_amount" class="form-control" /></div></div>-->
+            <div class="row form-group"><div class="col-md-4">匯費(手續費)</div><div class="col-md-8"><input type="text" id="fee" name="fee" class="form-control" /></div></div>
+            <div class="row form-group">
+                <div class="col-md-4">備償專戶</div><div class="col-md-8">
+                    @Html.DropDownList("loans", null, String.Empty, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="row form-group"><div class="col-md-4">備償款說明</div><div class="col-md-8"><input type="text" id="loan_remark" name="loan_remark" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">入帳日期</div><div class="col-md-8"><input type="text" id="payment_date" name="payment_date" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">支票號碼</div><div class="col-md-8"><input type="text" id="check_no" name="check_no" class="form-control" /></div></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+            <button type="submit" class="btn btn-default" data-dismiss="modal" id="savePayment">儲存</button>
+        </div>
+    </form>
+</div>

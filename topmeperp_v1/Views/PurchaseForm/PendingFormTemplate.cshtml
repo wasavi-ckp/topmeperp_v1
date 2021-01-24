@@ -1,0 +1,222 @@
+﻿@model topmeperp.Models.ContractModels
+@{
+    ViewBag.Title = "採購單管理-議約發包之合約管制表";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="container">
+    <h3>議約發包之合約管制表 : </h3>
+</div>
+<div style="padding-top:10px;">
+    <button type="button" class="btn btn-primary" onclick="window.open('@Url.Action("Comparison", "PurchaseForm", new { id = ViewBag.projectid })'); ">採購比價</button>
+    <!--
+    <button type="button" class="btn btn-primary" onclick="window.open('@Url.Action("Comparison4Wage", "PurchaseForm", new { id = ViewBag.projectid })'); ">工資比價</button>
+     -->
+    <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PurchasingContract", "PurchaseForm", new { id = ViewBag.projectid })'; ">發包收支摘要</button>
+    <button type="button" class="btn btn-primary" onclick="window.open('@Url.Action("PendingItems", "PurchaseForm", new { id = ViewBag.projectid })');">材料分項漏項</button>
+    <button type="button" class="btn btn-primary" onclick="window.open('@Url.Action("PendingItems4Wage", "PurchaseForm", new { id = ViewBag.projectid })');">工資分項漏項</button>
+    <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+</div>
+<div style="padding-top:10px;">@ViewBag.SearchResult</div>
+<div class="row">
+    <label class="col-md-9"></label>
+    <label class="col-md-3  pull-right">製作中 / 跑流程 : ⭐ 確定 : ✔ 無 : ❌</label>
+    <form id="formContract" name="formContract" action="UpdateConStatus" method="post">
+        <input type="hidden" name="projectid" id="projectid" value="@ViewBag.projectid">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        No.
+                    </th>
+                    <th>
+                        屬性
+                    </th>
+                    <th>
+                        分項名稱
+                    </th>
+
+                    <th>
+                        詢價單數量
+                    </th>
+                    <th>議約廠商</th>
+                    <th>比價</th>
+                    <th>發包廠商</th>
+                    <th>報價單</th>
+                    <th>廠牌</th>
+                    <th>
+                        已發包
+                    </th>
+                    <th>
+                        合約已製作
+                    </th>
+                    <th>
+                        合約製作期限
+                    </th>
+                    <th>付款條件設定</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.planOrder)
+            {
+                    <tr>
+                        <td>
+                            @if (item.ISWAGE == "Y")
+                {
+                                <span style="color: blue; font-size: 15px;">
+                                    @Html.DisplayFor(modelItem => item.NO)
+                                </span>
+                            }
+                            else
+                            {
+                                <span style="font-size: 15px;">
+                                    @Html.DisplayFor(modelItem => item.NO)
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.ISWAGE == "Y")
+                            {
+
+                                <span style="color: blue; font-size: 15px; ">
+                                    工資
+                                </span>
+
+                            }
+                            else
+                            {
+                                <span style="font-size: 15px; ">
+                                    材料
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            @Html.TextBox("formName", @item.FORM_NAME, new { style = "width:300px", @readonly = "readonly", @class = "form-control" })
+                        </td>
+
+                        <td>
+                            <a href="/PurchaseForm/Contract4SupplierIndex?projectid=@item.PROJECT_ID&formname=@item.FORM_NAME&iswage=@item.ISWAGE" target="_blank">
+                            <span style="color:forestgreen; font-size: 15px;">
+                                @Html.DisplayFor(modelItem => item.CountPO)
+                                </span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/PurchaseForm/PurchaseMain?id=@item.PROJECT_ID&formname=@item.FORM_NAME&iswage=@item.ISWAGE" target="_blank"><span style="color:forestgreen; font-size: 15px;">列印</span></a>
+                        </td>
+                        <td>
+                            <a href="/PurchaseForm/Comparison/@ViewBag.projectid?formName=@item.FORM_NAME&iswage=@item.ISWAGE" target="_blank">比價</a>
+                        </td>
+
+                        <td>@Html.TextBox("supplier", @item.Supplier, new { style = "width:110px", @readonly = "readonly", @class = "form-control" })</td>
+                        <td>
+                            @if (@item.ContractId != null)
+                            {
+                                <a href="/PurchaseForm/SinglePrjForm/@item.ContractId" target="_blank">報價單</a>
+                            }
+                        </td>
+                        <td><input type="text" class="form-control" style="width:120px" name="brand" id="brand" value="@item.MATERIAL_BRAND"></td>
+                        @if (null != item.Bargain && item.Bargain != "")
+                {
+                            <td>
+                                <span style="color: red; font-size: 15px;">
+                                    ✔
+                                </span>
+                            </td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                        @if (item.CONTRACT_PRODUCTION == "N")
+                {
+                            <td><select id="production" name="production"><option value=""></option><option value="N" selected>❌</option><option value="Y">✔</option><option value="S">⭐</option><option value="E">簡易合約</option></select></td>
+                        }
+                        else if (item.CONTRACT_PRODUCTION == "Y")
+                        {
+                            <td><select id="production" name="production"><option value=""></option><option value="N">❌</option><option value="Y" selected>✔</option><option value="S">⭐</option><option value="E">簡易合約</option></select></td>
+                        }
+                        else if (item.CONTRACT_PRODUCTION == "E")
+                        {
+                            <td><select id="production" name="production"><option value=""></option><option value="N">❌</option><option value="Y">✔</option><option value="S">⭐</option><option value="E" selected>簡易合約</option></select></td>
+                        }
+                        else if (item.CONTRACT_PRODUCTION == "S")
+                        {
+                            <td><select id="production" name="production"><option value=""></option><option value="N">❌</option><option value="Y">✔</option><option value="S" selected>⭐</option><option value="E">簡易合約</option></select></td>
+                        }
+                        else
+                        {
+                            <td><select id="production" name="production"><option value=""></option><option value="N">❌</option><option value="Y">✔</option><option value="S">⭐</option><option value="E">簡易合約</option></select></td>
+                        }
+                        @if (null != item.DELIVERY_DATE && item.DELIVERY_DATE != "")
+                {
+                            <td><input style="width:150px" type="text" class="form-control" name="Date_Deliver" id="Date_Deliver" value="@item.DELIVERY_DATE"></td>
+                        }
+                        else
+                        {
+                            <td><input style="width:150px" type="date" class="form-control" name="Date_Deliver" id="Date_Deliver" value=""></td>
+                        }
+                        @if (null != item.paymentFrequency)
+                {
+                            <td>
+                                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#paymentInfo" onclick="getPaymentTerm('@item.ContractId')">已設定</button>
+                            </td>
+                        }
+                        else if (null != item.Bargain && item.Bargain != "")
+                        {
+                            <td><button type="button" class="btn btn-link" data-toggle="modal" data-target="#paymentInfo" onclick="getPaymentTerm('@item.ContractId')" style="color:red"> 未設定</button></td>
+                        }
+                        else
+                        {
+                            <td>未發包</td>
+                        }
+                        <!--
+                        <td><input style="width:400px" type="text" class="form-control" name="remark" id="remark" value="@item.ConRemark"></td>
+                            -->
+                        @if (null != item.ContractId && item.ContractId != "")
+                {
+                            <td><input type="hidden" name="contractid" id="contractid" value="@item.ContractId"></td>
+                        }
+                        else
+                        {
+                            <td><input type="hidden" name="contractid" id="contractid" value="@item.INQUIRY_FORM_ID"></td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <input type="button" value="儲存" class="btn btn-warning" id="savePage" />
+    </div>
+</div>
+<!-- Modal :對話框-->
+<div class="row" style="padding-top:10px;">
+    <div class="modal fade" id="paymentInfo" role="dialog">
+        <div class="modal-dialog" id="paymentInfoDialog">
+            <!-- Modal content-->
+            @Html.Partial("_PaymentTerms");
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#savePage").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateConStatus", "PurchaseForm")',
+            data: $('#formContract').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>
+<script src="~/Scripts/topmep_payment.js"></script>

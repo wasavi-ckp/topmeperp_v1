@@ -1,0 +1,42 @@
+﻿@model topmeperp.Models.Assessment
+
+@{
+    ViewBag.Title = "AssessmentIndex";
+}
+
+<h2>AssessmentIndex</h2>
+
+<div>
+    <h4>Assessment</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AssId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AssId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AssName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AssName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AssCost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AssCost)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

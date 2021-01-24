@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "施工日報-估驗用";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<h3>@ViewBag.Title</h3>
+<!--條件區域-->
+<div class="page-header">
+    <form name="formDailyReport" id="formDailyReport" action="" method="Post">
+        <div class="row form-group">
+            <label class="col-sm-1 control-label">專案編號:</label>
+            <div class="col-sm-2">
+                <input class="form-control" type="text" id="txtProjectId" name="txtProjectId" value="@ViewBag.projectId" readonly />
+            </div>
+            <label class="col-sm-1 control-label">專案名稱:</label>
+            <label class="col-sm-8 info">@ViewBag.projectName (<a href='/ProjectPlan/summaryReport?projectid=@ViewBag.projectId' target="_blank">彙總表</a>)</label>
+        </div>
+
+        <div class="row form-group">
+            <label class="col-sm-1 control-label">日報時間:</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control col-sm-3" name="reportDateStart" id="reportDateStart" value="" style="width:30%" />
+                <label class="col-sm-1 control-label" for="reportDateEnd">-</label>
+                <input type="text" class="form-control  col-sm-3" name="reportDateEnd" id="reportDateEnd" value="" style="width:30%" />
+            </div>
+            <button name="query" id="query" type="button" class="btn btn-info" onclick="getDailyRptList()">查詢</button>
+            <button name="toReport" id="toReport" type="button" class="btn btn-info" onclick="javascript: window.location='/ProjectPlan/dailyReportList/@ViewBag.projectId'">日報維護</button>
+        </div>
+        @ViewBag.Message
+    </form>
+    <div class="container" style="padding-top:5px">
+        <div class="panel panel-info">
+            <div class="panel-heading">施工日報-彙整表</div>
+            <div class="panel-body" id="tableDailyReport">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function getDailyRptList() {
+        //Ajax 功能範例
+        var URLs = "/ProjectPlan/getDailyReport4Estimation";
+        if ($('#reportDateStart').val() == "" || $('#reportDateEnd').val() == "" ) {
+            alert('請輸入施工日報日期!!');
+            return;
+        }
+        $.ajax({
+            url: URLs,
+            data: $('#formDailyReport').serialize(),
+            type: "POST",
+            dataType: 'html',
+            success: function (result) {
+                $("#tableDailyReport").html(result);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    }
+    ///設定DatePicker
+    $(document).ready(function () {
+        $(function () {
+            $('#reportDateStart').datetimepicker({
+                format: 'YYYY/MM/DD',
+                locale: 'zh-tw'
+            });
+            $('#reportDateEnd').datetimepicker({
+                format: 'YYYY/MM/DD',
+                locale: 'zh-tw'
+            });
+        });
+    })
+</script>
+

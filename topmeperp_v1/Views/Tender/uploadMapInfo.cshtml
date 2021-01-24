@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "發包數量上傳";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<h3>更新發包數量</h3>
+<div class="row col-md-12">
+    <div class="col-md-10 form-group">
+        <form action="upLoadMAPInfo" method="post" enctype="multipart/form-data">
+            <div class="row col-md-12">
+                <div class="row col-md-6">
+                    <label for="projectId">專案編號:</label>
+                    <input type="text" name="projectId" id="projectId" value="@ViewBag.projectid" />
+                </div>
+                <div class="col-md-6">
+                    <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+                </div>
+            </div>
+            <div class="row col-md-12" style="padding-bottom:5px">
+                <label for="file">*物料清單(設備:TND_MAP_DEVICE):</label>
+                <input type="file" name="fileDevice" id="file" />
+            </div>
+            <div class="row col-md-12" style="padding-bottom:5px">
+                <label for="file">消防電(TND_MAP_FP):</label>
+                <input type="file" name="fileFP" id="file" />
+            </div>
+
+            <div class="row col-md-12" style="padding-bottom:5px">
+                <label for="file">消防水(TND_MAP_FW):</label>
+                <input type="file" name="fileFW" id="file" />
+            </div>
+            <div class="row col-md-12" style="padding-bottom:5px">
+                <label for="file">*弱電管線(TND_MAP_LCP):</label>
+                <input type="file" name="fileLCP" id="file" />
+            </div>
+            <div class="row col-md-12" style="padding-bottom:5px">
+                <label for="file">*電氣管線(TND_MAP_PEP):</label>
+                <input type="file" name="filePEP" id="file" />
+            </div>
+            <hr style=" border-top: 1px dotted groove;"/>
+            <div class="row col-md-12">
+                <label for="file">*給排水(TND_MAP_PLU):</label>
+                <input type="file" name="filePLU" id="file" />
+            </div>
+            <input type="submit" class="btn-primary" value="送出" />
+        </form>
+    </div>
+    <div class="col-md-2 alert-info">@Html.Raw(ViewBag.result)</div>
+</div>

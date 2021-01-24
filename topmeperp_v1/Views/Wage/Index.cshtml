@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "備標作業-工率表下載作業";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 form-group" style="padding-top:10px">
+            <h3>工率下載與上傳作業</h3>
+        </div>
+        <div class="col-md-2" style="padding-top:25px">
+            <input type="button" class="btn btn-success pull-right" onclick="history.back()" value="回上一頁" >
+        </div>
+    </div>
+    <div class="row col-md-12">
+        <label for="projectId">專案編號:</label>
+        <input type="text" style="background-color:#cccccc;" name="projectid" id="projectid" readonly="readonly" value="@ViewBag.projectid" />
+    </div>
+    <div class="row col-md-12" style="padding-top:10px">
+        <label for="projectId">專案名稱:</label>
+        <input type="text" style="background-color:#cccccc;" name="projectname" id="projectname" readonly="readonly" value="@ViewBag.projectName" />
+    </div><br />
+    <div class="row col-md-12" style="padding-top:20px">
+        <label>工率填寫表連結</label>
+        <a href='@("/UploadFile/"+ViewBag.projectid+"/"+ViewBag.projectid + "_工率.xlsx")'>下載</a>
+    </div><br />
+    <div class="row col-md-12" style="padding-top:20px">
+        <form id="UploadForm" name="UploadForm" action="~/Wage/uploadWageTable" method="post" enctype="multipart/form-data">
+            <label for="file">工率表匯入:</label>
+            <input type="hidden" name="projectid" id="projectid" value="@ViewBag.projectid" />
+            <input type="file" name="fileWage" id="fileWage" />
+            <input id="btnUploadfile" name="btnUploadfile" type="submit" class="btn-primary" value="匯入檔案" />
+        </form>
+    </div>
+</div>
+
+
+

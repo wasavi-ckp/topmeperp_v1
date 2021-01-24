@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "備標作業-新增詢價單";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-12 form-group">
+            <form name="FormSearchProject" id="FormSearchProject" action="" method="Post" class="form-inline">
+                <div class="row col-md-12">
+                    <label for="projectid" class="col-md-2 text-right">專案編號</label><input class="form-control col-md-3" id="projectid" name="projectid" type="text" value="@ViewBag.projectid" style="background-color:#cccccc;" readonly="readonly" />
+                </div>
+                <div class="row col-md-12" style="padding-top:5px;">
+                    <div class="col-md-4">
+                        <label for="textCode1">九宮格</label><input class="form-control" id="textCode1" name="textCode1" type="text" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="textCode2">次九宮格</label><input class="form-control" id="textCode2" name="textCode2" type="text" />
+                    </div>
+                    <div class="col-md-1 pull-left">
+                        <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+                    </div>
+                </div>
+                <div class="row col-md-12">
+                    <div class="col-md-4">
+                        <label for="systemMain">主系統:</label>
+                        @Html.DropDownList("SystemMain", (IEnumerable<SelectListItem>)ViewBag.SystemMain, String.Empty, new { @class = "form-control selectpicker" })
+                    </div>
+                    <div class="col-md-6">
+                        <label for="systemSub">次系統:</label>
+                        @Html.DropDownList("systemSub", (IEnumerable<SelectListItem>)ViewBag.SystemSub, String.Empty, new { @class = "form-control selectpicker" })
+                    </div>
+                    <div class="col-md-1 pull-left">
+                        <input id="Submit1" type="submit" class="btn btn-info" value="查詢" />
+                    </div>
+                    <div id="divProcessing" class="col-md-1">
+                        <img src="~/Content/ajax-loader.gif">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--標單項目列表區域-->
+<div class="container-fluid">
+    @ViewBag.SearchResult
+    @if (null != Model)
+    {
+        Html.RenderPartial("RFQ");
+    }
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+</script>

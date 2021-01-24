@@ -1,0 +1,387 @@
+﻿@model topmeperp.Models.ContractModels
+@{
+    ViewBag.Title = "業主合約 :";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件集合區域-->
+
+<h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id">專案編號:</label><input id="id" name="id" type="text" value="@ViewBag.id" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+        </div>
+        <div class="col-md-4">
+            <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+        </div>
+        <div class="col-md-4">
+            <label for="projectName">業主名稱:</label><input id="ownerName" name="ownerName" type="text" value="@ViewBag.ownerName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+        </div>
+        <div class="col-md-1">
+            <div id="divProcessing">
+                <img src="~/Content/ajax-loader.gif">
+            </div>
+        </div>
+        <div class="col-md-1" style="padding-top:25px">
+            <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+        </div>
+    </div>
+</div>
+<div class="contailer">
+    <label class="col-md-9"></label>
+    <label class="col-md-3  pull-right">製作中 / 跑流程 : ⭐ 確定 : ✔ 無 : ❌</label>
+    <form id="formContract" name="formContract" action="UpdateConStatus" method="post">
+        <input id="projectid" name="projectid" type="hidden" value="@ViewBag.id" />
+        <table class="table">
+            <tr>
+                <th>
+                    付款條件設定
+                </th>
+                <th>
+                    項目名稱
+                </th>
+                <th>
+                    單位
+                </th>
+                <th>
+                    合約金額
+                </th>
+                <th>
+                    合約已製作
+                </th>
+                <th>
+                    合約製作期限
+                </th>
+                <th>付款條件已設定</th>
+                <th>履約保固金</th>
+                <th>保固金到期日</th>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#paymentInfo" onclick="getPaymentTerm('@ViewBag.contractid')">新增 / 修改</button>
+                </td>
+                <td>
+                    工程款
+                </td>
+                <td>
+                    一式
+                </td>
+                <td>
+                    <span style="color: blue; font-size: 15px;">
+                        @String.Format("{0:N0}", @ViewBag.Amount)
+                    </span>
+                </td>
+                @if (ViewBag.production == "N")
+            {
+                    <td><select class="form-control" id="production" name="production"><option value=""></option><option value="N" selected>❌</option><option value="Y">✔</option><option value="S">⭐</option></select></td>
+                }
+                else if (ViewBag.production == "Y")
+                {
+                    <td><select class="form-control" id="production" name="production"><option value=""></option><option value="N">❌</option><option value="Y" selected>✔</option><option value="S">⭐</option></select></td>
+                }
+                else if (ViewBag.production == "S")
+                {
+                    <td><select class="form-control" id="production" name="production"><option value=""></option><option value="N">❌</option><option value="Y">✔</option><option value="S" selected>⭐</option></select></td>
+                }
+                else
+                {
+                    <td><select class="form-control" id="production" name="production"><option value=""></option><option value="N">❌</option><option value="Y">✔</option><option value="S">⭐</option></select></td>
+                }
+                @if (null != ViewBag.deliveyDate && ViewBag.deliveyDate != "")
+                {
+                    <td><input style="width:150px;" type="text" class="form-control" name="delivery_date" id="delivery_date" value="@ViewBag.deliveyDate"></td>
+                }
+                else
+                {
+                    <td><input style="width:150px;" type="date" class="form-control" name="delivery_date" id="delivery_date" value=""></td>
+                }
+                <!--
+                <td>
+                    <textarea class="form-control" rows="6" style="width:180px;" name="remark" id="remark">@ViewBag.remark</textarea>
+                </td>
+                    -->
+                @if (null != ViewBag.advance || null != ViewBag.retention)
+            {
+                    <td>
+                        <span style="color: red; font-size: 15px;">
+                            ✔
+                        </span>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+                <td><input style="width:90px;" type="text" class="form-control" name="mb_amount" id="mb_amount" value="@String.Format("{0:N0}", @ViewBag.maintenanceBond)"></td>
+                @if (null != ViewBag.dueDate && ViewBag.dueDate != "")
+                {
+                    <td><input style="width:150px;" type="text" class="form-control" name="due_date" id="due_date" value="@ViewBag.dueDate"></td>
+                }
+                else
+                {
+                    <td><input style="width:150px;" type="date" class="form-control" name="due_date" id="due_date" value=""></td>
+                }
+            </tr>
+        </table>
+    </form>
+    <div class="row">
+        <div class="col-md-12">
+            <input type="button" value="儲存" class="btn btn-warning" id="savePage" />
+        </div>
+    </div>
+</div>
+<div>
+    <h3 class="bg-info">檔案上傳區 : <button class="btn btn-link" data-toggle="modal" data-target="#formUploadFile" type="button">檔案上傳</button></h3>
+    <div class="col-md-12" style="padding-top:10px;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>檔案名稱</th>
+                    <th>檔案類型</th>
+                    <th>上傳時間</th>
+                    <th>連結</th>
+                    <th>功能</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ownerConFile)
+            {
+                    <tr>
+                        <td>@item.NO</td>
+                        <td>@item.FILE_ACTURE_NAME</td>
+                        <td>@item.FILE_TYPE</td>
+                        <td>@item.CREATE_DATE.Value.ToString("yyyy/MM/dd")</td>
+                        <td><a class="btn btn-link" href="/Plan/downLoadOwnerContractFile?itemid=@item.ITEM_UID" target="_blank">下載</a></td>
+                        <td><button type="button" class="btn btn-danger" onclick="delOwnerContractFile('@item.ITEM_UID')">刪除</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Modal :對話框-->
+<div class="row" style="padding-top:10px;">
+    <div class="modal fade" id="paymentInfo" role="dialog">
+        <div class="modal-dialog" id="paymentInfoDialog">
+            <!-- Modal content-->
+            @Html.Partial("_PaymentTerms");
+        </div>
+    </div>
+</div>
+<!-- Modal :對話框 上傳檔案-->
+<div class="modal fade" id="formUploadFile" role="dialog">
+    <div class="modal-dialog" id="formUploadFile">
+        <div class="modal-content">
+            <form id="formFileUpload" name="formFileUpload" action="/Plan/uploadFile4Owner" method="post" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">上傳檔案</h4>
+                </div>
+                <div class="modal-body form-group">
+                    <input id="projectid" name="projectid" type="text" value="@ViewBag.id" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                    <input type="file" name="file" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="上傳" id="upload" onclick="uploadFile4Owner()" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#savePage').click(function () {
+            $("#divProcessing").show();
+        });
+
+    });
+    //由ID 取得資料填入表單
+    function getPaymentTerm(contractid) {
+        //alert(contractid);
+        $.ajax({
+            url: "/PurchaseForm/getPaymentTerms",
+            type: "GET",
+            data: { contractid: contractid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#project_id').val(data.PROJECT_ID);
+                $('#contract_id').val(data.CONTRACT_ID);
+                $('#date1').val(data.DATE_1);
+                $('#date2').val(data.DATE_2);
+                $('#date3').val(data.DATE_3);
+                $('#paymenttype').val(data.PAYMENT_TYPE);
+                $('#paymentcash').val(data.PAYMENT_CASH);
+                $('#payment_date1').val(data.PAYMENT_UP_TO_U_DATE1);
+                $('#payment_date2').val(data.PAYMENT_UP_TO_U_DATE2);
+                $('#payment_1').val(data.PAYMENT_UP_TO_U_1);
+                $('#payment_2').val(data.PAYMENT_UP_TO_U_2);
+                $('#paymentadvance').val(data.PAYMENT_ADVANCE_RATIO);
+                $('#paymentadvance_cash').val(data.PAYMENT_ADVANCE_CASH_RATIO);
+                $('#paymentadvance_1').val(data.PAYMENT_ADVANCE_1_RATIO);
+                $('#paymentadvance_2').val(data.PAYMENT_ADVANCE_2_RATIO);
+                $('#paymentestimated').val(data.PAYMENT_ESTIMATED_RATIO);
+                $('#paymentestimated_cash').val(data.PAYMENT_ESTIMATED_CASH_RATIO);
+                $('#paymentestimated_1').val(data.PAYMENT_ESTIMATED_1_RATIO);
+                $('#paymentestimated_2').val(data.PAYMENT_ESTIMATED_2_RATIO);
+                $('#paymentretention').val(data.PAYMENT_RETENTION_RATIO);
+                $('#paymentretention_cash').val(data.PAYMENT_RETENTION_CASH_RATIO);
+                $('#paymentretention_1').val(data.PAYMENT_RETENTION_1_RATIO);
+                $('#paymentretention_2').val(data.PAYMENT_RETENTION_2_RATIO);
+                $('#usancecash').val(data.USANCE_CASH);
+                $('#usance_date1').val(data.USANCE_UP_TO_U_DATE1);
+                $('#usance_date2').val(data.USANCE_UP_TO_U_DATE2);
+                $('#usance_1').val(data.USANCE_UP_TO_U_1);
+                $('#usance_2').val(data.USANCE_UP_TO_U_2);
+                $('#usanceadvance').val(data.USANCE_ADVANCE_RATIO);
+                $('#usanceadvance_cash').val(data.USANCE_ADVANCE_CASH_RATIO);
+                $('#usanceadvance_1').val(data.USANCE_ADVANCE_1_RATIO);
+                $('#usanceadvance_2').val(data.USANCE_ADVANCE_2_RATIO);
+                $('#usancegoods').val(data.USANCE_GOODS_RATIO);
+                $('#usancegoods_cash').val(data.USANCE_GOODS_CASH_RATIO);
+                $('#usancegoods_1').val(data.USANCE_GOODS_1_RATIO);
+                $('#usancegoods_2').val(data.USANCE_GOODS_2_RATIO);
+                $('#usancefinished').val(data.USANCE_FINISHED_RATIO);
+                $('#usancefinished_cash').val(data.USANCE_FINISHED_CASH_RATIO);
+                $('#usancefinished_1').val(data.USANCE_FINISHED_1_RATIO);
+                $('#usancefinished_2').val(data.USANCE_FINISHED_2_RATIO);
+                $('#usanceretention').val(data.USANCE_RETENTION_RATIO);
+                $('#usanceretention_cash').val(data.USANCE_RETENTION_CASH_RATIO);
+                $('#usanceretention_1').val(data.USANCE_RETENTION_1_RATIO);
+                $('#usanceretention_2').val(data.USANCE_RETENTION_2_RATIO);
+                if ((data.DATE_3) == null) {
+                    $("input[name=payfrequency][value='O']").attr('checked', true);
+                }
+                else {
+                    $("input[name=payfrequency][value='T']").attr('checked', true)
+                }
+                if ((data.PAYMENT_TYPE) != null && (data.PAYMENT_TYPE) != "") {
+                    $("input[name=payterms][value='P']").attr('checked', true);
+                }
+                else {
+                    $("input[name=payterms][value='S']").attr('checked', true);
+                }
+                $('#paymentInfo').modal('show'); // show bootstrap modal when complete loaded
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+
+    }
+    // Hide the "busy" Gif at load:
+    $("#divProcessing").hide();
+    // Attach click handler to the submit button:
+    $('#login').click(function () {
+        $("#divProcessing").show();
+    });
+</script>
+<script language="javascript" type="text/javascript">
+    $('#savePayment').click(function () {
+        var method1 = $('input[name=payfrequency]:radio:checked').val();
+        if (typeof (method1) == "undefined") { // 注意檢查完全沒有選取的寫法，這行是精華
+            alert("請選取付款方式，並檢查輸入之日期是否正確！");
+            return false;
+        }
+        if (method1 == "O") {
+            alert("您選擇的付款方式為每月付款2次");
+        }
+        if (method1 == "T") {
+            alert("您選擇的付款方式為每月1次");
+        }
+        var method2 = $('input[name=payterms]:radio:checked').val();
+        if (typeof (method2) == "undefined") { // 注意檢查完全沒有選取的寫法，這行是精華
+            alert("請選取付款比例與票期，並檢查輸入之資料是否正確！");
+            return false;
+        }
+        if (method2 == "P") {
+            alert("您選擇的付款比例與票期為按期估驗");
+        }
+        if (method2 == "S") {
+            alert("您選擇的付款比例與票期為階段付款");
+        }
+        var s = $('#formPayment').serialize();
+        var URLs = "/PurchaseForm/addPaymentTerms";
+        $.ajax({
+            url: URLs,
+            data: $('#formPayment').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                getPaymentTerm(contractid)
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+    $("#savePage").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateConStatus", "Plan")',
+            data: $('#formContract').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+    function uploadFile4Owner() {
+        $("#formFileUpload").submit(function (e) {
+            var formObj = $(this);
+            var formURL = formObj.attr("action");
+            var formData = new FormData(this);
+            $.ajax({
+                url: formURL,
+                type: 'POST',
+                data: formData,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (msg) {
+                    alert(msg);
+                    window.location.reload();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError);
+                }
+            });
+            e.preventDefault(); //Prevent Default action.
+            e.unbind();
+        });
+        $("#formFileUpload").submit(); //Submit the form
+        // document.forms["formFileUpload"].submit();
+    }
+
+    //將Owner Contract File 註記刪除
+    function delOwnerContractFile(itemid) {
+
+        $.ajax({
+            url: "/Plan/delOwnerContractFile",
+            type: "POST",
+            data: { itemid: itemid },
+            dataType: "text",
+            success: function (data) {
+                alert(data);
+                location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error del data by ajax');
+            }
+        });
+    }
+</script>
+

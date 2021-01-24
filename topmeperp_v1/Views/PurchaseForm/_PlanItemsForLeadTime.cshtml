@@ -1,0 +1,88 @@
+﻿@model IEnumerable<topmeperp.Models.PlanItem4Map>
+
+   
+    <form id="formLeadTime" name="formLeadTime" action="AddLeadTime" method="post">
+        <!--不好的方式但檔著先屆時設為Hidden-->
+        <input type="hidden" id="projectId" name="projectId" value="@ViewBag.projectid" />
+        <input type="hidden" id="textCode1" name="textCode1" value="@ViewBag.textCode1" />
+        <input type="hidden" id="textCode2" name="textCode2" value="@ViewBag.textCode2" />
+        <input type="hidden" id="textSystemMain" name="textSystemMain" value="@ViewBag.textSystemMain" />
+        <input type="hidden" id="textSystemSub" name="textSystemSub" value="@ViewBag.textSystemSub" />
+        <input type="hidden" id="supplier" name="supplier" value="@ViewBag.supplier" />
+        <table class="table">
+            <tr>
+                <th>
+                    No.
+                </th>
+                <th>
+                    項次
+                </th>
+                <th>
+                    項目說明
+                </th>
+                <th>
+                    單位
+                </th>
+                <th>
+                    發包數量
+                </th>
+                <th>
+                    九宮格
+                </th>
+                <th>
+                    次九宮格
+                </th>
+                <th>
+                    主系統
+                </th>
+                <th>
+                    次系統
+                </th>
+                <th>
+                    前置時間
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.TextBox("planitemid", @String.Format("{0:N0}", item.PLAN_ITEM_ID), new { style = "width:100px", @readonly = "readonly" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITEM_ID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITEM_DESC)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITEM_UNIT)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MAP_QTY)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TYPE_CODE_1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TYPE_CODE_2)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SYSTEM_MAIN)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SYSTEM_SUB)
+                    </td>
+                    <td>
+                        @Html.TextBox("leadtime", @String.Format("{0:N0}", item.LEAD_TIME), new { style = "width:70px" })<label>天</label>
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <div class="row">
+            <div class="" col-md-12">
+                <input type="button" value="儲存" class="btn btn-default" id="saveForm" />
+            </div>
+        </div>
+</form>

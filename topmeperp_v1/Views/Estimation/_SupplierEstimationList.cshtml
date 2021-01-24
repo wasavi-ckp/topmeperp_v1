@@ -1,0 +1,68 @@
+﻿@model topmeperp.Models.ContractModels
+
+@for (int i = 0; i < 2; i++)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                @***
+                    @foreach (System.Data.DataColumn col in Model.lstEstFromDailyReport[i].Tables[0].Columns)
+                    {
+                        <th>@col.Caption</th>
+                    }
+                        ***@
+                <th>
+                    NO.
+                </th>
+                <th>
+                    合約類型
+                </th>
+                <th>
+                    合約編號
+                </th>
+                <th>
+                    廠商名稱
+                </th>
+                <th>
+                    採購項目
+                </th>
+                <th>
+                    驗收品項數量
+                </th>
+                <th>
+                    功能
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (System.Data.DataRow row in Model.lstEstFromDailyReport[i].Tables[0].Rows)
+            {
+                <tr>
+                    <td>@row["NO"]</td>
+
+                    @if (row["ISWAGE"].ToString() == "Y")
+                    {
+                        <td>人工</td>
+                    }
+                    else
+                    {
+                        <td>材料</td>
+                    }
+                    <td>@row["INQUIRY_FORM_ID"].ToString()</td>
+                    <td>@row["SUPPLIER_ID"].ToString()</td>
+                    <td>@row["FORM_NAME"].ToString()</td>
+                    <td>@row["ItemCnt"].ToString()</td>
+                    <td>
+                        <a href='/Estimation/createEstimationOrder?contractId=@row["INQUIRY_FORM_ID"].ToString()&projectId=@ViewBag.projectId&PR_ID_S=@ViewBag.PR_ID_S&PR_ID_E=@ViewBag.PR_ID_E&IsWage=@row["ISWAGE"].ToString()' target="_blank">建立估驗單</a>
+                    </td>
+                    @**foreach (var cell in row.ItemArray)
+                        {
+                            <td>@cell.ToString()</td>
+                        }
+                    *@
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

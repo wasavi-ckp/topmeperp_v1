@@ -1,0 +1,114 @@
+﻿@model topmeperp.Models.ContractModels
+@{
+    ViewBag.Title = "發包合約收支摘要 :";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件集合區域-->
+<h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>
+
+    <div class="row" style="padding-bottom:20px">
+        <div class="col-md-4 form-group">
+            <label for="id">專案編號:</label><input id="id" name="id" type="text" value="@ViewBag.id" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+        </div>
+        <div class="col-md-4">
+            <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+        </div>
+        <div class="col-md-4" style="padding-top:25px">
+            <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+        </div>
+    </div>
+
+<div class="contailer">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>投標金額總計</th>
+                <th>預算金額總計</th>
+                <th>發包成本總計</th>
+                <th>毛利總計</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                @if (ViewBag.revenue != null)
+                {
+                    <td>
+                        <span style="color: blue; font-size: 20px;">
+                            @String.Format("{0:N0}", ViewBag.revenue)
+                        </span>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+                @if (ViewBag.budget != null)
+                {
+                    <td>
+                        <span style="color: blue; font-size: 20px;">
+                            @String.Format("{0:N0}", ViewBag.budget)
+                        </span>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+                @if (ViewBag.cost != null)
+                {
+                    <td>
+                        <span style="color: blue; font-size: 20px;">
+                            @String.Format("{0:N0}", ViewBag.cost)
+                        </span>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+                @if (ViewBag.profit != null)
+                {
+                    <td>
+                        <span style="color: blue; font-size: 20px;">
+                            @String.Format("{0:N0}", ViewBag.profit)
+                        </span>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#inquiryMaterial">物料廠商合約</a></li>
+        <li><a data-toggle="tab" href="#inquiryWage">工資廠商合約</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="inquiryMaterial" class="tab-pane fade in active">
+            @{
+                Html.RenderPartial("_MaterialContractPage");
+            }
+        </div>
+        <div id="inquiryWage" class="tab-pane fade">
+            @{
+                Html.RenderPartial("_WageContractPage");
+            }
+        </div>
+    </div>
+</div>
+<!-- Modal :對話框-->
+<div class="row" style="padding-top:10px;">
+    <div class="modal fade" id="paymentInfo" role="dialog">
+        <div class="modal-dialog" id="paymentInfoDialog">
+            <!-- Modal content-->
+            @Html.Partial("_PaymentTerms");
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/topmep_payment.js"></script>

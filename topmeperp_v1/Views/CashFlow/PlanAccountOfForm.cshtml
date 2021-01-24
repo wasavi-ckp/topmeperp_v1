@@ -1,0 +1,157 @@
+﻿
+@model IEnumerable<topmeperp.Models.PlanAccountFunction>
+<div class="container">
+    <h2 style="padding-top:50px;">業主帳款入帳情況 : </h2>
+</div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        功能
+                    </th>
+                    <th>專案名稱</th>
+                    <th>支付日期</th>
+                    <th>應收金額</th>
+                    <th>實收金額</th>
+                    <th>帳款類型</th>
+                    <th>受款人</th>
+                    <th>支票號碼</th>
+                    <th>備註</th>
+                    <th>入帳與否</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tbody>
+                @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>
+                            <button type="button" class="btn btn-default btn-xs" onclick="getPlanAccountItem('@item.PLAN_ACCOUNT_ID')">
+                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                            </button>
+                            <button type="button" class="btn btn-default btn-xs" onclick="delPlanAccountItem('@item.PLAN_ACCOUNT_ID')">
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color:red"></span>
+                            </button>
+                        </td>
+                        <td>@item.PROJECT_NAME</td>
+                        <td>@item.RECORDED_DATE</td>
+                        <td>@String.Format("{0:#,##0.#}", item.AMOUNT_PAYABLE)</td>
+                        <td>@String.Format("{0:#,##0.#}", item.AMOUNT_PAID)</td>
+                        @if (item.ACCOUNT_TYPE == "R")
+                        {
+                            <td>業主帳款</td>
+                        }
+                        else if (item.ACCOUNT_TYPE == "O")
+                        {
+                            <td>公司營業費用</td>
+                        }
+                        else if (item.ACCOUNT_TYPE == "E")
+                        {
+                            <td>工地費用</td>
+                        }
+                        else
+                        {
+                            <td>廠商帳款</td>
+                        }
+                        <td>@item.PAYEE</td>
+                        <td>@item.CHECK_NO</td>
+                        <td>@item.REMARK</td>
+                        @if (item.STATUS == 10)
+                        {
+                            <td>是</td>
+                        }
+                        else
+                        {
+                            <td><span style="color: red; font-size: 15px;">否</span></td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+<!-- Modal :對話框-->
+<div class="modal fade" id="planAcountItem" role="dialog">
+    <div class="modal-dialog" id="planAcountItemDialog">
+        <!-- Modal content-->@ViewBag.SearchResult
+        @Html.Partial("_PlanAccountItem");
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#payment_date').datetimepicker({
+            format: 'YYYY/MM/DD',
+            locale: 'zh-tw'
+        });
+    });
+
+    //由ID 取得資料填入表單
+    function getPlanAccountItem(itemid) {
+        //alert(userid);
+        $.ajax({
+            url: "/CashFlow/getPlanAccountItem",
+            type: "GET",
+            data: { itemid: itemid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#project_name').val(data.PROJECT_NAME);
+                $('#plan_account_id').val(data.PLAN_ACCOUNT_ID);
+                $('#contract_id').val(data.CONTRACT_ID);
+                $('#type').val(data.ACCOUNT_TYPE);
+                $('#isdebit').val(data.ISDEBIT);
+                $('#create_id').val(data.CREATE_ID);
+                $('#check_no').val(data.CHECK_NO);
+                $('#account_form_id').val(data.ACCOUNT_FORM_ID);
+                $('#amount_payable').val(data.RECORDED_AMOUNT_PAYABLE);
+                $('#amount_paid').val(data.RECORDED_AMOUNT_PAID);
+                $('#date').val(data.RECORDED_DATE);
+                $('#project_id').val(data.PROJECT_ID);
+                $('#unRecordedFlag').val(data.STATUS);
+                $('#planAcountItem').modal('show'); // show bootstrap modal when complete loaded
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+
+    //更新plan acount item
+    $("#savePlanAccountItem").click(function () {
+        var s = $('#formAccountItem').serialize();
+        var URLs = "/CashFlow/updatePlanAccountItem";
+        $.ajax({
+            url: URLs,
+            data: $('#formAccountItem').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+    //將PlanItem 註記刪除
+    function delPlanAccountItem(itemid) {
+        // alert(itemid);
+        $.ajax({
+            url: "/CashFlow/delPlanAccountItem",
+            type: "POST",
+            data: { itemid: itemid },
+            dataType: "text",
+            success: function (data) {
+                alert(data);
+                window.location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error del data bys ajax');
+            }
+        });
+    }
+</script>
+

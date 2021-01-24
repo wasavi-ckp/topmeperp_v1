@@ -1,0 +1,81 @@
+﻿@model IEnumerable<topmeperp.Models.SummaryDailyReport>
+<div class="container" style="width:auto;height:auto;overflow-x:hidden;overflow-y:auto;padding-top:5px;">
+    @{
+        var supplierid = "";
+        decimal? decAmount4Supllier = 0;
+    }
+    @if (Model != null)
+    {
+        <div class="row">
+            <label id="Message" class="alert-danger">@ViewBag.Message</label>
+            <label id="Message" class="alert-info">@ViewBag.Result</label>
+            <a href="~/ProjectPlan/downloadSummaryDailyReport" class="btn btn-sm btn-warning">下載</a>
+            <table class="table" width="100%">
+                @foreach (var item in Model)
+                {
+                    @*補入小計欄位*@
+                    if (supplierid != item.SUPPLIER_ID && supplierid != "")
+                    {
+                        <tr style="background-color:aquamarine">
+                            <td colspan="4" style="text-align:right">加總</td>
+                            <td style="text-align:right">
+                                @String.Format("{0:$#,##0.0.#}", decAmount4Supllier)
+                            </td>
+                            <td></td>
+                        </tr>
+                        decAmount4Supllier = 0;
+                    }
+                    @*更換廠商資料*@
+                    if (supplierid != item.SUPPLIER_ID)
+                    {
+                        <tr style="background-color:dodgerblue">
+                            <td>廠商名稱</td>
+                            <td colspan="5">@item.SUPPLIER_ID ( @item.INQUIRY_FORM_ID )</td>
+                        </tr>
+                        <tr>
+                            <td width="12%">編號</td>
+                            <td>合約項次 </td>
+                            <td>品名</td>
+                            <td style="text-align:right">估驗數量</td>
+                            <td style="text-align:right">金額</td>
+                            <td>前期累計數量</td>
+                            <!-- td width="5%">選擇</!--td -->
+                        </tr>
+                        supplierid = item.SUPPLIER_ID;
+                    }
+                    <tr>
+                        <td>@item.PROJECT_ITEM_ID</td>
+                        <td>@item.ITEM_ID </td>
+                        <td>@Html.DisplayFor(modelItem => item.ITEM_DESC)</td>
+                        <td style="text-align:right">
+                            @String.Format("{0:###0.000.#}", item.QTY)
+                        </td>
+                        <td style="text-align:right">
+                            @String.Format("{0:$#,##0.0.#}", item.QTY * item.UNIT_COST)
+                        </td>
+                        <td style="text-align:right">
+                            @String.Format("{0:###0.000.#}", item.ACCUMULATE_QTY)
+                        </td>
+                        <!-- td><input type="checkbox" id="choiced" name="choiced" />   </!--td-->
+                    </tr>
+                    if (item.QTY != null && item.UNIT_COST != null)
+                    {
+                        decAmount4Supllier = decAmount4Supllier + (item.QTY * item.UNIT_COST);
+                    }
+                }
+                @**最後一家廠商補入加總欄位*@
+                <tr style="background-color:aquamarine">
+                    <td colspan="4" style="text-align:right">加總</td>
+                    <td style="text-align:right">
+                        @String.Format("{0:$#,##0.0.#}", decAmount4Supllier)
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="row alert-danger">查無資料!!</div>
+    }
+</div>

@@ -1,0 +1,414 @@
+﻿@model topmeperp.Models.ExpenseTask
+@{
+    ViewBag.Title = "估驗計價 : ";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular.min.js"></script>
+
+<!--<h3 style="height:10px;line-height:5px">@ViewBag.Title</h3>-->
+<div class="page-header" ng-app="">
+    <form id="formESTMain" name="formESTMain" action="/Estimation/ConfirmEst" method="post" enctype="multipart/form-data">
+
+        <div class="row">
+            <div class="col-md-3">
+                <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="supplier">付款對象:</label>
+                <input type="text" id="supplier" name="supplier" value="" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="paymentDate">付款日期:</label>
+                <input type="text" id="paymentDate" name="paymentDate" value="" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="indirect_cost_type">估驗單類型:</label>
+                <select class="form-control" id="indirect_cost_type" name="indirect_cost_type"><option value=""></option><option value="M">界面維保費用</option><option value="O">其他費用</option></select>
+            </div>
+            <input type="hidden" name="id" id="id" value="@ViewBag.projectId">
+            <input type="hidden" name="estid" id="estid" value="@ViewBag.formid">
+            <input type="hidden" name="contractid" id="contractid" value="@ViewBag.contractid">
+            <input type="hidden" name="keyid" id="keyid" value="@ViewBag.keyid">
+            <input type="hidden" name="type" id="type" value="@ViewBag.type">
+        </div>
+        <div style="padding-top: 30px;">
+            <label class="col-md-2 control-label">上傳計價檔案: </label>
+            <div class='col-md-10'>
+                <input type="file" name="file" id="file" />
+            </div>
+        </div>
+        <div class="row" style="padding-top:10px;">
+            @{
+                Html.RenderPartial("PaymentDetails");
+            }
+        </div>
+        <div class="col-md-12" style="padding-bottom:30px;">
+            <div class="col-md-12">
+                <textarea class="form-control" rows="5" id="remark" name="remark" placeholder="說明事項"></textarea>
+            </div>
+            <div class="col-md-6 alert-dismissable">
+                @Html.Raw(TempData["balance"])
+            </div>
+        </div>
+    </form>
+</div>
+@using (Html.BeginForm())
+{
+    <div class="row" style="padding-top:10px">
+        <div class="col-md-12">
+            <input type="button" value="更新" class="btn btn-success" onclick="saveVA()" />
+            <!-- <input type="submit" value="計算" id="saveForm" name="saveForm" class="btn btn-success" />-->
+            <!-- <input type="submit" value="儲存" name="SaveEst" class="btn btn-default" onclick="return Confirm_Form()" />
+            <input type="submit" value="提交" name="AddEst" class="btn btn-warning" onclick="return Confirm_Form()" />-->
+        </div>
+    </div>
+}
+
+<!-- Modal :票期對話框-->
+<div class="row" style="padding-top:10px;">
+    @if (ViewBag.paymentTerms == "P")
+    {
+        <div class="modal fade" id="paymentInfo" role="dialog">
+            <div class="modal-dialog" id="paymentInfoDialog">
+                <!-- Modal content-->
+                @Html.Partial("_PaymentTerms");
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="modal fade" id="paymentInfo" role="dialog">
+            <div class="modal-dialog" id="paymentInfoDialog">
+                <!-- Modal content-->
+                @Html.Partial("_PaymentTerms4S");
+            </div>
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    //由ID 取得資料填入表單
+    function getPaymentTerm(contractid) {
+        //alert(contractid);
+        $.ajax({
+            url: "/Estimation/getPaymentTerms",
+            type: "GET",
+            data: { contractid: contractid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#project_id').val(data.PROJECT_ID);
+                $('#contract_id').val(data.CONTRACT_ID);
+                $('#date1').val(data.DATE_1);
+                $('#date2').val(data.DATE_2);
+                $('#date3').val(data.DATE_3);
+                $('#paymenttype').val(data.PAYMENT_TYPE);
+                $('#paymentcash').val(data.PAYMENT_CASH);
+                $('#payment_date1').val(data.PAYMENT_UP_TO_U_DATE1);
+                $('#payment_date2').val(data.PAYMENT_UP_TO_U_DATE2);
+                $('#payment_1').val(data.PAYMENT_UP_TO_U_1);
+                $('#payment_2').val(data.PAYMENT_UP_TO_U_2);
+                $('#paymentadvance').val(data.PAYMENT_ADVANCE_RATIO);
+                $('#paymentadvance_cash').val(data.PAYMENT_ADVANCE_CASH_RATIO);
+                $('#paymentadvance_1').val(data.PAYMENT_ADVANCE_1_RATIO);
+                $('#paymentadvance_2').val(data.PAYMENT_ADVANCE_2_RATIO);
+                $('#paymentestimated').val(data.PAYMENT_ESTIMATED_RATIO);
+                $('#paymentestimated_cash').val(data.PAYMENT_ESTIMATED_CASH_RATIO);
+                $('#paymentestimated_1').val(data.PAYMENT_ESTIMATED_1_RATIO);
+                $('#paymentestimated_2').val(data.PAYMENT_ESTIMATED_2_RATIO);
+                $('#paymentretention').val(data.PAYMENT_RETENTION_RATIO);
+                $('#paymentretention_cash').val(data.PAYMENT_RETENTION_CASH_RATIO);
+                $('#paymentretention_1').val(data.PAYMENT_RETENTION_1_RATIO);
+                $('#paymentretention_2').val(data.PAYMENT_RETENTION_2_RATIO);
+                $('#usancecash').val(data.USANCE_CASH);
+                $('#usance_date1').val(data.USANCE_UP_TO_U_DATE1);
+                $('#usance_date2').val(data.USANCE_UP_TO_U_DATE2);
+                $('#usance_1').val(data.USANCE_UP_TO_U_1);
+                $('#usance_2').val(data.USANCE_UP_TO_U_2);
+                $('#usanceadvance').val(data.USANCE_ADVANCE_RATIO);
+                $('#usanceadvance_cash').val(data.USANCE_ADVANCE_CASH_RATIO);
+                $('#usanceadvance_1').val(data.USANCE_ADVANCE_1_RATIO);
+                $('#usanceadvance_2').val(data.USANCE_ADVANCE_2_RATIO);
+                $('#usancegoods').val(data.USANCE_GOODS_RATIO);
+                $('#usancegoods_cash').val(data.USANCE_GOODS_CASH_RATIO);
+                $('#usancegoods_1').val(data.USANCE_GOODS_1_RATIO);
+                $('#usancegoods_2').val(data.USANCE_GOODS_2_RATIO);
+                $('#usancefinished').val(data.USANCE_FINISHED_RATIO);
+                $('#usancefinished_cash').val(data.USANCE_FINISHED_CASH_RATIO);
+                $('#usancefinished_1').val(data.USANCE_FINISHED_1_RATIO);
+                $('#usancefinished_2').val(data.USANCE_FINISHED_2_RATIO);
+                $('#usanceretention').val(data.USANCE_RETENTION_RATIO);
+                $('#usanceretention_cash').val(data.USANCE_RETENTION_CASH_RATIO);
+                $('#usanceretention_1').val(data.USANCE_RETENTION_1_RATIO);
+                $('#usanceretention_2').val(data.USANCE_RETENTION_2_RATIO);
+                $('#payment_date_cash').val(data.paidDateCash);
+                $('#payment_date_1').val(data.paidDate1);
+                $('#payment_date_2').val(data.paidDate2);
+                if ((data.DATE_3) == null) {
+                    $("input[name=payfrequency][value='O']").attr('checked', true);
+                }
+                else {
+                    $("input[name=payfrequency][value='T']").attr('checked', true)
+                }
+                if ((data.PAYMENT_TYPE) != null && (data.PAYMENT_TYPE) != "") {
+                    $("input[name=payterms][value='P']").attr('checked', true);
+                }
+                else {
+                    $("input[name=payterms][value='S']").attr('checked', true);
+                }
+                if ((data.advanceCash) == null && (data.retentionCash) == null) {
+                    $('#paid_amount_cash').val(data.estCash.ToString("#,##0"));
+                }
+                else if ((data.estCash) == null && (data.retentionCash) == null) {
+                    $('#paid_amount_cash').val(data.advanceCash);
+                }
+                else {
+                    $('#paid_amount_cash').val(data.retentionCash);
+                }
+                if ((data.advanceAmt1) == null && (data.retentionAmt1) == null) {
+                    $('#paid_amount_1').val(data.estAmt1.ToString("#,##0"));
+                }
+                else if ((data.estAmt1) == null && (data.retentionAmt1) == null) {
+                    $('#paid_amount_1').val(data.advanceAmt1);
+                }
+                else {
+                    $('#paid_amount_1').val(data.retentionAmt1);
+                }
+                if ((data.advanceAmt2) == null && (data.retentionAmt2) == null) {
+                    $('#paid_amount_2').val(data.estAmt2);
+                }
+                else if ((data.estAmt2) == null && (data.retentionAmt2) == null) {
+                    $('#paid_amount_2').val(data.advanceAmt2);
+                }
+                else {
+                    $('#paid_amount_2').val(data.retentionAmt2);
+                }
+                $('#paymentInfo').modal('show'); // show bootstrap modal when complete loaded
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function myController($scope, $http) {
+        //若資料量很多的話，建議改用$http的Ajax方法撈資料指派給$scope的item成員
+        $scope.item = @Html.Raw(ViewData["items"])
+        //取得估驗總金額
+        $scope.GetTotalNum = function () {
+            var sum = 0;
+            for (var i = 0; i < $scope.item.length; i++) {
+                sum += parseFloat($scope.item[i].ITEM_UNIT_COST * $scope.item[i].evaluated_qty);
+            }
+            return sum;
+        }
+        $scope.GetTotalNum4Wage = function () {
+            var sumWage = 0;
+            for (var i = 0; i < $scope.item.length; i++) {
+                sumWage += parseFloat($scope.item[i].MAN_PRICE * $scope.item[i].evaluated_qty);
+            }
+            return sumWage;
+        }
+        $scope.GetTotalSum = function () {
+            var cumsum = 0;
+            for (var i = 0; i < $scope.item.length; i++) {
+                cumsum += parseFloat($scope.item[i].ITEM_UNIT_COST * $scope.item[i].CUM_EST_QTY);
+            }
+            return cumsum;
+        }
+        $scope.GetTotalSum4Wage = function () {
+            var cumsum = 0;
+            for (var i = 0; i < $scope.item.length; i++) {
+                cumsum += parseFloat($scope.item[i].MAN_PRICE * $scope.item[i].CUM_EST_QTY);
+            }
+            return cumsum;
+        }
+        $scope.GetTotalRatio = function () {
+            var cumsum = 0;
+            var totalamount = 0;
+            for (var i = 0; i < $scope.item.length; i++) {
+                cumsum += parseFloat($scope.item[i].ITEM_UNIT_COST * $scope.item[i].CUM_EST_QTY);
+                totalamount += parseFloat($scope.item[i].ITEM_UNIT_COST * $scope.item[i].mapQty);
+            }
+            return parseInt(cumsum / totalamount * 100);
+        }
+        $scope.GetTotalRatio4Wage = function () {
+            var cumsum = 0;
+            var totalamount = 0;
+            for (var i = 0; i < $scope.item.length; i++) {
+                cumsum += parseFloat($scope.item[i].MAN_PRICE * $scope.item[i].CUM_EST_QTY);
+                totalamount += parseFloat($scope.item[i].MAN_PRICE * $scope.item[i].mapQty);
+            }
+            return parseInt(cumsum / totalamount * 100);
+        }
+    }
+
+    $("#saveForm").click(function () {
+
+        var boolOver = false;
+        $('table > tbody > tr').each(function () {
+            var est_qty = 0;
+            var cumulative_est_qty = 0;
+            var cumulative_recpt_qty = 0;
+            est_qty = parseInt($.trim($(this).find("#evaluated_qty").val())); //抓取每筆記錄估驗數量的值
+            //cumulative_est_qty = parseInt($.trim($(this).find("#cum_est_qty").val()));//抓取每筆記錄累計估驗數量的值
+            //alert(cumulative_est_qty);
+            Quota_qty = parseInt($.trim($(this).find("#Quota_qty").val()));//抓取每筆記錄可估驗數量的值
+            if (parseInt(est_qty) > parseInt(Quota_qty)) {
+                boolOver = true;
+            }
+        });
+
+        if (boolOver == true) {
+            alert("此次估驗量大於可申請估驗的數量，請再次確認您要估驗的數量!");
+            return false;
+        }
+
+        $.ajax({
+            url: '@Url.Action("ConfirmEst", "Estimation")',
+            data: $('#formESTMain').serialize(),
+            type: "POST",
+            dataType: 'JSON',
+            success: function (data) {
+                $('#cum_t_foreign').val(data.CUM_T_FOREIGN);
+                $('#cum_sub_amount').val(data.CUM_SUB_AMOUNT);
+                $('#cum_t_retention').val(data.CUM_T_RETENTION);
+                $('#cum_t_advance').val(data.CUM_T_ADVANCE);
+                $('#cum_t_other').val(data.CUM_T_OTHER);
+                $('#cum_payable_amount').val(data.CUM_PAYABLE_AMOUNT);
+                $('#cum_t_repayment').val(data.CUM_T_REPAYMENT);
+                $('#cum_t_refund').val(data.CUM_T_REFUND);
+                $('#t_foreign').val(data.T_FOREIGN);
+                $('#sub_amount').val(data.SUB_AMOUNT);
+                $('#t_retention').val(data.T_RETENTION);
+                $('#t_advance').val(data.T_ADVANCE);
+                $('#t_other').val(data.T_OTHER);
+                $('#t_repayment').val(data.T_REPAYMENT);
+                $('#t_refund').val(data.T_REFUND);
+                $('#payable_amount').val(data.PAYABLE_AMOUNT);
+                $('#tax_amount').val(data.TAX_AMOUNT);
+                $('#cum_tax_amount').val(data.CUM_TAX_AMOUNT);
+                $('#cum_paid_amount').val(data.CUM_PAID_AMOUNT);
+                $('#paid_amount').val(data.PAID_AMOUNT);
+                $('#total_paid_amount').val(data.TOTAL_PAID_AMOUNT);
+                $('#total_payable_amount').val(data.TOTAL_PAYABLE_AMOUNT);
+                $('#total_foreign').val(data.TOTAL_FOREIGN);
+                $('#total_sub_amount').val(data.TOTAL_SUB_AMOUNT);
+                $('#total_retention').val(data.TOTAL_RETENTION);
+                $('#total_advance').val(data.TOTAL_ADVANCE);
+                $('#total_other').val(data.TOTAL_OTHER);
+                $('#total_tax_amount').val(data.TOTAL_TAX_AMOUNT);
+                $('#total_repayment').val(data.TOTAL_REPAYMENT);
+                $('#total_refund').val(data.TOTAL_REFUND);
+
+                //if (data.PAYABLE_AMOUNT == null || data.PAYABLE_AMOUNT == '') {
+                //    alert("目前尚有未核准的估驗單，估驗單編號為" + data + "，待此單核准後再新增估驗單!");
+                //    //alert("請輸入金額!!");
+                //}
+                //else {
+                //    alert("更新成功，若資料無誤請按下儲存或提交鍵 !");
+                //}
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+    function saveVA() {
+        $("#formESTMain").submit(function (e) {
+            var formObj = $(this);
+            var formURL = formObj.attr("action");
+            var formData = new FormData(this);
+            //var URLs = "/Estimation/addVAItem";
+            $.ajax({
+                url: formURL,
+                type: 'POST',
+                data: formData,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                cache: false,
+                processData: false,
+                //url: URLs,
+                //data: $('#formVAItem').serialize(),
+                //type: "POST",
+                dataType: 'JSON',
+                success: function (data) {
+                    //window.location.replace("~/Estimation/EstimationForm/" + @ViewBag.projectId);
+                    location.assign("EstimationForm/@ViewBag.projectId");
+                    $('#cum_t_foreign').val(data.CUM_T_FOREIGN);
+                    $('#cum_sub_amount').val(data.CUM_SUB_AMOUNT);
+                    $('#cum_t_retention').val(data.CUM_T_RETENTION);
+                    $('#cum_t_advance').val(data.CUM_T_ADVANCE);
+                    $('#cum_t_other').val(data.CUM_T_OTHER);
+                    $('#cum_payable_amount').val(data.CUM_PAYABLE_AMOUNT);
+                    $('#cum_t_repayment').val(data.CUM_T_REPAYMENT);
+                    $('#cum_t_refund').val(data.CUM_T_REFUND);
+                    $('#t_foreign').val(data.T_FOREIGN);
+                    $('#sub_amount').val(data.SUB_AMOUNT);
+                    $('#t_retention').val(data.T_RETENTION);
+                    $('#t_advance').val(data.T_ADVANCE);
+                    $('#t_other').val(data.T_OTHER);
+                    $('#t_repayment').val(data.T_REPAYMENT);
+                    $('#t_refund').val(data.T_REFUND);
+                    $('#payable_amount').val(data.PAYABLE_AMOUNT);
+                    $('#tax_amount').val(data.TAX_AMOUNT);
+                    $('#cum_tax_amount').val(data.CUM_TAX_AMOUNT);
+                    $('#cum_paid_amount').val(data.CUM_PAID_AMOUNT);
+                    $('#paid_amount').val(data.PAID_AMOUNT);
+                    $('#total_paid_amount').val(data.TOTAL_PAID_AMOUNT);
+                    $('#total_payable_amount').val(data.TOTAL_PAYABLE_AMOUNT);
+                    $('#total_foreign').val(data.TOTAL_FOREIGN);
+                    $('#total_sub_amount').val(data.TOTAL_SUB_AMOUNT);
+                    $('#total_retention').val(data.TOTAL_RETENTION);
+                    $('#total_advance').val(data.TOTAL_ADVANCE);
+                    $('#total_other').val(data.TOTAL_OTHER);
+                    $('#total_tax_amount').val(data.TOTAL_TAX_AMOUNT);
+                    $('#total_repayment').val(data.TOTAL_REPAYMENT);
+                    $('#total_refund').val(data.TOTAL_REFUND);
+
+                   // if (data.PAYABLE_AMOUNT == null || data.PAYABLE_AMOUNT == '') {
+                   //     alert("目前尚有未核准的估驗單，估驗單編號為" + data + "，待此單核准後再新增估驗單!");
+                   // }
+                  //  else {
+                    //    alert("更新成功，若資料無誤請按下儲存或提交鍵 !");
+
+                   /// }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError);
+                }
+            });
+            //e.preventDefault(); //Prevent Default action.
+
+            e.unbind();
+        });
+        $("#formESTMain").submit(); //Submit the form
+        // document.forms["formFileUpload"].submit();
+    }
+    //function Confirm_Form() {
+    //    if ($("#estid").val() == "") {
+    //        alert("估驗單未建立請按下[更新]!!");
+    //        return false;
+    //    }
+    //    return true;
+    //}
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(function () {
+            $('#paymentDate').datetimepicker({
+                format: 'YYYY/MM/DD',
+                locale: 'zh-tw'
+            });
+        });
+    })
+</script>

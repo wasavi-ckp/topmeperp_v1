@@ -1,0 +1,194 @@
+﻿@model topmeperp.Models.MapInfoModels
+@ViewBag.Result
+<div class="container" style="width:auto;height:auto;overflow-x:hidden;overflow-y:auto;padding-top:5px;">
+    <label id="Message" class="alert-danger">@ViewBag.Message</label>
+    @if (Model != null)
+    {
+        if (Model.ProjectItemInDEVICE != null)//設備
+        {
+            <div class="row">
+                <div class="row panel-heading label-info">設備(MAP_DEVICE)</div>
+                <table class="table">
+                    <tr>
+                        <th>全選<input type="checkbox" id="check_device" name="check_device" onclick='checkBoxStatus("check_device", "map_device")' /></th>
+                        <th>編號</th>
+                        <th>設備名稱</th>
+                        <th>合約數量</th>
+                    </tr>
+
+                    @foreach (var item in Model.ProjectItemInDEVICE)
+                    {
+                        <tr>
+                            <td><input type="checkbox" id="map_device" name="map_device" value="@item.PLAN_ITEM_ID" /></td>
+                            <td>@Html.DisplayFor(modelItem => item.ITEM_ID)</td>
+                            <td style="">@Html.DisplayFor(modelItem => item.ITEM_DESC )</td>
+                            <td>@Html.DisplayFor(modelItem => item.ITEM_QUANTITY )</td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+        }
+        if (Model.ProjectItemInMapPEP != null)//電氣管線
+        {
+            <div class="container" style="width:auto;height:auto;overflow-x:hidden;overflow-y:auto;">
+                <div class="row">
+                    <div class="row panel-heading label-info"> 電氣管線(MAP_PEP)</div>
+                    <table class="table">
+                        <tr>
+                            <th>全選<input type="checkbox" id="check_map_pep" name="check_map_pep" onclick='checkBoxStatus("check_map_pep", "map_pep")'/></th>
+                            <th>編號</th>
+                            <th>設備名稱</th>
+                            <th>合約數量</th>
+                        </tr>
+
+                        @foreach (var item in Model.ProjectItemInMapPEP)
+                        {
+                        <tr>
+                            <td><input type="checkbox" id="map_pep" name="map_pep" value="@item.PLAN_ITEM_ID" /></td>
+                            <td>@Html.DisplayFor(modelItem => item.ITEM_ID)</td>
+                            <td style="">@Html.DisplayFor(modelItem => item.ITEM_DESC)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ITEM_QUANTITY)</td>
+                        </tr>
+                        }
+
+                    </table>
+
+                </div>
+            </div>
+        }
+        if (Model.ProjectItemInMapLCP != null)//弱電
+        {
+            <div class="container" style="width:auto;height:auto;overflow-x:hidden;overflow-y:auto;">
+                <div class="row">
+                    <div class="row panel-heading label-info">弱電管線(MAP_LCP)</div>
+                    <table class="table">
+                        <tr>
+                            <th>全選<input type="checkbox" id="check_map_lcp" name="check_map_lcp" onclick='checkBoxStatus("check_map_lcp", "map_lcp")' /></th>
+                            <th>編號</th>
+                            <th>設備名稱</th>
+                            <th>合約數量</th>
+                        </tr>
+
+                        @foreach (var item in Model.ProjectItemInMapLCP)
+                        {
+                            <tr>
+                                <td><input type="checkbox" id="map_lcp" name="map_lcp" value="@item.PLAN_ITEM_ID" /></td>
+                                <td>@Html.DisplayFor(modelItem => item.ITEM_ID)</td>
+                                <td style="">@Html.DisplayFor(modelItem => item.ITEM_DESC)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ITEM_QUANTITY)</td>
+                            </tr>
+                        }
+
+                    </table>
+                </div>
+            </div>
+        }
+        if (Model.ProjectItemInMapPLU != null) //給排水
+        {
+            <div class="container" style="width:auto;height:auto;overflow-x:hidden;overflow-y:auto;">
+                <div class="row">
+                    <div class="rowpanel-heading label-info">給排水(MAP_PLU)</div>
+                    <table class="table">
+                        <tr>
+                            <th>全選<input type="checkbox" id="check_map_plu" name="check_map_plu" onclick='checkBoxStatus("check_map_plu", "map_plu")' /></th>
+                            <th>編號</th>
+                            <th>設備名稱</th>
+                            <th>合約數量</th>
+                        </tr>
+
+                        @foreach (var item in Model.ProjectItemInMapPLU)
+                        {
+                            <tr>
+                                <td><input type="checkbox" id="map_plu" name="map_plu" value="@item.PLAN_ITEM_ID" /></td>
+                                <td>@Html.DisplayFor(modelItem => item.ITEM_ID)</td>
+                                <td style="">@Html.DisplayFor(modelItem => item.ITEM_DESC)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ITEM_QUANTITY)</td>
+                            </tr>
+                        }
+
+                    </table>
+                </div>
+            </div>
+        }
+        if (Model.ProjectItemInMapFP != null)//消防電
+        {
+            <div class="container" style="width:auto;height:auto;overflow-x:hidden;overflow-y:auto;">
+                <div class="row">
+                    <div class="row panel-heading label-info">消防電(MAP_FP)</div>
+                    <table class="table">
+                        <tr>
+                            <th>全選<input type="checkbox" id="check_map_fp" name="check_map_fp"  onclick='checkBoxStatus("check_map_fp", "map_fp")' /></th>
+                            <th>編號</th>
+                            <th>設備名稱</th>
+                            <th>合約數量</th>
+                        </tr>
+                        @foreach (var item in Model.ProjectItemInMapFP)
+                        {
+                            <tr>
+                                <td><input type="checkbox" id="map_fp" name="map_fp" value="@item.PLAN_ITEM_ID" /></td>
+                                <td>@Html.DisplayFor(modelItem => item.ITEM_ID)</td>
+                                <td style="">@Html.DisplayFor(modelItem => item.ITEM_DESC)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ITEM_QUANTITY)</td>
+                            </tr>
+                        }
+
+                    </table>
+                </div>
+            </div>
+        }
+        if (Model.ProjectItemInMapFW != null)//消防水
+        {
+            <div class="container" style="width:auto;height:auto;overflow-x:hidden;overflow-y:auto;">
+                <div class="row">
+                    <div class="rowpanel-heading label-info">消防水(MAP_FW)</div>
+                    <table class="table">
+                        <tr>
+                            <th>全選<input type="checkbox" id="check_map_fw" name="check_map_fw" onclick='checkBoxStatus("check_map_fw", "map_fw")'/></th>
+                            <th>編號</th>
+                            <th>設備名稱</th>
+                            <th>合約數量</th>
+                        </tr>
+
+                        @foreach (var item in Model.ProjectItemInMapFW)
+                    {
+                            <tr>
+                                <td><input type="checkbox" id="map_fw" name="map_fw" value="@item.PLAN_ITEM_ID" /></td>
+                                <td>@Html.DisplayFor(modelItem => item.ITEM_ID)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ITEM_DESC)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ITEM_QUANTITY)</td>
+                            </tr>
+                        }
+
+                    </table>
+                </div>
+            </div>
+        }
+
+        if (Model.ProjectItemNotMap != null)//非圖算數量
+        {
+            <div class="row">
+                <div class="row panel-heading label-info">非圖算數量(PLAN_ITEM)</div>
+                <table class="table">
+                    <tr>
+                        <th>全選<input type="checkbox" id="check_device" name="check_device" onclick='checkBoxStatus("check_device", "map_device")' /></th>
+                        <th>編號</th>
+                        <th>設備名稱</th>
+                        <th>合約數量</th>
+                    </tr>
+
+                    @foreach (var item in Model.ProjectItemNotMap)
+                    {
+                        <tr>
+                            <td><input type="checkbox" id="item_not_map" name="item_not_map" value="@item.PLAN_ITEM_ID" /></td>
+                            <td>@Html.DisplayFor(modelItem => item.PLAN_ITEM_ID)</td>
+                            <td style="">@Html.DisplayFor(modelItem => item.ITEM_DESC)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ITEM_QUANTITY)</td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+        }
+    }
+</div>

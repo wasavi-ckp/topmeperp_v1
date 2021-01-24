@@ -1,0 +1,54 @@
+﻿@model topmeperp.Models.ExpenseTask
+<!-- Modal content -->
+<div class="modal-content">
+    <form id="formPayment" name="formPayment" action="addPaymentTerms" method="post">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">付款條件與票期</h4>
+        </div>
+        <div class="modal-body form-group">
+            <input type="hidden" id="project_id" name="project_id"/>
+            <input type="hidden" id="contract_id" name="contract_id"/>
+            <div class="col-md-12" style="padding-top: 10px;">
+                <table border="1">
+                    <tr>
+                        <td Align="Center">估驗比率</td>
+                        <td Align="Center">現金票 : <select id="paymentcash" name="paymentcash"><option value=""></option><option value="電匯">電匯</option><option value="現金">現金</option><option value="支票">支票</option></select></td>
+                        <td Align="Center"><input type="text" id="payment_date1" name="payment_date1" style="width:70px;" />天票 : <select id="payment_1" name="payment_1"><option value=""></option><option value="電匯">電匯</option><option value="現金">現金</option><option value="支票">支票</option></select></td>
+                        <td Align="Center"><input type="text" id="payment_date2" name="payment_date2" style="width:70px;" />天票 : <select id="payment_2" name="payment_2"><option value=""></option><option value="電匯">電匯</option><option value="現金">現金</option><option value="支票">支票</option></select></td>
+                    <tr>
+                        <td>預付款 : <input type="text" id="paymentadvance" name="paymentadvance" style="width:100px;" />%</td>
+                        <td><input type="text" id="paymentadvance_cash" name="paymentadvance_cash" style="width:100px;" />%</td>
+                        <td><input type="text" id="paymentadvance_1" name="paymentadvance_1" style="width:100px;" />%</td>
+                        <td><input type="text" id="paymentadvance_2" name="paymentadvance_2" style="width:100px;" />%</td>
+                    <tr>
+                        <td>估驗款 : <input type="text" id="paymentestimated" name="paymentestimated" style="width:100px;" />%</td>
+                        <td><input type="text" id="paymentestimated_cash" name="paymentestimated_cash" style="width:100px;" />%</td>
+                        <td><input type="text" id="paymentestimated_1" name="paymentestimated_1" style="width:100px;" />%</td>
+                        <td><input type="text" id="paymentestimated_2" name="paymentestimated_2" style="width:100px;" />%</td>
+                    <tr>
+                        <td>保留款 : <input type="text" id="paymentretention" name="paymentretention" style="width:100px;" />%</td>
+                        <td><input type="text" id="paymentretention_cash" name="paymentretention_cash" style="width:100px;" />%</td>
+                        <td><input type="text" id="paymentretention_1" name="paymentretention_1" style="width:100px;" />%</td>
+                        <td><input type="text" id="paymentretention_2" name="paymentretention_2" style="width:100px;" />%</td>
+                    <tr>
+                        <td>付款金額 :</td>
+                        <td><input type="text" id="paid_amount_cash" name="paid_amount_cash" style="width:100px;" /></td>
+                        <td><input type="text" id="paid_amount_1" name="paid_amount_1" style="width:100px;" /></td>
+                        <td><input type="text" id="paid_amount_2" name="paid_amount_2" style="width:100px;" /></td>
+                    <tr>
+                        <td>票期 :</td>
+                        <td><input type="text" id="payment_date_cash" name="payment_date_cash" style="width:100px;" /></td>
+                        <td><input type="text" id="payment_date_1" name="payment_date_1" style="width:100px;" /></td>
+                        <td><input type="text" id="payment_date_2" name="payment_date_2" style="width:100px;" /></td>
+</table>
+            </div>
+        </div>
+        <div class="modal-footer" >
+        </div>
+    </form>
+</div>
+
+
+
+

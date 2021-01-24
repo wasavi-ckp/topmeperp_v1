@@ -1,0 +1,53 @@
+﻿<!-- Modal content-->
+<div class="modal-content">
+    <form id="formAddBankLoan" name="formAddBankLoan" action="addBankLoan" method="post">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">貸款帳戶資料</h4>
+        </div>
+        <div class="modal-body form-group">
+            <div class="row form-group"><div class="col-md-2">No</div><div class="col-md-8"><input type="text" id="BL_ID" name="BL_ID" class="form-control" readonly /></div></div>
+            <div class="row form-group"><div class="col-md-2">銀行代號</div><div class="col-md-8"><input type="text" id="BANK_ID" name="BANK_ID" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-sm-2">銀行名稱</div><div class="col-md-8"><input type="text" id="BANK_NAME" name="BANK_NAME" class="form-control" /></div></div>
+            <!--
+                <div class="row form-group"><div class="col-md-2">分行名稱</div><div class="col-md-8"><input type="text" id="BRANCH_NAME" name="BRANCH_NAME" class="form-control" /></div></div>
+             -->
+            <div class="row form-group"><div class="col-md-2">帳戶名稱</div><div class="col-md-8"><input type="text" id="ACCOUNT_NAME" name="ACCOUNT_NAME" class="form-control" /></div></div>
+            <div class="row form-group">
+                <div class="col-md-2">專案名稱</div><div class="col-md-8">
+                    @Html.DropDownList("plans", null, String.Empty, new { @class = "form-control" })
+                </div>
+            </div>
+            <!--
+                 <div class="row form-group"><div class="col-md-2">帳號</div><div class="col-md-8"><input type="text" id="ACCOUNT_NO" name="ACCOUNT_NO" class="form-control" /></div></div>
+            -->
+            <div class="row form-group">
+                <div class="col-md-2">貸款期間</div>
+                <div class="col-md-4">
+                    <div id="datetimepicker1" class="input-append date">
+                        起: <input data-format="yyyy/MM/dd" type="text" id="START_DATE" name="START_DATE" class="form-control" />
+                        <span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div id="datetimepicker1" class="input-append date">
+                        迄:<input data-format="yyyy/MM/dd" type="text" id="DUE_DATE" name="DUE_DATE" class="form-control" />
+                        <span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group"><div class="col-md-2">期數</div><div class="col-md-8"><input type="text" id="PERIOD_COUNT" name="PERIOD_COUNT" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-2">額度</div><div class="col-md-8"><input type="text" id="QUOTA" name="QUOTA" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-2">額度可循環</div><div class="col-md-8"><select class="form-control" id="QUOTA_RECYCLABLE" name="QUOTA_RECYCLABLE"><option value="N" selected>否</option><option value="Y">是</option></select></div></div>
+            <div class="row form-group"><div class="col-md-2">備註</div><div class="col-md-8"><input type="text" id="REMARK" name="REMARK" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-2">應收帳還款比率</div><div class="col-md-8"><input type="text" id="AR_PAYBACK_RATIO" name="AR_PAYBACK_RATIO" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-2">額度可動用比率</div><div class="col-md-8"><input type="text" id="QUOTA_AVAILABLE_RATIO" name="QUOTA_AVAILABLE_RATIO" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-2">請款金額達合約金額比率</div><div class="col-md-8"><input type="text" id="CUM_AR_RATIO" name="CUM_AR_RATIO" class="form-control" /></div></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+            <button type="submit" class="btn btn-default" data-dismiss="modal" id="submit">儲存</button>
+            <input type="hidden" name="flag" id="flag" value="" />
+        </div>
+    </form>
+</div>

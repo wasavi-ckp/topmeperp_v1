@@ -1,0 +1,61 @@
+﻿@model topmeperp.Models.CostChangeFormTask
+<table class="rwd-table">
+    <tr>
+        <th>
+            編號
+        </th>
+        <th>
+            標單項次
+        </th>
+        <th>
+            品項名稱
+        </th>
+        <th>
+            單位
+        </th>
+        <th>
+            異動數量
+        </th>
+        <th>
+            單價
+        </th>
+        <th>
+            成本
+        </th>
+        <th>
+            備註說明
+        </th>
+    </tr>
+    @foreach (var item in Model.lstItem)
+    {
+        <tr>
+            <td data-th="編號">
+                <button type="button" class="btn btn-default btn-xs" onclick="delChangeOrderItem('@item.ITEM_UID')">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color:red"></span>
+                </button>
+                <input type="hidden" id="uid" name="uid" size="3" value="@item.ITEM_UID" />@item.PLAN_ITEM_ID
+            </td>
+            <td data-th="標單項次">
+                @Html.DisplayFor(modelItem => item.ITEM_ID)
+            </td>
+            <td data-th="品項名稱">
+                <textarea id="itemdesc" name="itemdesc" cols="30">@item.ITEM_DESC</textarea>
+            </td>
+            <td data-th="單位">
+                <input type="text" id="itemunit" name="itemunit" size="2" value="@item.ITEM_UNIT" />
+            </td>
+            <td data-th="異動數量">
+                <input type="text" id="itemQty" name="itemQty" size="2" value="@String.Format("{0:n0}",item.ITEM_QUANTITY)" />
+            </td>
+            <td data-th="單價">
+                <input type="text" id="itemUnitPrice" name="itemUnitPrice" size="5" value="@String.Format("{0:0}",item.ITEM_UNIT_PRICE)" />
+            </td>
+            <td data-th="成本">
+                <input type="text" id="itemUnitCost" name="itemUnitCost" size="5" value="@String.Format("{0:0}",item.ITEM_UNIT_COST )" />
+            </td>
+            <td data-th="備註說明">
+                <input type="text" id="itemRemark" name="itemRemark" size="20" value="@item.ITEM_REMARK" />
+            </td>
+        </tr>
+    }
+</table>

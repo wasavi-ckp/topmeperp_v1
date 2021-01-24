@@ -1,0 +1,196 @@
+﻿<div class="row">
+    @{
+        //**前期加總金額*@
+        double t_payment_transfer = 0.0;
+        //@*外勞費用*@
+        double t_foreign = 0.0;
+        //@*小計*@
+        double t_sub_amount = 0.0;
+        //@*保留款*@
+        double t_retention = 0.0;
+        //@*預付款*@
+        double t_advance = 0.0;
+        //@*代付扣回*@
+        double t_refund = 0.0;
+        //@*其他扣款*@
+        double t_other = 0.0;
+        //@**應付金額*@
+        double t_payable = 0.0;
+        //  @**稅金*@
+        double t_tax = 0.0;
+        //前期實付金額
+        double t_payamount = 0.0;
+        double cur_payment = 0.0;
+        foreach (var um in Model.EstimationItems)
+        {
+            cur_payment = cur_payment + Convert.ToDouble(um.EstimationAmount);
+        }
+
+        //@**本期金額*@
+        //@*代付支出*@
+        double cur_payment_transfer = Convert.ToDouble(@Model.planEST.PAYMENT_TRANSFER ?? 0.0);
+        //@*外勞費用*@
+        double cur_foreign = Convert.ToDouble(@Model.planEST.FOREIGN_PAYMENT ?? 0.0);
+        //@*小計*@
+        double cur_sub_amount = cur_payment_transfer - cur_foreign;
+        //@*保留款*@
+        double cur_retention = Convert.ToDouble(@Model.planEST.RETENTION_PAYMENT ?? 0.0);
+        //@*預付款*@
+        double cur_advance = Convert.ToDouble(@Model.planEST.PREPAY_AMOUNT ?? 0.0);
+        //@*代付扣回*@
+        double cur_refund = Convert.ToDouble(@Model.planEST.PAYMENT_DEDUCTION ?? 0.0);
+        //@*其他扣款*@
+        double cur_other = Convert.ToDouble(@Model.planEST.OTHER_PAYMENT ?? 0.0);
+        //@**應付金額*@
+        double cur_payable = cur_other + cur_sub_amount - cur_retention - cur_advance - cur_refund - cur_other;
+        //  @**稅金*@
+        double cur_tax = Convert.ToDouble(@Model.planEST.TAX_AMOUNT ?? 0.0);
+        //實付金額
+        var cur_payamount = cur_payment + Convert.ToDouble(cur_payable + cur_tax);
+
+        //彙整金額
+        //@*代付支出*@
+        double total_payment_transfer = cur_payment_transfer+ t_payment_transfer;
+        //@*外勞費用*@
+        double total_foreign = t_foreign + cur_foreign;
+        //@*小計*@
+        double total_sub_amount = total_payment_transfer + total_foreign;
+        //@*保留款*@
+        double total_retention = t_retention + cur_retention;
+        //@*預付款*@
+        double total_advance = t_advance + cur_advance ;
+        //@*代付扣回*@
+        double total_refund = t_refund + cur_refund;
+        //@*其他扣款*@
+        double total_other = t_other + cur_other;
+        //@**應付金額*@
+        double total_payable = total_other + cur_sub_amount - cur_retention - cur_advance - cur_refund - cur_other;
+        //  @**稅金*@
+        double total_tax =  Convert.ToDouble(@Model.planEST.TAX_AMOUNT ?? 0.0);
+        //實付金額
+        double total_payamount = cur_payment + Convert.ToDouble(cur_payable + cur_tax);
+    }
+
+    @if (null != Model.planEST)
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr class="bg-info">
+                    <th>期別</th>
+                    <th>+ 代付支出<a href="/Estimation/RePayment?id=@Model.planEST.EST_FORM_ID&contractid=@Model.planEST.CONTRACT_ID" target="_blank">＠</a></th>
+                    <th>- 外勞扣款</th>
+                    <th>= 小計</th>
+                    <th>- 保留款 <input type="text" id="retention" name="retention" value="@Model.contractPaymentTerms.PAYMENT_RETENTION_RATIO" readonly="readonly" style="width:60px;" />%</th>
+                    <th>- 預付款<a href="/Estimation/AdvancePayment?id=@Model.planEST.EST_FORM_ID&contractid=@Model.planEST.CONTRACT_ID" target="_blank">＠</a></th>
+                    <th>- 代付扣回<a href="/Estimation/Refund?id=@Model.planEST.EST_FORM_ID&contractid=@Model.planEST.CONTRACT_ID" target="_blank">＠</a></th>
+                    <th>- 其他扣款<a href="/Estimation/OtherPayment?id=@Model.planEST.EST_FORM_ID&contractid=@Model.planEST.CONTRACT_ID" target="_blank" id="otherPay">＠</a></th>
+                    <th>= 應付金額</th>
+                    <th>+ 營業稅</th>
+                    <th>= 實付金額</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>前期累計</td>
+                    <td>
+                        @t_payment_transfer
+                    </td>
+                    <td>
+                        @t_foreign
+                    </td>
+                    <td>
+                        @t_sub_amount
+                    </td>
+                    <td>
+                        @t_retention
+                    </td>
+                    <td>
+                        @t_advance
+                    </td>
+                    <td>
+                        @t_refund
+                    </td>
+                    <td>
+                        @t_other
+                    </td>
+                    <td>
+                        @t_payable
+                    <td>
+                        @t_tax
+                    </td>
+                    <td>
+                        @t_payamount
+                    </td>
+                </tr>
+                <tr>
+                    <td>本期金額</td>
+                    <!--代付支出 -->
+                    <td><input type="text" id="t_repayment" name="t_repayment" value="@String.Format("{0:N2}",cur_payment_transfer)" style="width:80px;" /></td>
+                    <!--外勞費用(現在不用)-->
+                    <td><input type="text" id="t_foreign" name="t_foreign" value="@String.Format("{0:N2}",cur_foreign)" style="width:80px;" /></td>
+                    <!--小計-->
+                    <td><input type="text" id="sub_amount" name="sub_amount" value="@String.Format("{0:N2}", cur_sub_amount)" style="width:80px;" /></td>
+                    <!--保留款 須由合約在計算-->
+                    <td><input type="text" id="t_retention" name="t_retention" value="@String.Format("{0:N2}", cur_retention)" style="width:80px;" /></td>
+                    <!--預付款-->
+                    <td><input type="text" id="t_advance" name="t_advance" value="@String.Format("{0:N2}", cur_advance)" style="width:80px;" /></td>
+                    <!--代付扣回-->
+                    <td><input type="text" id="t_refund" name="t_refund" value="@String.Format("{0:N2}", cur_refund)" readonly="readonly" style="width:80px;" /></td>
+                    <!--其他扣款-->
+                    <td><input type="text" id="t_other" name="t_other" value="@String.Format("{0:N2}", cur_other)" readonly="readonly" style="width:80px;" /></td>
+                    <!-- 應付金額 需合計-->
+                    <td><input type="text" id="payable_amount" name="payable_amount" value="@String.Format("{0:N2}", cur_payable)" readonly="readonly" style="width:80px;" /></td>
+                    <!-- 營業稅-->
+                    <td><input type="text" id="tax_amount" name="tax_amount" value="@String.Format("{0:N2}", cur_tax)" readonly="readonly" style="width:80px;" /></td>
+                    <!--實付金額 需合計-->
+                    <td><input type="text" id="paid_amount" name="paid_amount" value="@String.Format("{0:N2}", cur_payamount)" style="width:80px;" /></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>累計金額</td>
+                    <td>
+                        <!--代付支出-->
+                        @String.Format("{0:N2}", total_payment_transfer)
+                    </td>
+                    <td>
+                        <!--外勞扣款-->
+                        @String.Format("{0:N2}", total_foreign)
+                    </td>
+                    <td>
+                        <!--小計-->
+                        @String.Format("{0:N2}", total_sub_amount)
+                    </td>
+                    <td>
+                        <!--保留款 依據合約每期扣除 一定比例-->
+                        @String.Format("{0:N2}", total_retention)
+                    </td>
+                    <td>
+                        <!--預付款 依據合約每期扣除預付款 一定比例--->
+                        @String.Format("{0:N2}", total_advance)
+                    </td>
+                    <td>
+                        <!--- 代付扣回-->
+                        @String.Format("{0:N2}", total_refund)
+                    </td>
+                    <td>
+                        <!--其他扣款 彙整其他扣款資料-->
+                        @String.Format("{0:N2}", total_other)
+                    </td>
+                    <td>
+                        <!--應付金額-->
+                        @String.Format("{0:N2}", total_payable)
+                    </td>
+                    <td>
+                        <!--營業稅-->
+                        @String.Format("{0:N2}", total_tax)
+                    </td>
+                    <td>
+                        <!--實付金額-->
+                        @String.Format("{0:N2}", total_payamount)
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    }
+</div>

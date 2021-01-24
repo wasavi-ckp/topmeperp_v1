@@ -1,0 +1,42 @@
+﻿@model IEnumerable<topmeperp.Models.TND_PROJECT>
+<table class="table">
+    <tr>
+        <th>
+            專案名稱
+        </th>
+        <th>
+            業主名稱
+        </th>
+        <th>
+            專案狀態
+        </th>
+        <th>
+            功能連結
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PROJECT_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OWNER_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.STATUS)
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PlanTask","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">申購作業</button>
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PurchaseRequisition","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">申購單查詢</button>
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PurchaseOrder","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">採購作業</button>
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PurchaseOrderIndex","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">採購單查詢</button>
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PurchaseOrderIndex","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">驗收作業</button>
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("InventoryIndex","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">庫存查詢/領料</button>
+               
+            </td>
+        </tr>
+    }
+
+</table>

@@ -1,0 +1,288 @@
+﻿@model topmeperp.Models.CashFlowModel
+@{
+    ViewBag.Title = "財務收支報表";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="container">
+    <h3 class="text-center" style="color:dodgerblue">協成水電工程事業有限公司 @string.Format("{0:yyyy/MM/dd}", ViewBag.today) 現金流報表</h3>
+</div>
+<button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PlanAccount", "CashFlow")'; ">修改帳款資料</button>
+<input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+
+<div class="container" style="padding-top:5px">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#divCashFlow">現金流量</a></li>
+        <li><a data-toggle="tab" href="#divProjectProfit">專案損益</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="divCashFlow" class="tab-pane fade in active">
+            <!--現金流量-->
+            <div class="container" id="cashFlow">
+                <table class="table">
+                    <tr>
+                        <th>
+                            日期
+                        </th>
+                        <th>
+                            銀行存款
+                        </th>
+                        <th>
+                            現金流入
+                        </th>
+                        <th>
+                            現金流出
+                        </th>
+                        <th>
+                            預估金流餘額
+                        </th>
+                        <th>
+                            貸款可用額度
+                        </th>
+                        <th>
+                            資金缺口
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model.finFlow)
+                    {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DATE_CASHFLOW)
+                        </td>
+                        @if (item.AMOUNT_BANK != 0)
+                {
+                        <td>
+                            <a href="/BankInfo/Index" target="_blank">@String.Format("{0:$#,##0.#}", item.AMOUNT_BANK)</a>
+                        </td>
+                            }
+                            else
+                            {
+                        <td>
+                            @String.Format("{0:$#,##0.#}", item.AMOUNT_BANK)
+                        </td>
+                            }
+                        @if (item.AMOUNT_INFLOW != 0)
+                {
+                        <td>
+                            <a href="/CashFlow/CashInFlowItem?paymentDate=@item.DATE_CASHFLOW&type=I" target="_blank">@String.Format("{0:$#,##0.#}", item.AMOUNT_INFLOW)</a>
+                        </td>
+                            }
+                            else
+                            {
+                        <td>
+                            @String.Format("{0:$#,##0.#}", item.AMOUNT_INFLOW)
+                        </td>
+                            }
+                        @if (item.AMOUNT_OUTFLOW != 0)
+                {
+                        <td>
+                            <a href="/CashFlow/CashOutFlowItem?paymentDate=@item.DATE_CASHFLOW&type=O" target="_blank">@String.Format("{0:$#,##0.#}", item.AMOUNT_OUTFLOW)</a>
+                        </td>
+                            }
+                            else
+                            {
+                        <td>
+                            @String.Format("{0:$#,##0.#}", item.AMOUNT_OUTFLOW)
+                        </td>
+                            }
+                        @if (item.CASH_RUNNING_TOTAL >= 0)
+                {
+                        <td>
+                            @String.Format("{0:$#,##0.#; ($#,##0.#)}", item.CASH_RUNNING_TOTAL)
+                        </td>
+                            }
+                            else
+                            {
+                        <td>
+                            <span style="font-weight:bold;color:crimson">
+                                @String.Format("{0:$#,##0.#; ($#,##0.#)}", item.CASH_RUNNING_TOTAL)
+                            </span>
+                        </td>
+                            }
+
+                        @if (item.LOAN_QUOTA_RUNNING_TOTAL >= 0)
+                {
+                        <td>
+                            @String.Format("{0:$#,##0.#; ($#,##0.#)}", item.LOAN_QUOTA_RUNNING_TOTAL)
+                        </td>
+                            }
+                            else
+                            {
+                        <td>
+                            <span style="font-weight:bold;color:crimson">
+                                @String.Format("{0:$#,##0.#; ($#,##0.#)}", item.LOAN_QUOTA_RUNNING_TOTAL)
+                            </span>
+                        </td>
+                            }
+                        @if (item.CASH_RUNNING_TOTAL + item.LOAN_QUOTA_RUNNING_TOTAL < 0)
+                {
+                        <td>
+                            <span style="font-weight:bold;color:crimson">
+                                @String.Format("{0:$#,##0.#; ($#,##0.#)}", item.CASH_RUNNING_TOTAL + item.LOAN_QUOTA_RUNNING_TOTAL)
+                            </span>
+                        </td>
+                            }
+                            else if (item.CASH_RUNNING_TOTAL < 0 && item.CASH_RUNNING_TOTAL + item.LOAN_QUOTA_RUNNING_TOTAL >= 0)
+                            {
+                        <td>缺口可用貸款補足</td>
+                            }
+                            else
+                            {
+                        <td>無</td>
+                            }
+                    </tr>
+                    }
+                </table>
+            </div>
+        </div>
+        <div id="divProjectProfit" class="tab-pane fade">
+            <!--專案損益-->
+            <div class="container" id="projectPrifit">
+                <table class="table table-bordered table-striped bg-info">
+                    <thead>
+                        <tr>
+                            <th style="width:200px;">
+                                專案名稱
+                            </th>
+                            <th style="width:100px;">
+                                合約金額
+                            </th>
+                            <th style="width:100px;">
+                                發包成本
+                            </th>
+                            <th style="width:80px;">
+                                工地預算
+                            </th>
+                            <th style="width:80px;">
+                                其他費用(維保費用、業務費、工地管理費)
+                            </th>
+                            <th style="width:100px;">
+                                累計實收
+                            </th>
+                            <th style="width:100px;">
+                                累計實支
+                            </th>
+                            <th>
+                                未請款
+                            </th>
+                            <th>
+                                未付金額
+                            </th>
+                            <th>
+                                專案毛利
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.finProfile)
+            {
+                        <tr>
+                            <td>
+                                @item.PROJECT_NAME
+                            </td>
+                            <td>
+                                @String.Format("{0:#,##0.#}", item.CONTRACT_AMOUNT)
+                            </td>
+                            <td>
+                                @String.Format("{0:#,##0.#}", item.TENDER_AMOUNT)
+                            </td>
+                            <td>
+                                @String.Format("{0:#,##0.#}", item.SITE_BUDGET_AMOUNT)
+                            </td>
+                            <td>
+                                @String.Format("{0:#,##0.#}", item.OTHER_COST)
+                            </td>
+                            <td>
+                                @String.Format("{0:#,##0.#}", item.AR_AMOUNT)
+                            </td>
+                            <td>實支</td>
+                            <td> 未請款</td>
+                            <td>未付金額</td>
+                            <td>毛利</td>
+                        </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr><td>Not Ready</td></tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- 公司損益-->
+    <div style="padding-top:30px;">
+        <h3 class="text-left">公司損益</h3>
+        <table class="table table-bordered">
+            <tr>
+                <th class="bg-danger" style="width:140px;">
+                    金流餘額
+                </th>
+                @if (@Model.finBalance.curCashFlow >= 0)
+            {
+                <th class="text-right" style="width:100px;">
+                    @String.Format("{0:#,##0.#; (#,##0.#);-}", @Model.finBalance.curCashFlow)
+                </th>
+                }
+                else
+                {
+                <th class="text-right" style="width:100px;">
+                    <span style="font-weight:bold;color:crimson">
+                        @String.Format("{0:#,##0.#; (#,##0.#);-}", @Model.finBalance.curCashFlow)
+                    </span>
+                </th>
+                }
+                <th class="bg-danger" style="width:110px;">
+                    專案毛利
+                </th>
+                @if (@Model.finBalance.futureCashFlow >= 0)
+            {
+                <th class="text-right" style="width:100px;">
+                    @String.Format("{0:#,##0.#; (#,##0.#);-}", @Model.finBalance.futureCashFlow)
+                </th>
+                }
+                else
+                {
+                <th class="text-right" style="width:100px;">
+                    <span style="font-weight:bold;color:crimson">
+                        @String.Format("{0:#,##0.#; (#,##0.#);-}", @Model.finBalance.futureCashFlow)
+                    </span>
+                </th>
+                }
+                <th class="bg-danger" style="width:100px;">
+                    其他資金
+                </th>
+                <th class="text-right" style="width:100px;">
+                    @String.Format("{0:#,##0.#}", @Model.finBalance.loanBalance_sup * -1)
+                </th>
+                <th class="bg-danger" style="width:70px;">
+                    借款
+                </th>
+                <th class="text-right" style="width:120px;">
+                    @String.Format("{0:#,##0.#}", @Model.finBalance.loanBalance_bank * -1)
+                </th>
+                <th class="bg-danger" style="width:100px;">
+                    公司費用
+                </th>
+                <th class="text-right" style="width:120px;">
+                    @String.Format("{0:#,##0.#}", @Model.finBalance.CompanyCost)
+                </th>
+                <th class="bg-danger" style="width:50px;">
+                    損益
+                </th>
+                @if (@Model.finBalance.cashFlowBal >= 0)
+            {
+                <th class="text-right" style="width:100px;">
+                    @String.Format("{0:#,##0.#; (#,##0.#);-}", @Model.finBalance.cashFlowBal)
+                </th>
+                }
+                else
+                {
+                <th class="text-right" style="width:100px;">
+                    <span style="font-weight:bold;color:crimson">
+                        @String.Format("{0:#,##0.#; (#,##0.#);-}", @Model.finBalance.cashFlowBal)
+                    </span>
+                </th>
+                }
+        </table>
+    </div>
+</div>

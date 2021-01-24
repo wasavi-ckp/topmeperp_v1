@@ -1,0 +1,183 @@
+﻿@model topmeperp.Models.PurchaseFormModel
+@{
+    ViewBag.Title = "發包合約管理-廠商報價";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+    decimal ContractAmount = 0.0M;
+}
+<!--標單項目搜尋區條件區域-->
+<div class="page-header">
+    <div class="row">
+        <h4>@ViewBag.Title</h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12 form-group">
+            <form name="FormSearch" id="FormSearch" action="" method="Post">
+                <div class="col-md-12 form-group">
+                    <label for="id" class="col-md-2" style="text-align:right">專案編號 :</label>
+                    <div id="id" class="col-md-2 text-left">
+                        <input id="projectid" name="projectid" type="text" value="@ViewBag.projectid" class="form-control" readonly="readonly" />
+                    </div>
+                    <label for="name" class="col-md-2" style="text-align:right">專案名稱 :</label>
+                    <div id="name" class="col-md-6 text-left">
+                        <input id="name" name="name" type="text" value="@ViewBag.projectName" class="form-control" readonly="readonly" />
+                    </div>
+                </div>
+                <div class="col-md-12 form-group">
+                    <label for="formname" class="col-md-2" style="text-align:right">詢價單名稱 :</label>
+                    <div class="col-md-3 text-left">
+                        <input id="formname" name="formname" type="text" value="@ViewBag.formName" class="form-control" />
+                    </div>
+                    <label for="type" class="col-md-1" style="text-align:right">種類 :</label>
+                    <div id="type" class="col-md-2 text-left">
+                        <select id="type" name="type" class="form-control">
+                            <option value="N">材料</option>
+                            <option value="Y">工資</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input id="Submit12" class="btn btn-info" type="submit" value="查詢" />
+                        <input type="button" class="btn btn-success" onclick="window.close();" value="關閉">
+                        <div id="divProcessing">
+                            <img src="~/Content/ajax-loader.gif">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--標單項目列表區域-->
+<div class="container-fluid">
+    @ViewBag.SearchResult
+
+    @if (null != Model)
+    {
+        if (null != Model.planFormFromSupplier)
+        {
+            <div class="row" style="padding-top:5px;">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>項次</th>
+                            <th>編號</th>
+                            <th>詢價單名稱</th>
+                            <th>供應商名稱</th>
+                            <th>總價</th>
+                            <th>種類</th>
+                            <th>狀態</th>
+                            <th>功能</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tbody>
+                        @foreach (var item in Model.planFormFromSupplier)
+                        {
+                            <tr>
+                                <th>@item.NO</th>
+                                <td><a href="/PurchaseForm/SinglePrjForm/@item.INQUIRY_FORM_ID" target="_blank">@item.INQUIRY_FORM_ID</a></td>
+                                <td>@item.FORM_NAME</td>
+                                <td>@item.SUPPLIER_ID</td>
+                                <td>
+                                    @if (item.TOTAL_PRICE == null)
+                                    {
+                                        <span style="font-weight:bold;color:dodgerblue">
+                                            @item.TOTAL_PRICE
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span style="font-weight:bold;color:dodgerblue">
+                                            @Convert.ToDecimal(item.TOTAL_PRICE).ToString("N0")
+                                            @{
+                                                ContractAmount = ContractAmount + Convert.ToDecimal(item.TOTAL_PRICE);
+                                            }
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        var type = "材料";
+                                        if (item.ISWAGE == "Y")
+                                        {
+                                            type = "工資";
+                                        }
+                                    }
+                                    @type
+                                </td>
+
+                                <td>@item.STATUS</td>
+                                <td>
+                                    <!--需要綁權限-->
+                                    <button class="btn-link" onclick="cancelContract('@item.INQUIRY_FORM_ID')">註銷</button>
+                                </td>
+                            </tr>
+                                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>總計:</td>
+                            <td style="font-weight:bold;color:dodgerblue">@ContractAmount.ToString("N0")</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>預算金額:</td>
+                            <td>
+                                @if (ViewBag.isWage != null && ViewBag.itemwagebudget != null)
+                                {
+                                    <span style="color: red; font-size: 18px;">@String.Format("{0:N0}", ViewBag.itemwagebudget)</span>
+                                }
+                                else if (ViewBag.itembudget != null && ViewBag.isWage == null)
+                                {
+                                    <span style="color: red; font-size: 18px;">@String.Format("{0:N0}", ViewBag.itembudget)</span>
+                                }
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+    }
+}
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+    function cancelContract(formid) {
+        //alert(formid);
+        alert($("#projectid").val());
+        var URLs = "/PurchaseForm/cancelContract";
+        $.ajax({
+            url: URLs,
+            data: { projectid: $("#projectid").val(), formid: formid },
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    }
+</script>
+
+

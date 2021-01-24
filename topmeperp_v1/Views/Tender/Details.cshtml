@@ -1,0 +1,310 @@
+﻿@model topmeperp.Models.TndProjectModels
+@{
+    ViewBag.Title = "備標作業-專案功能區";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+<div class="container">
+    <h1 style="padding-top:10px;">專案主頁</h1>
+    <div style="padding-top:10px;">
+        <div class="row">
+            <div class="col-md-1">
+                <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+            </div>
+            @if (((List<SYS_FUNCTION>)Session["functions"]).Exists(x => x.FUNCTION_ID == "F00004"))
+            {
+                <div class="col-md-2">
+                    <select id="selProjectStatus" name="selProjectStatus" class="selectpicker form-control">
+                        <option value="備標">備標</option>
+                        <option value="專案執行">專案執行</option>
+                        <option value="保固">保固</option>
+                        <option value="結案">結案</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <input type="button" class="btn btn-danger" onclick="closeProject()" value="變更">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div style="padding-top:10px;">
+    <h3 class="bg-info">備標作業功能區</h3>
+    <p style="padding-top:10px;">
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("ManageProjectItem","Tender", new { id = @Model.tndProject.PROJECT_ID})'; ">標單明細</button>
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Create","Tender", new { id = @Model.tndProject.PROJECT_ID})'; ">修改專案基本資料</button>
+        <!--<button type="button" class="btn btn-primary" @ViewBag.F00003 onclick="location.href='@Url.Action("Task","Tender", new { id = @Model.tndProject.PROJECT_ID})'; ">任務分派</button>-->
+
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("uploadMapInfo","Tender", new { id = @Model.tndProject.PROJECT_ID})'; ">上傳發包數量</button>
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("MapInfoMainPage","Tender", new { id = @Model.tndProject.PROJECT_ID})'; ">發包數量修改</button>
+
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("InquiryMainPage", "Inquiry", new { id = @Model.tndProject.PROJECT_ID})'; ">詢價單新增 / 廠商詢價單查詢 </button>
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("ComparisonMain","Inquiry", new { id = @Model.tndProject.PROJECT_ID})'; ">比價作業</button>
+
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Index","Wage", new { id = @Model.tndProject.PROJECT_ID})'; ">工率表下載</button>
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Index","Wage", new { id = @Model.tndProject.PROJECT_ID})'; ">工率表上傳</button>
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("costAnalysis","Inquiry", new { id = @Model.tndProject.PROJECT_ID})'; ">成本分析</button>
+    </p>
+</div><br />
+<div style="padding-bottom:5px;">
+    <h3 class="bg-info">得標標單上傳區</h3>
+    <div class="row" style="padding-top:10px;"> </div>
+    <input type="hidden" name="projectid" id="projectid" value="@ViewBag.projectid" />
+    @{
+        Html.RenderPartial("_uploadPlanItem");
+    }
+</div>
+<div>
+    <h3 class="bg-info">備標會辦單</h3>
+    <div style="padding-bottom:20px"></div>
+    <input id="btnPrint" type="button" class="btn btn-info" value="列印備標會辦單" onclick="javascript: printpage('printarea')" />
+    @if (null == ViewBag.taskAssign || ViewBag.taskAssign == "")
+    {
+        <input type="button" value="任務分派" class="btn btn-warning" id="saveForm" />
+    }
+    <div class="page-header" id="printarea">
+        <div class="col-md-12"><h2 class="text-center">協成水電工程事業有限公司</h2></div>
+        <div class="col-md-12"><h2 class="text-center">備標會辦單</h2></div>
+        <div class="row">
+            <div class="form-group">
+                <label for="" class="col-md-2 control-label" style="padding-top:30px;">收件日期:</label>
+                <div class="col-md-4" style="padding-top:30px;">
+                    @string.Format("{0:yyyy/MM/dd}", @Html.DisplayFor(m => m.tndProject.DUE_DATE))
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-md-2 control-label center-block" style="padding-top:20px;">預定報價完成日: </label>
+                <div class="col-md-4" style="padding-top:20px;">
+                    @if (null != Model.tndProject.SCHDL_OFFER_DATE)
+                    {
+                        @Html.DisplayFor(m => m.tndProject.SCHDL_OFFER_DATE, "LongDateTime")
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <label for="" class="col-md-2 control-label" style="padding-top:20px;">工程名稱:</label>
+            <div class="col-md-10" style="padding-top:20px;">
+                @Html.DisplayFor(m => m.tndProject.CONTRUCTION_NAME)
+            </div>
+        </div>
+        <div class="row">
+            <label for="" class="col-md-2 control-label" style="padding-top:20px;">標案地址:</label>
+            <div class="col-md-10" style="padding-top:20px;">
+                @Html.DisplayFor(m => m.tndProject.LOCATION)
+            </div>
+        </div>
+        <div class="row">
+            <label for="" class="col-md-2 control-label" style="padding-top:20px;">業主:</label>
+            <div class="col-md-10" style="padding-top:20px;">
+                @Html.DisplayFor(m => m.tndProject.OWNER_NAME)
+            </div>
+        </div>
+        <div class="row">
+            <label for="" class="col-md-2 control-label" style="padding-top:20px;">聯絡人:</label>
+            <div class="col-md-10" style="padding-top:20px;">
+                @Html.DisplayFor(m => m.tndProject.CONTACT_NAME)
+            </div>
+        </div>
+        <div class="row">
+            <label for="" class="col-md-2 control-label" style="padding-top:20px;">連絡電話:</label>
+            <div class="col-md-10" style="padding-top:20px;">
+                @Html.DisplayFor(m => m.tndProject.CONTACT_TEL)
+            </div>
+        </div>
+        <div class="row">
+            <label for="" class="col-md-2 control-label" style="padding-top:20px;">E-mail:</label>
+            <div class="col-md-10" style="padding-top:20px;">
+                @Html.DisplayFor(m => m.tndProject.CONTACT_EMAIL)
+            </div>
+        </div>
+        <div class="row" style="padding-top:15px;">
+            <form id="formTaskAssign" name="formTaskAssign" action="AddTaskAssign" method="post">
+                <input type="hidden" name="project_id" id="project_id" value="@ViewBag.projectid" />
+                @if (null != ViewBag.taskAssign && ViewBag.taskAssign != "")
+                {
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th Align="Center" , width="30px;">修改</th>
+                                <th>任務類型</th>
+                                <th>負責人員</th>
+                                <th>負責項目</th>
+                                <th>預定完成時間</th>
+                                <th>備註</th>
+                                <th>建立人</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.tndTaskAssign)
+                            {
+                                <tr>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-xs" onclick="getTaskItem('@item.TASK_ID')">
+                                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                        </button>
+                                    </td>
+                                    <td><input type="text" style="width:80px" id="task_type" name="task_type" value="@item.TASK_TYPE" /></td>
+                                    <td><input type="text" style="width:150px" id="user_id" name="user_id" value="@item.USER_ID" /></td>
+                                    <td><input type="text" style="width:500px" id="task_item" name="task_item" value="@item.TASK_ITEM" /></td>
+                                    @if (null != item.FINISH_DATE)
+                                    {
+                                        <td><input type="text" style="width:100px" id="finish_date" name="finish_date" value="@item.FINISH_DATE.Value.ToString("yyyy/MM/dd")" /></td>
+                                    }
+                                    else
+                                    {
+                                        <td><input type="text" style="width:100px" id="finish_date" name="finish_date" value="@item.FINISH_DATE" /></td>
+                                    }
+                                    <td><input type="text" style="width:350px" id="remark" name="remark" value="@item.REMARK" /></td>
+                                    <td><input type="text" style="width:100px" id="create_id" name="create_id" value="@item.CREATE_ID" /></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                }
+                else
+                {
+                    <table border="1">
+                        <tr>
+                            <td Align="Center" , width="70px;">任務類型</td>
+                            <td Align="Center">負責人員</td>
+                            <td Align="Center">負責項目</td>
+                            <td Align="Center">預定完成時間</td>
+                            <td Align="Center">備註</td>
+                        <tr>
+                            <td Align="Center" , width="70px;">主辦</td>
+                            <td><input type="text" id="leader_user_id" name="leader_user_id" /></td>
+                            <td><input type="text" style="width:500px" id="leader_task_item" name="leader_task_item" /></td>
+                            <td><input type="date" style="width:150px" id="leader_finish_date" name="leader_finish_date" /></td>
+                            <td><input type="text" style="width:350px" id="leader_remark" name="leader_remark" /></td>
+                        <tr>
+                            <td Align="Center" , width="70px;">成控</td>
+                            <td><input type="text" id="costing_user_id" name="costing_user_id" /></td>
+                            <td><input type="text" style="width:500px" id="costing_task_item" name="costing_task_item" /></td>
+                            <td><input type="date" style="width:150px" id="costing_finish_date" name="costing_finish_date" /></td>
+                            <td><input type="text" style="width:350px" id="costing_remark" name="costing_remark" /></td>
+                        <tr>
+                            <td Align="Center" , width="70px;">圖算</td>
+                            <td><input type="text" id="map_user_id" name="map_user_id" /></td>
+                            <td><input type="text" style="width:500px" id="map_task_item" name="map_task_item" /></td>
+                            <td><input type="date" style="width:150px" id="map_finish_date" name="map_finish_date" /></td>
+                            <td><input type="text" style="width:350px" id="map_remark" name="map_remark" /></td>
+                    </table>
+                }
+            </form>
+        </div>
+    </div>
+</div>
+<br />
+<div>
+    <div>
+        <h3 class="bg-info">檔案上傳區</h3>
+    </div>
+</div>
+</div>
+<!-- Modal :對話框-->
+<div class="modal fade" id="taskAssignItem" role="dialog">
+    <div class="modal-dialog" id="taskItemDialog">
+        <!-- Modal content-->
+        @Html.Partial("_TaskAssignItem");
+    </div>
+</div>
+<script language="javascript" type="text/javascript">
+    $(document).ready(function () {
+        $(function () {
+            $('#finishDate').datetimepicker({
+                format: 'YYYY/MM/DD',
+                locale: 'zh-tw'
+            });
+        });
+    })
+    function printpage(printarea) {
+        //var newstr = document.all.item(printarea).innerHTML;
+        var newstr = document.getElementById(printarea).innerHTML;
+        var oldstr = document.body.innerHTML;
+        document.body.innerHTML = newstr;
+        window.print();
+        document.body.innerHTML = oldstr;
+        return false;
+    }
+    function closeProject() {
+        var status = confirm('確定要變更專案狀態!!(@Model.tndProject.PROJECT_ID)');
+        if (status) {
+            var method = $("#selProjectStatus").val();
+            var URLs = "/Tender/closeProject?projectid=@Model.tndProject.PROJECT_ID&status=" + method;
+            console.log("URLs=" + URLs);
+            $.ajax({
+                url: URLs,
+                type: "POST",
+                dataType: 'text',
+                success: function (msg) {
+                    alert(msg);
+                    window.location = "/Tender/Index";
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError);
+                }
+            });
+        }
+    }
+    $("#saveForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("AddTaskAssign", "Tender")',
+            data: $('#formTaskAssign').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+    //由ID 取得資料填入表單
+    function getTaskItem(itemid) {
+        $.ajax({
+            url: "/Tender/getTaskItem",
+            type: "GET",
+            data: { itemid: itemid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#task_id').val(data.TASK_ID);
+                $('#taskType').val(data.TASK_TYPE);
+                $('#userId').val(data.USER_ID);
+                $('#taskItem').val(data.TASK_ITEM);
+                $('#finishDate').val(data.finishDate);
+                $('#taskRemark').val(data.REMARK);
+                $('#createId').val(data.CREATE_ID);
+                $('#createDate').val(data.createDate);
+                $('#taskAssignItem').modal('show'); // show bootstrap modal when complete loaded
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+
+    //更新task assign item
+    $("#refreshTask").click(function () {
+        var s = $('#formTaskItem').serialize();
+        var URLs = "/Tender/refreshTaskItem";
+        $.ajax({
+            url: URLs,
+            data: $('#formTaskItem').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>

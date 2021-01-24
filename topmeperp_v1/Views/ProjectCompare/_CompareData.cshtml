@@ -1,0 +1,88 @@
+﻿@model IEnumerable<topmeperp.Models.ProjectCompareData>
+@using (Html.BeginForm("Update", "ProjectCompare", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+       @ViewBag.Result
+       <table class="table">
+        <tr>
+            <th><input type="checkbox" name="CheckAll" id="CheckAll">全選</th>
+            <th>
+                主系統(來源)
+            </th>
+            <th>
+                次系統(來源)
+            </th>
+            <th>
+                項次(來源)
+            </th>
+            <th>
+                項目說明(來源)
+            </th>
+            <th>
+                單價
+            </th>
+            <th>
+                項次(目標)
+            </th>
+            <th>
+                (目標)資訊
+            </th>
+        </tr>
+        @if (null != Model)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @{ 
+                            string keyValue = item.SOURCE_PROJECT_ID + '|' + item.SOURCE_SYSTEM_MAIN + '|' + item.SOURCE_SYSTEM_SUB + '|' + item.SRC_UNIT_PRICE + '|' + item.TARGET_PROJECT_ID + '|' + item.SOURCE_ITEM_DESC.Replace(",","xyz"); }
+                        <input type="checkbox" id="chkItem" name="chkItem" value="@keyValue" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SOURCE_SYSTEM_MAIN )
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SOURCE_SYSTEM_SUB )
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SOURCE_ITEM_ID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SOURCE_ITEM_DESC)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SRC_UNIT_PRICE)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TARGET_ITEM_ID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TARGET_SYSTEM_MAIN)-
+                        @Html.DisplayFor(modelItem => item.TARGET_SYSTEM_SUB)-
+                        @Html.DisplayFor(modelItem => item.TARGET_ITEM_DESC)-
+                        @Html.DisplayFor(modelItem => item.TARGET_PROJECT_ID)
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+    <input type="submit" id="submit1" name="submit1" value="更新" class="btn btn-info" />
+}
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            $("#CheckAll").click(function () {
+                if ($("#CheckAll").prop("checked")) {
+                    $("input[name='chkItem']").prop("checked", true);
+                } else
+                    $("input[name='chkItem']").prop("checked", false);
+            });
+        });
+    </script>
+
+    <script language="javascript" type="text/javascript">
+        function GetCheckedValue(checkBoxName) {
+            return $('input:checkbox[name=' + checkBoxName + '][checked=true]').map(function () {
+                return $(this).val();
+            })
+              .get().join(',');
+        }
+    </script>

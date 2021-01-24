@@ -1,0 +1,126 @@
+﻿@using topmeperp.Models
+@model SUP_MATERIAL_RELATION
+@{
+    ViewBag.Title = "修改供應商九宮格";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="col-md-12">
+    <!-- Reg-Form new { enctype = "multipart/form-data" } -->
+    @using (Html.BeginForm("EditForTypeMain", "SupplierManage", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="row" style="padding-top:10px;">
+            <div class="col-md-12" style="padding-top:10px;">
+                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#typemainInfo" onclick="getTypeMain('@Model.RELATION_ID')">新增九宮格</button>
+                <h3>修改供應商九宮格</h3>
+            </div>
+            <div class="col-md-8" style="padding-top:20px;">
+                <div class="row ">
+                    <label class="col-md-2 control-label">供應商編號 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.SUPPLIER_ID, new { @class = "form-control", @readonly = "readonly" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">九宮格 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.TYPE_MAIN, new { @class = "form-control", @readonly = "readonly" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">序號 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.TYPE_SUB, new { @class = "form-control", @readonly = "readonly" })
+                        </label>
+                    </div>
+
+                    <label class="col-md-2 control-label">產品類別 : </label>
+                    <div class="col-md-10">
+                        <label class="input">
+                            @Html.TextBoxFor(m => m.SUPPLY_NOTE, new { @class = "form-control" })
+                        </label>
+                    </div>
+                    @if (ViewBag.stopdelivery != null)
+                    {
+                    <div class="col-md-12" style="padding-top:10px">
+                        <input type="checkbox" id="stopDelivery" name="stopDelivery" checked/>停止供貨
+                    </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-12" style="padding-top:10px">
+                            <input type="checkbox" value="Y" id="stopDelivery" name="stopDelivery" />停止供貨
+                        </div>
+                    }
+                    @Html.HiddenFor(m => m.RELATION_ID)
+                </div>
+            </div>
+            <div class="col-md-4 alert-info">@Html.Raw(ViewBag.result)</div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="" col-md-12">
+                <input type="submit" value="儲存" class="btn btn-default" />
+            </div>
+        </div>
+    }
+</div>
+<!-- Modal :對話框-->
+<div class="row" style="padding-top:10px;">
+    <div class="modal fade" id="typemainInfo" role="dialog">
+        <div class="modal-dialog" id="typemainInfoDialog">
+            <!-- Modal content-->
+            @Html.Partial("_AddTypeMain");
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //由ID 取得資料填入表單
+    function getTypeMain(relationid) {
+        //alert(userid);
+        $.ajax({
+            url: "/SupplierManage/getTypeMain",
+            type: "GET",
+            data: { relationid: relationid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#supplier_id').val(data.SUPPLIER_ID);
+                $('#type_main').val(data.TYPE_MAIN);
+                $('#type_sub').val(data.TYPE_SUB);
+                $('#supply_note').val(data.SUPPLY_NOTE);
+
+                $('#typemainInfo').modal('show'); // show bootstrap modal when complete loaded
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+
+</script>
+<script type="text/javascript">
+    $("#saveTypeMain").click(function () {
+        if ($("#type_main").val() == "") { alert("九宮格欄位不可空白，請輸入九宮格代碼!!"); return false; }
+        if ($("#type_sub").val() == "") { alert("序號欄位不可空白!!"); return false; }
+
+        var URLs = "/SupplierManage/AddTypeMain";
+        $.ajax({
+            url: URLs,
+            data: $('#formTypeMain').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                getTypeMain(relationid)
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>
+

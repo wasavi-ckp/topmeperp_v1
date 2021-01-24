@@ -1,0 +1,92 @@
+﻿<div class="container">
+    <div class="row">
+        <form id="Uploa4AlldForm" name="Uploa4AlldForm" action="/PurchaseForm/UploadInquiryAll" method="post" enctype="multipart/form-data">
+            <div class="col-md-2" style="padding-top:10px">
+                <label for="file">廠商報價單匯入:</label>
+                <input type="hidden" name="projectid" id="projectid" value="@ViewBag.projectid" />
+            </div>
+            <div class="col-md-3" style="padding-top:10px"><input type="file" name="file1" id="file1" /> </div>
+            <div class="col-md-3 pull-left" style="padding-top:10px">
+                <input id="btnUploadAllfile" name="btnUploadAllfile" type="submit" class="btn-primary" value="匯入檔案" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (null != Model.planFormFromSupplier)
+            {
+    <div class="row" style="padding-top:5px;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>項次</th>
+                    <th>編號</th>
+                    <th>詢價單名稱</th>
+                    <th>供應商名稱</th>
+                    <th>總價</th>
+                    <th>種類</th>
+                    <th>狀態</th>
+                    <th>選項連結</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tbody>
+                @foreach (var item in Model.planForm4All)
+                {
+                    <tr>
+                        <th>@item.NO</th>
+                        <td><a href="/PurchaseForm/SinglePrjForm?id=@item.INQUIRY_FORM_ID&IsWage=A" target="_blank">@item.INQUIRY_FORM_ID</a></td>
+                        <td>@item.FORM_NAME</td>
+                        <td>@item.SUPPLIER_ID</td>
+                        <td>
+                            @if (item.TOTAL_PRICE == null)
+                            {
+                                <span style="font-weight:bold;color:dodgerblue">
+                                    @item.TOTAL_PRICE
+                                </span>
+                            }
+                            else
+                            {
+                                <span style="font-weight:bold;color:dodgerblue">
+                                    @item.TOTAL_PRICE.ToString("N0")
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            含工帶料
+                        </td>
+                        <td>@item.STATUS</td>
+                        <td>
+                            <a href="/PurchaseForm/downLoadInquiryForm4All?formid=@item.INQUIRY_FORM_ID&isReal=Y" target="_blank">下載</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+<script type="text/javascript">
+    $(function () {
+        $("#Uploa4AlldForm").ajaxForm({
+            iframe: true,
+            dataType: "text",
+            beforeSubmit: function () {
+                var fileContent = $.trim($('#file1').val());
+                if (fileContent.length == 0) {
+                    alert('請選擇要上傳的檔案.');
+                    return false;
+                }
+                return true;
+            },
+            success: function (result) {
+                $('#Uploa4AlldForm').resetForm();
+                alert(result);
+                window.location.reload()
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                $('#Uploa4AlldForm').resetForm();
+                alert('檔案上傳錯誤.');
+            }
+        });
+    });
+</script>

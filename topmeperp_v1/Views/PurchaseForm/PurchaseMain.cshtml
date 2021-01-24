@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "發包選商列表 :";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+
+<h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>
+<input id="btnPrint" type="button" class="btn btn-info" value="列印發包選商表" onclick="javascript: printpage('printarea')" />
+<div class="row" id="printarea" style="padding-top:10px;">
+    <div>
+        <span id="JustPrint" style="color: blue; font-size: 20px;">專案名稱 : @ViewBag.projectName </span>
+    </div>
+    <div style="padding-bottom:30px;">
+        <span id="JustPrint" style="color: blue; font-size: 20px;">參與競標廠商資料表如下 : </span>
+    </div>
+    @if (ViewBag.itembudget != null && ViewBag.isWage == null)
+    {
+        <div style="padding-bottom:10px;">
+            <span style="color: black; font-size:large;">預算金額 :  </span><span style="border:2px red solid; padding:5px; color: red; font-size: 18px;">@String.Format("{0:N0}", ViewBag.itembudget)</span>
+        </div>
+    }
+    else if (ViewBag.itemwagebudget != null && ViewBag.isWage != null)
+    {
+        <div style="padding-bottom:10px;">
+            <span style="color: black; font-size:large;">預算金額 :  </span><span style="border:2px red solid; padding:5px; color: red; font-size: 18px;">@String.Format("{0:N0}", ViewBag.itemwagebudget)</span>
+        </div>
+    }
+    else
+    {
+    }
+    @ViewBag.SearchResult
+    @if (null != Model)
+            {
+                Html.RenderPartial("FormListForOffer");
+            }
+</div>
+<!--引進列印功能-->
+<script src="~/Scripts/topmep_selecComp.js"></script>
+

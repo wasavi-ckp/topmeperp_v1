@@ -1,0 +1,234 @@
+﻿@model topmeperp.Models.CostControlInfo
+@{
+    ViewBag.Title = "成本預算管制表";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>
+<div class="container">
+    <!--業主合約與追加減說明-->
+    <div class="row form-group">
+        <label class="col-sm-1 control-label">專案編號:</label>
+        <div class="col-sm-2">
+            <input class="form-control" type="text" id="projectId" name="projectId" value="@Model.Project.PROJECT_ID" readonly />
+        </div>
+        <label class="col-sm-1 control-label">專案名稱:</label>
+        <label class="col-sm-6 info"> @Model.Project.PROJECT_NAME </label>
+    </div>
+    @{
+        decimal? sum = 0M;
+        decimal? sumBudget = 0;
+        decimal? runSum = 0;
+        decimal? addSum = 0;
+        decimal? cutSum = 0;
+    }
+    <div class="row">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <td colspan="2">原合約金額</td>
+                    <td style="text-align:right">@String.Format("{0:n0}", Model.Revenue.PLAN_REVENUE)</td>
+                    <td>目前合約金額</td>
+                    <td colspan="2" style="text-align:right">@String.Format("{0:n0}", Model.Revenue.PLAN_REVENUE) </td>
+                    <td colspan="2">執行成本(A)+(B)</td>
+                </tr>
+                <tr>
+                    <th>預算編號</th>
+                    <th>業主</th>
+                    <th>工程項目</th>
+                    <th>原額約金額</th>
+                    <th>合約金額</th>
+                    <th>追加</th>
+                    <th>追減</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th></th>
+                    <th> @Model.Project.OWNER_NAME </th>
+                    <th> @Model.Project.CONTRUCTION_NAME  </th>
+                    <th style="text-align:right">@String.Format("{0:n0}", Model.Revenue.PLAN_REVENUE)</th>
+                    <th style="text-align:right">@String.Format("{0:n0}", Model.Revenue.PLAN_REVENUE)</th>
+                    @{
+                        runSum = Model.Revenue.PLAN_REVENUE;
+                    }
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                @foreach (var costChangeEvent in Model.lstCostChangeEvent)
+                {
+                    <tr>
+                        <td>
+                            <a href="/Plan/costChangeForm/@costChangeEvent.FORM_ID" target="_blank">
+                                @costChangeEvent.FORM_ID
+                            </a>
+                        </td>
+                        <td></td>
+                        <td> @costChangeEvent.REMARK </td>
+                        <td style="text-align:right">@String.Format("{0:n0}", costChangeEvent.TotalAmt)</td>
+                        @{
+                            runSum = runSum + costChangeEvent.RecognizeAmt;
+                            addSum = addSum + costChangeEvent.AddAmt;
+                            cutSum = cutSum + costChangeEvent.CutAmt;
+                        }
+                        <td style="text-align:right">@String.Format("{0:n0}", runSum)</td>
+                        <td style="text-align:right">@String.Format("{0:n0}", costChangeEvent.AddAmt)</td>
+                        <td style="text-align:right">@String.Format("{0:n0}", costChangeEvent.CutAmt)</td>
+                        <td style="text-align:right">@String.Format("{0:n0}", costChangeEvent.RecognizeAmt)</td>
+                    </tr>
+                            }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>合計(未稅)</th>
+                    <th style="text-align:right">@String.Format("{0:n0}", runSum)</th>
+                    <th style="text-align:right">@String.Format("{0:n0}", runSum)</th>
+                    <th style="text-align:right">@String.Format("{0:n0}", addSum)</th>
+                    <th style="text-align:right">@String.Format("{0:n0}", cutSum)</th>
+                    <th style="text-align:right">@String.Format("{0:n0}", 0)</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<div class="container">
+    <label class="col-sm-12 control-label">(A)直接成本</label>
+    <!--直接成本:發包廠商與金額-->
+    <div class="row">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>預算編號</th>
+                    <th>類型</th>
+                    <th>廠商名稱</th>
+                    <th>工程項目</th>
+                    <th>預定採購目標</th>
+                    <th>合約金額</th>
+                    <th>追加</th>
+                    <th>追減</th>
+                    <th>備註</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    sum = 0;
+                    sumBudget = 0;
+                }
+                @foreach (var directCost in Model.lstDirectCostItem)
+                {
+                    <tr>
+                        <td><a href='/PurchaseForm/SinglePrjForm/@directCost.CONTRACT_ID' target="_blank">@directCost.CONTRACT_ID</a></td>
+                        <td>@directCost.TYPE</td>
+                        <td> @directCost.SUPPLIER_ID</td>
+                        <td> @directCost.FORM_NAME</td>
+                        <td style="text-align:right"> @String.Format("{0:n0}", directCost.BUDGET)</td>
+                        <td style="text-align:right"> @String.Format("{0:n0}", directCost.MATERIAL_COST )</td>
+                        <td> 缺 </td>
+                        <td> 缺 </td>
+                        <td> 缺</td>
+                    </tr>
+                    sum = sum + directCost.MATERIAL_COST;
+                    sumBudget = sumBudget + directCost.BUDGET;
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>合計(未稅)</td>
+                    <td style="text-align:right"> @String.Format("{0:n0}", sumBudget)</td>
+                    <td style="text-align:right"> @String.Format("{0:n0}", sum)</td>
+                    <td style="text-align:right"> @String.Format("{0:n0}", 0)</td>
+                    <td style="text-align:right"> @String.Format("{0:n0}", 0)</td>
+                    <td style="text-align:right"> @String.Format("{0:n0}", 0)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<div class="container">
+    <!--間接成本-->
+    <label class="col-sm-12 control-label">(B)間接成本<button type="button" class="btn btn-warning" onclick="createIndirectCost()">建立間接成本</button><button type="button" class="btn btn-warning" onclick="updateIndirectCost()">更新</button></label>
+    <div class="row">
+        <form id="FormindirectCost" name="FormindirectCost" method="post">
+            <table class="table table-bordered">
+                <thead></thead>
+                <tbody>
+                    @{
+                        sum = 0;
+                    }
+                    @foreach (var indirectCost in Model.lstIndirectCostItem)
+                    {
+                        <tr>
+                            <td> </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => indirectCost.FIELD_ID).ToString().Substring(0, 2)
+                                <input type="hidden" name="fieldId" id="fieldId" value="@indirectCost.FIELD_ID" />
+                            </td>
+                            <td> @indirectCost.FIELD_DESC </td>
+                            <td style="text-align:right">
+                                <input type="text" name="cost" id="cost" value="@String.Format("{0:n0}", indirectCost.COST)" />
+                            </td>
+                            <td style="text-align:right"> @String.Format("{0:n0}", indirectCost.COST)</td>
+                            <td><input type="text" name="note" id="note" value="@indirectCost.NOTE" /></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        sum = sum + indirectCost.COST;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>合計(未稅)</td>
+                        <td style="text-align:right">@String.Format("{0:n0}", sum)</td>
+                        <td style="text-align:right">@String.Format("{0:n0}", sum)</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+<script language="javascript" type="text/javascript">
+    function createIndirectCost() {
+        $.ajax({
+            url: "/Plan/createIndirectCost",
+            data: { projectId: $("#projectId").val() },
+            method: "POST",
+            dataType: "text",
+            success: function (result) {
+                alert(result);
+                window.location.reload();
+            }
+        })
+    }
+    function updateIndirectCost() {
+        // var hidCost;
+        $('input[name^="cost"]').each(function () {
+            //hidCost = hidCost + "costHid"
+            var newNo = $(this).val();
+            $(this).val(newNo.replace(/[,]+/g, ""));
+            //alert(newNo);
+        });
+        var data = $('#FormindirectCost').serialize() + "&projectId=" + $("#projectId").val();
+        console.log("updateIndirectCost:" + data);
+        $.ajax({
+            url: "/Plan/modifyIndirectCost",
+            data: data,
+            method: "POST",
+            dataType: "text",
+            success: function (result) {
+                alert(result);
+                window.location.reload();
+            }
+        })
+    }
+</script>

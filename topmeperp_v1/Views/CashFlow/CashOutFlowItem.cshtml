@@ -1,0 +1,142 @@
+﻿@model topmeperp.Models.CashFlowModel
+@{
+    ViewBag.Title = "支出明細";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="container">
+    <h2 class="text-center" style="padding-top:10px;"> 現金流出明細查詢</h2>
+</div>
+
+<form name="outFlowSearch" id="outFlowSearch" action="/CashFlow/SearchCashOutFlow" method="Post" class="form-inline">
+    <div class="row">
+        <div class='col-md-3 form-group'>
+            <label for="payment_date">查詢日期 : </label>
+            <input id="payment_date" name="payment_date" class="form-control" />
+        </div>
+        <div class='col-md-6 form-group'>
+            <label for="payment_during">日期查詢區間 : </label>
+            <input id="during_start" name="during_start" class="form-control" /> ~
+            <input id="during_end" name="during_end" class="form-control" />
+        </div>
+        <div class="col-md-2 pull-left">
+            <input id="Submit1" type="submit" class="btn btn-info" value="查詢" />
+            <input type="button" class="btn btn-success" onclick="closewin();" value="關閉">
+        </div>
+        <div id="divProcessing" class="col-md-1">
+            <img src="~/Content/ajax-loader.gif">
+        </div>
+    </div>
+</form>
+@{
+    Html.RenderPartial("_CashOutFlowItem");
+}
+
+<!-- Modal :對話框-->
+<div class="modal fade" id="planAcountItem" role="dialog">
+    <div class="modal-dialog" id="planAcountItemDialog">
+        <!-- Modal content-->
+        @ViewBag.SearchResult
+        @Html.Partial("_PlanAccountItem");
+    </div>
+</div>
+<script type="text/javascript">
+    function closewin() {
+        window.open('', '_self', ''); window.close();
+    }
+
+    //由ID 取得資料填入表單
+    function getPlanAccountItem(itemid) {
+        //alert(userid);
+        $.ajax({
+            url: "/CashFlow/getPlanAccountItem",
+            type: "GET",
+            data: { itemid: itemid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#project_name').val(data.PROJECT_NAME);
+                $('#plan_account_id').val(data.PLAN_ACCOUNT_ID);
+                $('#contract_id').val(data.CONTRACT_ID);
+                $('#type').val(data.ACCOUNT_TYPE);
+                $('#isdebit').val(data.ISDEBIT);
+                $('#create_id').val(data.CREATE_ID);
+                $('#check_no').val(data.CHECK_NO);
+                $('#account_form_id').val(data.ACCOUNT_FORM_ID);
+                $('#amount_payable').val(data.RECORDED_AMOUNT_PAYABLE);
+                $('#amount_paid').val(data.RECORDED_AMOUNT_PAID);
+                $('#date').val(data.RECORDED_DATE);
+                $('#project_id').val(data.PROJECT_ID);
+                $('#unRecordedFlag').val(data.STATUS);
+                $('#planAcountItem').modal('show'); // show bootstrap modal when complete loaded
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+
+    //更新plan acount item
+    $("#savePlanAccountItem").click(function () {
+        var s = $('#formAccountItem').serialize();
+        var URLs = "/CashFlow/updatePlanAccountItem";
+        $.ajax({
+            url: URLs,
+            data: $('#formAccountItem').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    //刪除有錯誤的plan acount item
+    $("#delPlanAccountItem").click(function () {
+        var s = $('#formAccountItem').serialize();
+        var URLs = "/CashFlow/delPlanAccountItem";
+        $.ajax({
+            url: URLs,
+            data: $('#formAccountItem').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+
+    $(function () {
+        $('#payment_date').datetimepicker({
+            format: 'YYYY/MM/DD',
+            locale: 'zh-tw'
+        });
+        $('#during_start').datetimepicker({
+            format: 'YYYY/MM/DD',
+            locale: 'zh-tw'
+        });
+        $('#during_end').datetimepicker({
+            format: 'YYYY/MM/DD',
+            locale: 'zh-tw'
+        });
+    });
+</script>
+
+
+

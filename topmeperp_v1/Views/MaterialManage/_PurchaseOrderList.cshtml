@@ -1,0 +1,44 @@
+﻿@model IEnumerable<topmeperp.Models.PRFunction>
+<div class="container">
+    <div class="row" style="padding-top:5px;">
+        <table class="table table-bordered">
+            <thead class="bg-info">
+                <tr>
+                    <th>項次</th>
+                    <th>申購單編號</th>
+                    <th>採購日期</th>
+                    <th>採購單編號</th>
+                    <th>供應商</th>
+                    <th>注意事項/特殊需求/備忘</th>
+                    <th>功能</th>
+                    <th>選項連結</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tbody>
+                @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>@item.NO</td>
+                        <td>@item.PARENT_PR_ID</td>
+                        <td>@item.CREATE_DATE</td>
+                        <td>
+                            <span style="font-weight:bold;color:dodgerblue">@item.PR_ID</span>
+                        </td>
+                        <td>@item.SUPPLIER_ID</td>
+                        <td>@item.KEY_NAME</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("SinglePO","MaterialManage", new { id = @item.PR_ID, prjid =@item.PROJECT_ID })'; ">檢視/修改採購單</button>
+                            <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Receipt","MaterialManage", new { id = @item.PR_ID,prjid =@item.PROJECT_ID })'; ">驗收</button>
+                            <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("ReceiptList","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PR_ID)})'; ">驗收明細</button>
+                        </td>
+                        <td>
+                            <a class="btn btn-link" href="/MaterialManage/downLoadMaterialForm?key=@item.PROJECT_ID-@item.PR_ID-@item.PARENT_PR_ID" target="_blank">下載</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

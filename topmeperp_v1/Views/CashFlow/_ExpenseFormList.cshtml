@@ -1,0 +1,55 @@
+﻿
+@model IEnumerable<topmeperp.Models.ExpenseFlowTask>
+<div class="container">
+    <div class="row" style="padding-top:5px;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    @if (ViewBag.forJournal == "會計立帳")
+                    {
+                        <th>專案名稱</th>
+                    }
+                    <th>編號</th>
+                    <th>費用發生年月</th>
+                    <th>費用項目名稱</th>
+                    <th>申請人</th>
+                    <th>受款人</th>
+                    <th>支付日期</th>
+                    <th>備註</th>
+                    <th>下一步</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tbody>
+                @foreach (var item in Model)
+            {
+                    <tr>
+                        @if (ViewBag.forJournal == "會計立帳")
+                        {
+                            if (item.PROJECT_ID != "")
+                            {
+
+                            }
+                            else
+                            {
+                                <td>公司營業費用</td>
+                            }
+                        }
+                        <td><a href="/CashFlow/SingleEXPForm/@item.EXP_FORM_ID" target="_blank">@item.EXP_FORM_ID</a></td>
+                        <td>@item.OCCURRED_YEAR / @item.OCCURRED_MONTH</td>
+                        <td>@item.REQ_DESC</td>
+                        <td>@item.REQ_USER_ID</td>
+                        <td>@item.PAYEE </td>
+                        <td>
+                            @(null==item.PAYMENT_DATE ? "" : item.PAYMENT_DATE.Value.ToString("yyyy/MM/dd"))                         
+                        </td>
+                        <td>@item.REJECT_DESC</td>
+                        <td>
+                            <a href='@(item.FORM_URL+"id="+item.EXP_FORM_ID)'>@item.NOTE</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

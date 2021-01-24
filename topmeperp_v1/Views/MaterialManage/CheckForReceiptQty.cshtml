@@ -1,0 +1,94 @@
+﻿@model IEnumerable<topmeperp.Models.PurchaseRequisition>
+
+@{
+    ViewBag.Title = "待驗收物料清單 : ";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>
+<div class="row">
+    <div class="col-md-4 form-group">
+        <label for="id">專案編號:</label><input id="id" name="id" type="text" value="@ViewBag.projectid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+    </div>
+    <div class="col-md-4">
+        <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+    </div>
+    <div class="col-md-4 form-group">
+        <label for="formid">申購單編號:</label><input id="formid" name="formid" type="text" value="@ViewBag.formid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+    </div>
+   
+</div>
+@ViewBag.SearchResult
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                No.
+            </th>
+            <th>
+                項次
+            </th>
+            <th>
+                項目說明
+            </th>
+            <th>
+                備註
+            </th>
+            <th>
+                單位
+            </th>
+            <th>
+                需求數量
+            </th>
+            <th>
+                驗收數量
+            </th>
+            <th>
+                待驗收數量
+            </th>
+            <th>
+                需求日期
+            </th>
+            <th>
+                供應商名稱
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @item.PLAN_ITEM_ID
+                </td>
+                <td>
+                    @item.ITEM_ID
+                </td>
+                <td>
+                    @item.ITEM_DESC
+                </td>
+                <td>
+                    @item.REMARK
+                </td>
+                <td>
+                    @item.ITEM_UNIT
+                </td>
+                <td>
+                    @item.NEED_QTY
+                </td>
+                <td>
+                    @item.RECEIPT_QTY
+                </td>
+                <td>
+                    @item.diffQty
+                </td>
+                <td>
+                    @item.NEED_DATE
+                </td>
+                <td>
+                    @item.SUPPLIER_ID
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

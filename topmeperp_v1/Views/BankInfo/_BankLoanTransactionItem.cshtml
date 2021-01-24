@@ -1,0 +1,29 @@
+﻿<!-- Modal content-->
+<div class="modal-content">
+    <form id="formLoanTransactionItem" name="formLoanTransactionItem" action="updateLoanTransactionItem" method="post">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">借款交易資料編輯</h4>
+        </div>
+        <div class="modal-body form-group">
+            <input type="hidden" id="blId" name="blId" />
+            <input type="hidden" id="transaction_type" name="transaction_type" />
+            <input type="hidden" id="Period" name="Period" />
+            <input type="hidden" id="create_date" name="create_date" />
+            <input type="hidden" id="create_id" name="create_id" />
+            <div class="row form-group"><div class="col-md-4">編號</div><div class="col-md-8"><input type="text" id="tid" name="tid" class="form-control" readonly /></div></div>
+            <div id="debit_amt"class="row form-group"><div class="col-md-4">還款金額</div><div class="col-md-8"><input type="text" id="payback_amt" name="payback_amt" class="form-control" /></div></div>
+            <div id="debit_date"class="row form-group"><div class="col-md-4">日期</div><div class="col-md-8"><input type="text" id="payback_date" name="payback_date" class="form-control" /></div></div>
+            <div id="credit_amt"class="row form-group"><div class="col-md-4">借款金額</div><div class="col-md-8"><input type="text" id="amount" name="amount" class="form-control" /></div></div>
+            <div id="credit_date"class="row form-group"><div class="col-md-4">日期</div><div class="col-md-8"><input type="text" id="event_date" name="event_date" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">備註</div><div class="col-md-8"><input type="text" id="remark" name="remark" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">業主計價單號</div><div class="col-md-8"><input type="text" id="formid" name="formid" class="form-control" /></div></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+            <button type="submit" class="btn btn-default" data-dismiss="modal" id="saveItem">儲存</button>
+        </div>
+    </form>
+</div>
+
+

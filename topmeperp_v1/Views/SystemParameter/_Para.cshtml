@@ -1,0 +1,30 @@
+﻿@model IEnumerable<topmeperp.Models.SYS_PARA>
+
+<table class="table">
+    <tr>
+        <th>
+            編號
+        </th>
+        <th>
+            名稱
+        </th>
+        <th>
+            值
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td data-th="編號">
+                <input type="text" class="form-control" name="paraId" id="paraId" value="@item.PARA_ID">
+            </td>
+            <td data-th="名稱">
+                <input type="text" class="form-control" name="valueField" id="valueField" value="@item.VALUE_FIELD">
+            </td>
+            <td data-th="值">
+                <input type="text" class="form-control" name="keyField" id="keyField" value="@item.KEY_FIELD">
+            </td>
+        </tr>
+    }
+</table>
+<button  class="btn btn-default"  type="button" onclick="updateSysPara()">更新</button>

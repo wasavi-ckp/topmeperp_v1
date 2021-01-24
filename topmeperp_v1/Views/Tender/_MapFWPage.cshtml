@@ -1,0 +1,54 @@
+﻿@model topmeperp.Models.MapInfoModels
+<div class="container-fluid">
+    <h3>消防水發包數量</h3><br/>
+    <h5>@ViewBag.Result3</h5>
+    @if (null != Model)
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>修改/刪除</th>
+                    <th>項次</th>
+                    <th>圖號</th>
+                    <th>棟別</th>
+                    <th>一次側位置</th>
+                    <th>一次側名稱</th>
+                    <th>二次側名稱</th>
+                    <th>二次側位置</th>
+                    <th>管材名稱</th>
+                    <th>管數/組</th>
+                    <th>管組數</th>
+                    <th>管長</th>
+                    <th>管總長</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.mapFW)
+                {
+                    <tr>
+                        <td>
+                            @Html.ActionLink("修改", "EditForFW", new { id = item.FW_ID }) |
+                            @Html.ActionLink("刪除", "Delete", new { id = item.FW_ID })
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.EXCEL_ITEM)</td>
+                        <td>@Html.DisplayFor(modelItem => item.MAP_NO)</td>
+                        <td>@Html.DisplayFor(modelItem => item.BUILDING_NO)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PRIMARY_SIDE)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PRIMARY_SIDE_NAME)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SECONDARY_SIDE)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SECONDARY_SIDE_NAME)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PROJECT_ITEM_ID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PIPE_CNT)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PIPE_SET)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PIPE_LENGTH)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PIPE_TOTAL_LENGTH)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p></p>
+    }
+</div>

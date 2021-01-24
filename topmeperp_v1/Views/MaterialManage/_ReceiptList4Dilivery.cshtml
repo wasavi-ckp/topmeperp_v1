@@ -1,0 +1,31 @@
+﻿@model IEnumerable<topmeperp.Models.PRFunction>
+<div class="container">
+    <div class="row" style="padding-top:5px;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>項次</th>
+                    <th>驗收單編號</th>
+                    <th>申購注意事項</th>
+                    <th>採購說明</th>
+                    <th>驗收備註</th>
+                    <th>功能鍵</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tbody>
+                @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>@item.NO</td>
+                        <td>@item.PR_ID</td>
+                        <td>@item.REMARK</td>
+                        <td>@item.MESSAGE</td>
+                        <td>@item.MEMO</td>
+                        <td><button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("ChangeToDelivery","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PR_ID), createDate = DateTime.Now})'; ">新增領料單</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

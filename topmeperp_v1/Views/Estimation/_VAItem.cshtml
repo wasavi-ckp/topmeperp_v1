@@ -1,0 +1,38 @@
+﻿<!-- Modal content-->
+<div class="modal-content">
+    <form id="formVAItem" name="formVAItem" action="/Estimation/addVAItem" method="post" enctype="multipart/form-data">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">業主計價資料</h4>
+        </div>
+        <div class="modal-body form-group">
+            <input type="hidden" id="projectid" name="projectid" value="@ViewBag.projectid" />
+            <input type="hidden" id="advanceRatio" name="advanceRatio" value="@ViewBag.advance" />
+            <input type="hidden" id="retentionRatio" name="retentionRatio" value="@ViewBag.retention" />
+            <input type="hidden" id="create_date" name="create_date"/>
+            <input type="hidden" id="create_id" name="create_id"/>
+            <input type="hidden" id="status" name="status"/>
+            <div id="no" class="row form-group"><div class="col-md-4">編號</div><div class="col-md-8"><input type="text" id="formid" name="formid" class="form-control" readonly /></div></div>
+            <div id="count" class="row form-group"><div class="col-md-4">請款次數</div><div class="col-md-8"><input type="text" id="va_count" name="va_count" class="form-control" readonly /></div></div>
+            <div class="row form-group"><div class="col-md-4">請款金額</div><div class="col-md-8"><input type="text" id="va_amount" name="va_amount" class="form-control"/></div></div>
+            <div class="row form-group"><div class="col-md-4">預付款金額</div><div class="col-md-8"><input type="text" id="advance_payment" name="advance_payment" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">其他扣款</div><div class="col-md-8"><input type="text" id="other_payment" name="other_payment" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">其他扣款說明</div><div class="col-md-8"><input type="text" id="other_payment_remark" name="other_payment_remark" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">代墊款</div><div class="col-md-8"><input type="text" id="repayment" name="repayment" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">備註</div><div class="col-md-8"><input type="text" id="remark" name="remark" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">稅率</div><div class="col-md-8"><input type="text" id="tax_ratio" name="tax_ratio" value="5" class="form-control" /></div></div>
+            <div id="taxAmount" class="row form-group"><div class="col-md-4">營業稅額</div><div class="col-md-8"><input type="text" id="tax_amount" name="tax_amount" class="form-control" /></div></div>
+            <div id="advanceRefund" class="row form-group"><div class="col-md-4">預付扣回</div><div class="col-md-8"><input type="text" id="advance_refund" name="advance_refund" class="form-control" /></div></div>
+            <div id="retention" class="row form-group"><div class="col-md-4">保留款</div><div class="col-md-8"><input type="text" id="retention_amount" name="retention_amount" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">發票日期</div><div class="col-md-8"><input type="text" id="invoice_date" name="invoice_date" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">發票號碼</div><div class="col-md-8"><input type="text" id="invoice_number" name="invoice_number" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">上傳計價檔案</div><input type="file" id ="file" name="file" />
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+            <input type="button" class="btn btn-default" data-dismiss="modal" value="儲存" onclick="saveVA()">
+        </div>
+    </form>
+</div>
+

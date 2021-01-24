@@ -1,0 +1,130 @@
+﻿@model IEnumerable<topmeperp.Models.RePaymentFunction>
+@{
+    ViewBag.Title = "代付扣回:明細";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular.min.js"></script>
+<div class="container">
+    <h4>@ViewBag.Title</h4>
+    <div ng-app="" ng-controller="MyCtrl">
+        <form id="refund_form" name="refund_form" class="form-inline" ng-submit="submit()">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="projectName">專案名稱:</label>
+                    <input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                </div>
+                <div class="col-md-4 form-group">
+                    <label for="formname">發包項目:</label>
+                    <input id="formname" name="formname" type="text" value="@ViewBag.formname" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                </div>
+                <div class="col-md-4 form-group">
+                    <label for="formid">估驗單編號:</label>
+                    <input id="formid" name="formid" type="text" value="@ViewBag.formid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                </div>
+                <input type="hidden" id="contractid" name="contractid" value="@ViewBag.contractid" />
+            </div>
+
+            <ng-form ng-repeat="key in keys" name="keyForm">
+                <span class="btn btn-info">
+                    <button type="button" class="close" ng-click="remove($index)">&times;</button>
+                </span>
+                請款單號:
+                <input type="text" id="est_id_refund" name="est_id_refund" ng-model="key.EST_FORM_ID_REFUND" readonly>
+                估驗次數:
+                <input type="text" id="est_count" name="est_count" ng-model="key.EST_COUNT_REFUND" readonly>
+                請款廠商:
+                <input type="text" id="COMPANY_NAME" ng-model="key.COMPANY_NAME" readonly>
+                應扣金額：
+                <input type="number" id="input_amount" name="input_amount" ng-model="key.AMOUNT" readonly>
+                <br />說明事項：
+                <input type="text" sid="input_reason" name="input_reason" ng-model="key.REASON" readonly>
+                <input type="hidden" id="contractid4refund" name="contractid4refund" value={{key.CONTRACT_ID_FOR_REFUND}}>
+                <br />
+            </ng-form>
+        </form>
+    </div>
+</div>
+<div style="padding-top : 10px">
+    <h4>合約目前代付已扣回明細 :</h4>
+</div>
+<div style="padding-top : 10px">
+    <table class="table">
+        <tr>
+            <th>
+                請款單號
+            </th>
+            <th>
+                估驗次數
+            </th>
+            <th>
+                請款廠商
+            </th>
+            <th>
+                已扣金額
+            </th>
+            <th>
+                說明事項
+            </th>
+            <th>
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.EST_FORM_ID_REFUND)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EST_COUNT_REFUND)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.COMPANY_NAME)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AMOUNT)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.REASON)
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<div class="container">
+    @if (ViewBag.status <= 30)
+    {
+        <input type="submit" value="儲存" class="btn btn-success" id="saveForm" />
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("ChooseSupplierOfRefund", "Estimation", new { id = @ViewBag.formid , contractid = @ViewBag.contractid })'; ">挑選廠商</button>
+    }
+    <input type="button" class="btn btn-default" value="關閉" onclick="window.close();" />
+</div>
+<script>
+    function MyCtrl($scope) {
+        $scope.keys = @Html.Raw(ViewData["items"]);
+        $scope.show = function () {
+            $scope.keys.push({ est_id_refund : $scope.key.EST_FORM_ID_REFUND, est_count: $scope.key.EST_COUNT_REFUND, supplier: $scope.key.COMPANY_NAME, amount: $scope.key.AMOUNT, reason: $scope.key.REASON });
+
+        };
+        $scope.remove = function (index) {
+            $scope.keys.splice(index, 1);
+        };
+    }
+    $("#saveForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateRefund", "Estimation")',
+            data: $('#refund_form').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+</script>

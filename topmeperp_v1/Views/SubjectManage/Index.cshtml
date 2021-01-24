@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = "財務科目管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--搜尋條件區域-->
+<div class="jumbotron">
+    <div class="row">
+        <h4>@ViewBag.Title</h4>
+        <div class="col-md-12">
+            <form name="FormSearchSubject" id="FormSearchSubject" action="Search" method="Post">
+                <div class="col-md-12">
+                    <div class="col-md-4">
+                        項目名稱:<input class="form-control" id="SubjectName" name="SubjectName" type="text" />
+                    </div>
+                    <div class="col-md-4">
+                        項目類別:@Html.DropDownList("categorys", null, String.Empty, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-1 pull-right" style="padding-top : 17px">
+                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#subjectItem" onclick="clearDialog()">新增科目</button>
+                    </div>
+                    <div class="col-md-2 pull-right" style="padding-top : 17px">
+                        <div id="divProcessing">
+                            <img src="~/Content/ajax-loader.gif">
+                        </div>
+                        <input id="Submit1" type="submit" class="btn btn-info" value="查詢" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--財務科目基本資料區域-->
+<div class="container-fluid">
+    @ViewBag.SearchResult
+    @if (null != Model)
+            {
+                Html.RenderPartial("_SubjectList");
+            }
+</div>
+<!-- Modal :對話框-->
+<div class="row" style="padding-top:10px;">
+    <div class="modal fade" id="subjectItem" role="dialog">
+        <div class="modal-dialog" id="subjectItemDialog">
+            <!-- Modal content-->
+            @Html.Partial("_Subject");
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+
+    $("#saveSubject").click(function () {
+        //Ajax 功能範例
+        if ($("#new_subject_id").val() == "" && $("#subject_id").val() == "") { alert("項目代碼欄位不可為空白!!"); return false; }
+        if ($("#subject_name").val() == "") { alert("項目名稱不可為空白!!"); return false; }
+        //特殊JQuery 選擇器
+        if ($("form[name='formSubject'] select[name='categorys']").val() == "") { var p = confirm("目前沒有設定項目的類別，若不設定，請按確認鍵!!"); if (p != true) return false; }
+        var URLs = "addSubject";
+        $.ajax({
+            url: URLs,
+            data: $('#formSubject').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+    //由ID 取得資料填入表單
+    function getSubjectItem(itemid) {
+        $.ajax({
+            url: "/SubjectManage/getSubjectItem",
+            type: "GET",
+            data: { itemid: itemid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#subject_id').val(data.FIN_SUBJECT_ID);
+                $('#subject_name').val(data.SUBJECT_NAME);
+                $('#formSubject #categorys').val(data.CATEGORY);
+                $('#subjectItem').modal('show'); // show bootstrap modal when complete loaded
+                $('#subjectid4new').hide();
+                $('#subjectid4now').show();
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+    function clearDialog() {
+        $('#subjectid4new').show();
+        $('#new_subject_id').val('');
+        $('#subject_name').val('');
+        $('#subjectid4now').hide();
+        //使用Jqery selector 選定對話框內的droplist
+        $('#subjectItem #categorys').val('');
+    }
+
+</script>
+

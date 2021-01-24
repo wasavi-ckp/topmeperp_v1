@@ -1,0 +1,50 @@
+﻿@model IEnumerable<topmeperp.Models.CostChangeForm>
+
+
+@ViewBag.SearchResult
+<table class="rwd-table">
+    <tr>
+        <th>
+            異動單號
+        </th>
+        <th>
+            異動原因
+        </th>
+        <th>
+            說明
+        </th>
+        <th>
+            財務處理
+        </th>
+        <th>
+            功能
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td data-th="異動單號">
+                <a href='costChangeForm/@item.FORM_ID' target="_blank"> @item.FORM_ID </a>
+            </td>
+            <td data-th="異動原因">
+                @item.Reason
+            </td>
+            <td data-th="說明">
+                @item.REMARK_ITEM
+                @item.REMARK_QTY
+                @item.REMARK_PRICE
+                @item.REMARK_OTHER
+            </td>
+            <td data-th="財務處理">
+                @item.Method
+            </td>
+            <td data-th="功能">
+                @if(item.INQUIRY_FORM_ID != null)
+                {
+                    <label>已轉詢價單</label>
+                }
+                <a href="createInquiryOrder?formId=@item.FORM_ID" class="btn btn-link" target="_blank" >建立詢價單</a>
+            </td>
+        </tr>
+    }
+</table>

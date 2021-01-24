@@ -1,0 +1,374 @@
+﻿@model IEnumerable<topmeperp.Models.RevenueFromOwner>
+@{
+    ViewBag.Title = "業主計價";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+<h4 style="padding-bottom:5px;">業主估驗計價 :</h4>
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-2 form-group">
+            <label for="id">專案編號:</label><input id="id" name="id" type="text" value="@ViewBag.projectid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+        </div>
+        <div class="col-md-3">
+            <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;width:250px;" readonly="readonly" />
+        </div>
+        <div class="col-md-1 form-group">
+            <label for="id">預付款%</label><input id="advance_ratio" name="advance_ratio" type="text" value="@String.Format("{0:#,##0.#}",ViewBag.advance)" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+        </div>
+        <div class="col-md-1 form-group">
+            <label for="id">保留款%</label><input id="retention_ratio" name="retention_ratio" type="text" value="@String.Format("{0:#,##0.#}",ViewBag.retention)" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+        </div>
+        <div class="col-md-2" style="padding-top:22px;">
+            <button type="button" class="btn btn-warning" onclick="location.href='@Url.Action("VAItem", "Estimation", new { id = ViewBag.projectid, formid = ViewBag.projectid })'">新增計價資料</button>
+            <!--<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#VAItemInfo" onclick="getVAItem('@ViewBag.projectid')">新增計價資料</button>-->
+        </div>
+        <div class="col-md-2" style="padding-top:22px;">
+            <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PlanAccount", "CashFlow")'; ">修改入帳資料</button>
+        </div>
+        <div class="col-md-1" style="padding-top:22px;">
+            <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+        </div>
+        <!--
+        <div class="col-md-1">
+            <div id="divProcessing">
+                <img src="~/Content/ajax-loader.gif">
+            </div>
+        </div>
+        <div class="col-md-1" style="padding-top:22px;">
+            <button class="btn btn-link" data-toggle="modal" data-target="#formUploadVA" type="button">上傳檔案</button>
+        </div>
+            -->
+    </div>
+</div>
+@if (ViewBag.VACount > 1)
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>合約金額</th>
+                <th>計價總額</th>
+                <th>計價餘額</th>
+                <th>預收款餘額</th>
+                <th>保留款總額</th>
+                <th>營業稅總額</th>
+                <th>應收總額</th>
+                <th>應收未收</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@String.Format("{0:#,##0.#}", ViewBag.contractAtm)</td>
+                <td>@String.Format("{0:#,##0.#}", ViewBag.VAAtm)</td>
+                <td>@String.Format("{0:#,##0.#}", ViewBag.VABalance)</td>
+                @if (ViewBag.advancePaymentBalance >= 0)
+                {
+                    <td>@String.Format("{0:#,##0.#}", ViewBag.advancePaymentBalance)</td>
+                }
+                else
+                {
+                    <td><span style="color: red; font-size: 15px;">@String.Format("{0:#,##0.#}", ViewBag.advancePaymentBalance)</span></td>
+                }
+                <td>@String.Format("{0:#,##0.#}", ViewBag.totalRetention)</td>
+                <td>@String.Format("{0:#,##0.#}", ViewBag.totalTax)</td>
+                <td>@String.Format("{0:#,##0.#}", ViewBag.AR)</td>
+                <td>@String.Format("{0:#,##0.#}", ViewBag.ARUnPaid)</td>
+            </tr>
+    </table>
+}
+@if (ViewBag.VACount > 1)
+{
+    <table class="table">
+        <tr>
+            <th>
+                No.
+            </th>
+            <th>
+                預收款(未稅)
+            </th>
+            <th>
+                請款金額(未稅)
+            </th>
+            <th>
+                -預收扣回(未稅)
+            </th>
+            <th>
+                -保留款(含稅)
+            </th>
+            <!--<th>
+                -其他扣款(未稅)
+            </th>
+            <th>
+                -代墊款(未稅)
+            </th>
+                 -->
+            <th>
+                -銷貨折讓(含稅)
+            </th>
+            <th>
+                +營業稅
+            </th>
+            <th>
+                應收金額
+            </th>
+            <th>
+                已入帳
+            </th>
+            <th>
+                修改
+            </th>
+            <th>
+                入帳
+            </th>
+            <th>
+                附檔
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+                {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NO)
+                </td>
+                <td>
+                    @String.Format("{0:#,##0.#}", item.ADVANCE_PAYMENT)
+                </td>
+                <td>
+                    @String.Format("{0:#,##0.#}", item.VALUATION_AMOUNT)
+                </td>
+                <td>
+                    @String.Format("{0:#,##0.#}", item.ADVANCE_PAYMENT_REFUND)
+                </td>
+                <td>
+                    @String.Format("{0:#,##0.#}", item.RETENTION_PAYMENT)
+                </td>
+                <td>
+                    @String.Format("{0:#,##0.#}", item.otherPay)
+                </td>
+                <!--<td>
+                    @String.Format("{0:#,##0.#}", item.REPAYMENT)
+                </td> -->
+                <td>
+                    @String.Format("{0:#,##0.#}", item.taxAmt)
+                </td>
+                <td>
+                    @String.Format("{0:#,##0.#}", item.AR)
+                </td>
+                @if (null == item.AR_PAID)
+                {
+                    <td></td>
+                }
+                else if (item.AR_UNPAID != 0)
+                {
+
+                    <td>
+                        <a href="/CashFlow/PlanAccountOfForm?formid=@item.VA_FORM_ID" target="_blank">查看</a>
+                    </td>
+                }
+                else
+                {
+                    <td><span style="color: blue; font-size: 15px;">✔</span></td>
+                }
+                <td>
+                    <button type="button" class="btn btn-info btn-xs" onclick="location.href='@Url.Action("VAItem", "Estimation", new { id = item.PROJECT_ID, formid = item.VA_FORM_ID })'">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-info btn-xs" onclick="getFormAR('@item.VA_FORM_ID')">
+                        <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+                    </button>
+                </td>
+                @if (null != item.FILE_UPLOAD_NAME && item.FILE_UPLOAD_NAME != "")
+                {
+                    <td><a href="/Estimation/VAFileList/@item.VA_FORM_ID" target="_blank">檢視</a></td>
+                }
+                else
+                {
+                    <td>無</td>
+                }
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <span style="color: blue; font-size: 25px;">目前尚無計價資料!</span>
+}
+<!-- Modal :修改計價項目對話框-->
+<div class="modal fade" id="VAItemInfo" role="dialog">
+    <div class="modal-dialog" id="VAItemDialog">
+        <!-- Modal content-->
+        @Html.Partial("_VAItem");
+    </div>
+</div>
+<!-- Modal :新增入帳票期對話框-->
+<div class="modal fade" id="paymentInfo" role="dialog">
+    <div class="modal-dialog" id="paymentDialog">
+        <!-- Modal content-->
+        @Html.Partial("_PaymentInfo");
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#divProcessing").hide();
+        $(function () {
+            $('#payment_date').datetimepicker({
+                format: 'YYYY/MM/DD',
+                locale: 'zh-tw'
+            });
+            $('#invoice_date').datetimepicker({
+                format: 'YYYY/MM/DD',
+                locale: 'zh-tw'
+            });
+        });
+    })
+
+    //由ITEM_NO 取得資料填入表單
+    //由ID 取得資料填入表單
+    function getVAItem(projectid) {
+        //alert(prjid);
+        $.ajax({
+            url: "/Estimation/getVAItem",
+            type: "GET",
+            data: { projectid: projectid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#projectid').val(data.PROJECT_ID);
+                $('#va_count').val(data.VACount);
+                $('#va_amount').val();
+                $('#advance_payment').val();
+                $('#other_payment').val();
+                $('#other_payment_remark').val();
+                $('#repayment').val();
+                $('#remark').val();
+                $('#invoice_number').val();
+                $('#invoice_date').val();
+                $('#VAItemInfo').modal('show'); // show bootstrap modal when complete loaded
+                $('#no').hide();
+                $('#taxAmount').hide();
+                $('#advanceRefund').hide();
+                $('#retention').hide();
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+
+    function saveVA() {
+        $("#formVAItem").submit(function (e) {
+            var formObj = $(this);
+            var formURL = formObj.attr("action");
+            var formData = new FormData(this);
+            //var URLs = "/Estimation/addVAItem";
+            $.ajax({
+                url: formURL,
+                type: 'POST',
+                data: formData,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                cache: false,
+                processData: false,
+                //url: URLs,
+                //data: $('#formVAItem').serialize(),
+                //type: "POST",
+                //dataType: 'text',
+                success: function (msg) {
+                    alert(msg);
+                    window.location.reload();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError);
+                }
+            });
+            e.preventDefault(); //Prevent Default action.
+            e.unbind();
+        });
+        $("#formVAItem").submit(); //Submit the form
+        // document.forms["formFileUpload"].submit();
+    }
+    //由ITEM_NO 取得資料填入表單
+    //由ID 取得資料填入表單
+    function getVADetail(formid) {
+        //alert(formid);
+        $.ajax({
+            url: "/Estimation/getVADetail",
+            type: "GET",
+            data: { formid: formid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#formid').val(data.VA_FORM_ID);
+                $('#va_amount').val(data.VALUATION_AMOUNT);
+                $('#advance_payment').val(data.ADVANCE_PAYMENT);
+                $('#other_payment').val(data.OTHER_PAYMENT);
+                $('#other_payment_remark').val(data.OTHER_PAYMENT_REMARK);
+                $('#repayment').val(data.REPAYMENT);
+                $('#remark').val(data.REMARK);
+                $('#tax_ratio').val(data.TAX_RATIO);
+                $('#tax_amount').val(data.TAX_AMOUNT);
+                $('#advance_refund').val(data.ADVANCE_PAYMENT_REFUND);
+                $('#retention_amount').val(data.RETENTION_PAYMENT);
+                $('#create_date').val(data.RECORDED_DATE);
+                $('#create_id').val(data.CREATE_ID);
+                $('#status').val(data.STATUS);
+                $('#invoice_number').val(data.INVOICE_NO);
+                $('#invoice_date').val(data.RECORDED_INVOICE_DATE);
+                $('#VAItemInfo').modal('show'); // show bootstrap modal when complete loaded
+                $('#count').hide();
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+
+    //由ITEM_NO 取得資料填入表單
+    //由ID 取得資料填入表單
+    function getFormAR(formid) {
+        //alert(formid);
+        $.ajax({
+            url: "/Estimation/getAROfForm",
+            type: "GET",
+            data: { formid: formid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#va_form_id').val(data.VA_FORM_ID);
+                $('#number').val(data.NO);
+                $('#payment_amount').val();
+                $('#fee').val();
+                $('#loan_remark').val();
+                $('#payment_date').val();
+                $('#check_no').val();
+                $('#paymentInfo').modal('show'); // show bootstrap modal when complete loaded
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+
+    $("#savePayment").click(function () {
+
+        var URLs = "/Estimation/addPaymentDate";
+        $.ajax({
+            url: URLs,
+            data: $('#formVAPayment').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>
+

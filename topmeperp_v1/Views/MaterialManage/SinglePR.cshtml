@@ -1,0 +1,380 @@
+﻿@model topmeperp.Models.PurchaseRequisitionDetail
+@{
+    ViewBag.Title = "專案執行-申購單 ";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="contailer">
+    <form id="formPR" name="formPR" action="RefreshPR" method="post" class="form-inline">
+        <div class="row  bg-info">
+            <div class="col-md-7"><h3 class="text-center">協成水電工程事業有限公司-申購單</h3></div>
+            <div class="col-md-5">
+                <label>
+                    狀態:
+                    @switch (Model.planPR.STATUS.ToString())
+                    {
+                        case "0":<label>草稿/退件</label>
+                            break;
+                        case "10": <label>已送審</label>
+                            break;
+                        case "20": <label>採購中</label>
+                            break;
+                        case "30": <label>待驗收</label>
+                            break;
+                        case "40": <label>結案</label>
+                            break;
+                    }
+                </label>
+                <label>申購日期: @Model.planPR.CREATE_DATE</label>
+                <input type="hidden" id="apply_date" name="apply_date" value="@Model.planPR.CREATE_DATE" />
+                <a href="~/MaterialManage/PurchaseRequisition/@Model.planPR.PROJECT_ID" class="btn btn-success">上一頁</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label for="pr_id">申購單號:@Model.planPR.PR_ID</label>
+            </div>
+            <div class="col-md-8">
+                <label>專案名稱:@Model.prj.PROJECT_NAME</label>
+            </div>
+        </div>
+        <div class="row" style="padding-top:10px">
+            <label class="col-md-2 control-label">收件人 : </label>
+            <div class="col-md-2" style="padding-bottom:10px">
+                <input type="text" class="form-control" name="recipient" id="recipient" value="@Model.planPR.RECIPIENT">
+                <input type="hidden" name="projectid" id="projectid" value="@Model.planPR.PROJECT_ID">
+                <input type="hidden" id="pr_id" name="pr_id" value="@Model.planPR.PR_ID" />
+                <input type="hidden" name="prjuid" id="prjuid" value="@Model.planPR.PRJ_UID">
+                <input type="hidden" name="status" id="status" value="@Model.planPR.STATUS">
+            </div>
+            <label class="col-md-2 control-label">申購說明 : </label>
+            <div class="col-md-6">
+                <input type="text" class="form-control" name="caution" id="caution" style="max-width:none; width:70%;" value="@Model.planPR.REMARK">
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-md-2 control-label">送貨地址 : </label>
+            <div class="col-md-10">
+                <input type="text" class="form-control" name="location" id="location" style="max-width:none; width:80%;" value="@Model.planPR.LOCATION">
+            </div>
+        </div>
+
+        <div class="contailer" style="page-break-before: always;padding-top:10px">
+            @if (@Model.planPR.STATUS == 0)
+            {
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPRItem" onclick="addPRFormItem()">新增物料品項</button>
+            }
+            <table class="table table-bordered">
+                <thead class="bg-info">
+                    <tr>
+                        <th>
+                            No.
+                        </th>
+                        <th>
+                            項次
+                        </th>
+                        <th>
+                            項目說明
+                        </th>
+                        <th>
+                            單位
+                        </th>
+                        <th>
+                            合約數量
+                        </th>
+                        <th>
+                            已訂購數量
+                        </th>
+                        <th>
+                            庫存數量
+                        </th>
+                        <th>
+                            申購數量
+                        </th>
+                        <th>
+                            需求日期
+                        </th>
+                        <th>
+                            備註
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.planPRItem)
+                    {
+
+                        <tr>
+                            <td>
+                                @Html.TextBox("pr_item_id", @item.PR_ITEM_ID, new { @class = "form-control", style = "width:60px", @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @item.ITEM_ID
+                            </td>
+                            <td>
+                                @item.ITEM_DESC
+                            </td>
+                            <td>
+                                @item.ITEM_UNIT
+                            </td>
+                            <td>
+                                @Html.TextBox("map_qty", item.MAP_QTY, new { @class = "form-control", style = "width:90px", Name = "map_qty", @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @Html.TextBox("cumulative_qty", item.CUMULATIVE_QTY, new { @class = "form-control", style = "width:90px", Name = "cumulative_qty", @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @item.INVENTORY_QTY
+                            </td>
+                            @if (Model.planPR.STATUS <= 10)
+                            {
+                                <td>
+                                    @Html.TextBox("need_qty", item.NEED_QTY, new { @class = "form-control", style = "width:90px", Name = "need_qty" })
+                                </td>
+                            }
+                            else
+                            {
+                                <td>@item.NEED_QTY</td>
+                            }
+                            @if (Model.planPR.STATUS <= 10)
+                            {
+                                <td>
+                                    <div class='col-md-12 date'>
+                                        @Html.TextBoxFor(m => item.NEED_DATE, new { @class = "form-control", @id = "need_date", Name = "date", style = "width:100px" })
+                                    </div>
+
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @item.NEED_DATE
+                                </td>
+                            }
+                            @if (Model.planPR.STATUS <= 10)
+                            {
+                                <td>
+                                    @Html.TextBox("remark", item.REMARK, new { @class = "form-control", style = "width:300px" })
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @item.REMARK
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12" style="padding-bottom:20px;">
+                <div class="col-md-6">
+                    注意事項:<textarea class="form-control" rows="5" id="memo" name="memo" style="width:90%">@Model.planPR.MEMO</textarea>
+                </div>
+
+            @if (Model.planPR.STATUS == 10)
+            {
+                <div class="col-md-6">
+                    退件說明:<textarea class="form-control" rows="5" id="message" name="message" style="width:90%">@Model.planPR.MESSAGE</textarea>
+                </div>
+            }
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="" col-md-12">
+        @if (Model.planPR.STATUS == 0)
+        {
+            <input type="button" value="修改" class="btn btn-default" id="updatePR" />
+            <input type="button" value="申購" class="btn btn-warning" id="addPR" />
+            <input type="button" value="刪除" class="btn btn-danger" id="delPR" />
+        }
+        @if (Model.planPR.STATUS == 10)
+        {
+            <input type="button" value="退件" class="btn btn-warning" id="skipPR" />
+        }
+    </div>
+</div>
+
+<!--新增品項對話框-->
+<div class="modal fade" id="addPRItem" role="dialog">
+    <div class="modal-dialog" id="addPRItem">
+        <div class="modal-content">
+            <form id="formAddPRItem" name="formAddPRItem" action="/MaterialManage/addPRFormItem" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">物料品項資料</h4>
+                </div>
+                <div class="modal-body">
+                    <!--異動品項基本屬性-->
+                    <input type="hidden" id="dia_form_id" name="dia_form_id" value="@Model.planPR.PR_ID" />
+                    <div class="form-horizontal">
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_item_desc">品項名稱<span class="label label-danger">*必填</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" id="dia_item_desc" name="dia_item_desc" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_item_remark">備註</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="dia_item_remark" name="dia_item_remark" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_item_unit">單位<span class="label label-danger">*必填</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" id="dia_item_unit" name="dia_item_unit" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_need_quantity">申購數量<span class="label label-danger">*必填</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" id="dia_need_quantity" name="dia_need_quantity" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4" for="dia_need_date">需求日期<span class="label label-danger">*必填</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" id="dia_need_date" name="dia_need_date" class="form-control" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+                        <button type="submit" class="btn btn-default" data-dismiss="modal" id="saveAddPRItem">儲存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script language="javascript" type="text/javascript">
+
+    $(function () {
+        var date = { index: new Date().getTime() };
+        $("input[id$=need_date]").datetimepicker({
+            format: 'YYYY/MM/DD',
+            locale: 'zh-tw'
+        });
+        $('#dia_need_date').datetimepicker({
+            format: 'YYYY/MM/DD',
+            locale: 'zh-tw'
+        });
+    });
+
+    //開啟對話框時清空欄位
+    function addPRFormItem() {
+        $('#dia_item_desc').val("");
+        $('#dia_item_unit').val("");
+        $('#dia_need_quantity').val("");
+        $('#dia_need_date').val("");
+        $('#dia_item_remark').val("");
+    }
+    //將對話框Form 送出
+    $("#saveAddPRItem").click(function () {
+        var s = $('#formAddPRItem').serialize();
+        var URLs = "/MaterialManage/addPRFormItem";
+        $.ajax({
+            url: URLs,
+            data: $('#formAddPRItem').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    $("#updatePR").click(function () {
+        $.ajax({
+            url: '@Url.Action("RefreshPR", "MaterialManage")',
+            data: $('#formPR').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+    $("#skipPR").click(function () {
+        if ($("#message").val() == "") {
+            alert("退件不處理說明不可空白，請輸入原因!");
+            return false;
+        }
+        $.ajax({
+            url: '@Url.Action("changePRStatus", "MaterialManage")',
+            data: $('#formPR').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.history.go(-1);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+    $("#addPR").click(function () {
+        var boolOver = false;
+        $('table > tbody > tr').each(function () {
+            var map = 0;
+            var need = 0;
+            var cumulative = 0;
+            map = parseInt($.trim($(this).find("#map_qty").val())); //抓取每筆記錄圖算數量的值
+            need = parseInt($.trim($(this).find("#need_qty").val()));//抓取每筆記錄申購數量的值
+            cumulative_qty = parseInt($.trim($(this).find("#cumulative_qty").val()));//抓取每筆記錄累計採購數量的值
+
+            if (parseInt(need) + parseInt(cumulative) > parseInt(map)) {
+                boolOver = true;
+            }
+
+        });
+        if (boolOver == true) {
+            var r = confirm("總申購量大於發包數量，請確認您要申購的數量，若無誤請按下確定！");
+            if (r != true) return false;
+        }
+
+        $.ajax({
+            url: '@Url.Action("CreatePR", "MaterialManage")',
+            data: $('#formPR').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.href = "PurchaseRequisition/@Model.planPR.PROJECT_ID";
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    $("#delPR").click(function () {
+        var r = confirm("您確定要刪除此申購單！");
+        if (r != true) return false;
+        $.ajax({
+            url: '@Url.Action("delPR", "MaterialManage")',
+            data: $('#formPR').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                window.location.replace(msg);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>

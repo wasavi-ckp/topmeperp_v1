@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "物料管理-專案清單";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--專案執行表頭-->
+<div class="container">
+    <h1 style="padding-top:10px;">物料管理 : </h1>
+</div>
+<div style="padding-bottom:30px;"></div>
+
+<!--專案列表區域-->
+<div class="container">
+    @ViewBag.SearchResult
+    @if (null != Model)
+    {
+        Html.RenderPartial("ProjectList");
+    }
+</div>

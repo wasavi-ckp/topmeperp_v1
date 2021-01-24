@@ -1,0 +1,115 @@
+﻿@model IEnumerable<topmeperp.Models.BankLoanInfoExt>
+@{
+    ViewBag.Title = "財務管理-其他財務管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--直接顯示廠商借支-->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 form-group">
+            <form name="formUpdateBankAccount" id="formUpdateBankAccount" action="updateBankAccount" method="Post">
+                <!--工具列-->
+                <div class="row">
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#bankLoanInfo">新增</button>
+                </div>
+                <div class="container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>項目名稱</th>
+                                <th>專案名稱</th>
+                                <th>借款小計</th>
+                                <th>還款小計</th>
+                                <th>結餘</th>
+                                <th>備註</th>
+                                <th>修改日期</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (null != Model)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="#" onclick="editBankLoan('@item.BL_ID')"> @item.BL_ID</a>
+                                            <input type="hidden" id="BL_ID" name="BL_ID" value="@item.BL_ID" />
+                                        </td>
+                                        <td><a href="/BankInfo/BankLoanTransaction?BL_ID=@item.BL_ID&IS_SUPPLIER=@item.IS_SUPPLIER">@item.BANK_NAME</a></td>
+                                        <td>@item.PROJECT_NAME</td>
+                                        <td>
+                                            @String.Format("{0:$#,##0.#; (#,##0.#);0}", item.eventAmt)
+                                        </td>
+                                        <td>
+                                            @String.Format("{0:$#,##0.#; (#,##0.#);0}", item.paybackAmt)
+                                        </td>
+                                        <td>
+                                            @String.Format("{0:$#,##0.#; (#,##0.#);0}", item.eventAmt - item.paybackAmt)
+                                        </td>
+                                        <td>@item.REMARK</td>
+                                        <td>@item.MODIFY_DATE</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal :對話框-->
+<div class="modal fade" id="bankLoanInfo" role="dialog">
+    <div class="modal-dialog" id="bankLoanInfoDialog">
+        <!-- Modal content-->
+        @Html.Partial("_SupplierLoanInfo");
+    </div>
+</div>
+<script type="text/javascript">
+    //管理借還款資料
+    $("#submit").click(function () {
+        //alert("submit click!!");
+        var s = $('#formAddSupplierLoan').serialize();
+        var URLs = "/BankInfo/addSupplierLoan";
+        $.ajax({
+            url: URLs,
+            data: s,
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    function editBankLoan(id) {
+        $.ajax({
+            url: "getBasicInfo",
+            type: "GET",
+            data: { id: id },
+            dataType: "JSON",
+            success: function (data) {
+                $('#formAddSupplierLoan #BL_ID').val(data.BL_ID);
+                $('#BANK_NAME').val(data.BANK_NAME);
+                $('#ACCOUNT_NAME').val(data.ACCOUNT_NAME);
+                //使用Jqery selector 選定對話框內的droplist
+                $('#formAddSupplierLoan #plans').val(data.PROJECT_ID);
+                $('#REMARK').val(data.REMARK);
+
+                $('#bankLoanInfo').modal('show'); // show bootstrap modal when complete loaded
+                $('.modal-title').text('編輯其他帳務資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+</script>
+

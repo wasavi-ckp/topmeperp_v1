@@ -1,0 +1,161 @@
+﻿@model IEnumerable<topmeperp.Models.BankLoanInfoExt>
+@{
+    ViewBag.Title = "財務管理-貸款管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--直接顯示貸款-->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 form-group">
+            <form name="formUpdateBankAccount" id="formUpdateBankAccount" action="updateBankAccount" method="Post">
+                <!--工具列-->
+                <div class="row">
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#bankLoanInfo">新增</button>
+                </div>
+                <div class="container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>明細</th>
+                                <th>銀行代號</th>
+                                <th>銀行名稱</th>
+                                <th>帳戶名稱</th>
+                                <th colspan="2" style="text-align:center">貸款期間</th>
+                                <th>額度</th>
+                                <th>可用額度</th>
+                                <th>期數</th>
+                                <th style="text-align:center">額度可動用比率%</th>
+                                <th style="text-align:center">還款率%</th>
+                                <th style="text-align:center">請款達成率%</th>
+                                <th>專案名稱</th>
+                                <th>備註</th>
+                                <th>修改日期</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="#" onclick="editBankLoan('@item.BL_ID')"> @item.BL_ID</a>
+                                            <input type="hidden" id="BL_ID" name="BL_ID" value="@item.BL_ID" />
+                                        </td>
+                                        <td><a href="/BankInfo/BankLoanTransaction?BL_ID=@item.BL_ID&IS_SUPPLIER=@item.IS_SUPPLIER">明細</a></td>
+                                        <td>@item.BANK_ID</td>
+                                        <td>@item.BANK_NAME</td>
+                                        <td>@item.ACCOUNT_NAME</td>
+                                        <td>@string.Format("{0:yyyy/MM/dd}", item.START_DATE)</td>
+                                        <td>@string.Format("{0:yyyy/MM/dd}", item.DUE_DATE)</td>
+                                        <td>@string.Format("{0:N0}", item.QUOTA)</td>
+                                        @if (item.vaRatio >= item.CUM_AR_RATIO && item.DUE_DATE >= DateTime.Today)
+                                        {
+                                            <td>@string.Format("{0:N0}", item.QUOTA + item.SumTransactionAmount)</td>
+                                        }
+                                        else if (item.DUE_DATE >= DateTime.Today)
+                                        {
+                                            <td>@string.Format("{0:N0}", null == item.QUOTA * item.QUOTA_AVAILABLE_RATIO / 100 ? 0 : Math.Round(decimal.Parse((item.QUOTA * item.QUOTA_AVAILABLE_RATIO / 100).ToString()), 0) + item.SumTransactionAmount)</td>
+                                        }
+                                        else
+                                        {
+                                            <td>結案</td>
+                                        }
+                                        <td>@item.PERIOD_COUNT</td>
+                                        <td>@string.Format("{0:N0}", item.QUOTA_AVAILABLE_RATIO)</td>
+                                        <td>@string.Format("{0:N0}", item.AR_PAYBACK_RATIO)</td>
+                                        <td>@string.Format("{0:N0}", item.CUM_AR_RATIO)</td>
+                                        <td>@item.PROJECT_NAME</td>
+                                        <td>@item.REMARK</td>
+                                        <td>@item.MODIFY_DATE</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal :對話框-->
+<div class="modal fade" id="bankLoanInfo" role="dialog">
+    <div class="modal-dialog" id="bankLoanInfoDialog">
+        <!-- Modal content-->
+        @Html.Partial("_BankLoanInfo");
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#START_DATE').datetimepicker({
+            format: 'YYYY/MM/DD',
+            locale: 'zh-tw'
+        });
+        $('#DUE_DATE').datetimepicker({
+            format: 'YYYY/MM/DD',
+            locale: 'zh-tw'
+        });
+    });
+    //管理貸還款資料
+    $("#submit").click(function () {
+        //alert("submit click!!");
+        var s = $('#formAddBankLoan').serialize();
+        var URLs = "/BankInfo/addBankLoan";
+        $.ajax({
+            url: URLs,
+            data: s,
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+    function editBankLoan(id) {
+        $.ajax({
+            url: "getBasicInfo",
+            type: "GET",
+            data: { id: id },
+            dataType: "JSON",
+            success: function (data) {
+                $('#formAddBankLoan #BL_ID').val(data.BL_ID);
+                $('#BANK_ID').val(data.BANK_ID);
+                $('#BANK_NAME').val(data.BANK_NAME);
+                $('#ACCOUNT_NAME').val(data.ACCOUNT_NAME);
+                //使用Jqery selector 選定對話框內的droplist
+                $('#formAddBankLoan #plans').val(data.PROJECT_ID);
+                $('#START_DATE').val(data.START_DATE);
+                $('#DUE_DATE').val(data.DUE_DATE);
+
+                $('#PERIOD_COUNT').val(data.PERIOD_COUNT);
+                $('#QUOTA').val(data.QUOTA);
+
+                $('#PERIOD_COUNT').val(data.PERIOD_COUNT);
+                $('#QUOTA').val(data.QUOTA);
+                $('#QUOTA_RECYCLABLE').val(data.QUOTA_RECYCLABLE);
+                $('#REMARK').val(data.REMARK);
+
+
+                $('#AR_PAYBACK_RATIO').val(data.AR_PAYBACK_RATIO);
+                $('#QUOTA_AVAILABLE_RATIO').val(data.QUOTA_AVAILABLE_RATIO);
+                $('#CUM_AR_RATIO').val(data.CUM_AR_RATIO);
+                $('#CUM_AR_RATIO').val(data.CUM_AR_RATIO);
+                $('#bankLoanInfo').modal('show'); // show bootstrap modal when complete loaded
+                $('.modal-title').text('編輯帳戶資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+</script>

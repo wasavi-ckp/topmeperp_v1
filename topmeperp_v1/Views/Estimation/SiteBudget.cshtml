@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewBag.Title = "工地費用預算查詢";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-4">
+                <h3 style="padding-bottom:10px;">工地費用預算 :</h3>
+            </div>
+            </div>
+        <form name="FormSiteBudgetInfo" id="FormSiteBudgetInfo">
+            <div class="col-md-4 form-group" style="padding-top:10px">
+                <label for="id">專案編號:</label><input id="projectid" name="projectid" type="text" value="@ViewBag.projectid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-4" style="padding-top:10px">
+                <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-4" style="padding-top:30px;">
+                <button type="button" class="btn btn-primary" onclick="window.open('@Url.Action("SiteBudgetOperation", "Estimation", new { id = @ViewBag.projectid })' , '_self');">工地費用預算上傳與下載</button>
+            </div>
+        </form>
+        <div class="col-md-4">
+            <div class="alert-info">
+                @Html.Raw(TempData["result"])
+            </div>
+        </div>
+        <div id="divProcessing">
+            <img src="~/Content/ajax-loader.gif">
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#FirstYear">第1年度</a></li>
+        <li><a data-toggle="tab" href="#SecondYear">第2年度</a></li>
+        <li><a data-toggle="tab" href="#ThirdYear">第3年度</a></li>
+        <li><a data-toggle="tab" href="#FourthYear">第4年度</a></li>
+        <li><a data-toggle="tab" href="#FifthYear">第5年度</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="FirstYear" class="tab-pane fade in active">
+            @{
+                ViewBag.tabId = "1";
+                Html.RenderPartial("_FirstYearPage");
+            }
+        </div>
+        <div id="SecondYear" class="tab-pane fade">
+            @{
+                Html.RenderPartial("_SecondYearPage");
+            }
+
+        </div>
+        <div id="ThirdYear" class="tab-pane fade">
+            @{
+                Html.RenderPartial("_ThirdYearPage");
+            }
+        </div>
+        <div id="FourthYear" class="tab-pane fade">
+            @{
+                Html.RenderPartial("_FourthYearPage");
+            }
+        </div>
+        <div id="FifthYear" class="tab-pane fade">
+            @{
+                Html.RenderPartial("_FifthYearPage");
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#login').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+
+    $("#saveFirstYear").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateSiteBudgetOfFirstYear", "Estimation")',
+            data: $('#formSiteBudget_1').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    $("#saveSecondYear").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateSiteBudgetOfSecondYear", "Estimation")',
+            data: $('#formSiteBudget_2').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    $("#saveThirdYear").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateSiteBudgetOfThirdYear", "Estimation")',
+            data: $('#formSiteBudget_3').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    $("#saveFourthYear").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateSiteBudgetOfFourthYear", "Estimation")',
+            data: $('#formSiteBudget_4').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    $("#saveFifthYear").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateSiteBudgetOfFifthYear", "Estimation")',
+            data: $('#formSiteBudget_5').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>

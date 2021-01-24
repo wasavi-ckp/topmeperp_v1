@@ -1,0 +1,37 @@
+﻿@model topmeperp.Models.TndProjectModels
+<div class="container">
+        <input type="hidden" name="projectid" id="projectid" value="@ViewBag.projectid" />
+        <table class="table table-bordered">
+            <tr>
+                <th>任務類型</th>
+                <th>負責人員</th>
+                <th>負責項目</th>
+                <th>預定完成時間</th>
+                <th>備註</th>
+                <th>簽名</th>
+            </tr>
+            @foreach (var item in Model.tndTaskAssign)
+            {
+                <tr>
+                    <td width="100">
+                        <a href="/Tender/EditForTask/@Html.DisplayFor(modelItem => item.TASK_ID)">@Html.DisplayFor(modelItem => item.TASK_TYPE)</a>
+                    </td>
+                    <td width="100">
+                        @Html.DisplayFor(modelItem => item.USER_ID)
+                    </td>
+                    <td width="250">
+                        @Html.DisplayFor(modelItem => item.TASK_ITEM)
+                    </td>
+                    <td width="150">
+                        @Html.DisplayFor(modelItem => item.FINISH_DATE, "LongDateTime")
+                    </td>
+                    <td width="200">
+                        @Html.DisplayFor(modelItem => item.REMARK)
+                    </td>
+                    <td width="150"></td>
+                    @Html.HiddenFor(modelItem => item.PROJECT_ID)
+                    @Html.HiddenFor(modelItem => item.CREATE_ID)
+                </tr>
+            }
+        </table>
+</div>

@@ -1,0 +1,52 @@
+﻿@model IEnumerable<topmeperp.Models.RevenueFromOwner>
+<div class="container">
+    <h3 style="padding-top:40px;">附檔明細 : </h3>
+    <div class="row" style="padding-top:15px;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>檔案名稱</th>
+                    <th>檔案類型</th>
+                    <th>上傳時間</th>
+                    <th>連結</th>
+                    <th>功能</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>@item.NO</td>
+                        <td>@item.FILE_ACTURE_NAME</td>
+                        <td>@item.FILE_TYPE</td>
+                        <td>@item.CREATE_DATE.Value.ToString("yyyy/MM/dd")</td>
+                        <td><a class="btn btn-link" href="/Estimation/downLoadVAFile?itemid=@item.ITEM_UID" target="_blank">下載</a></td>
+                        <td><button type="button" class="btn btn-danger" onclick="delVAFile('@item.ITEM_UID')">刪除</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+//將VA File 註記刪除
+    function delVAFile(itemid) {
+        
+        $.ajax({
+            url: "/Estimation/delVAFile",
+            type: "POST",
+            data: { itemid: itemid },
+            dataType: "text",
+            success: function (data) {
+                alert(data);
+                location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error del data by ajax');
+            }
+        });
+    }
+
+</script>

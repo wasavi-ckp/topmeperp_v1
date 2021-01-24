@@ -1,0 +1,84 @@
+﻿@model topmeperp.Models.PurchaseFormModel
+@{
+    ViewBag.Title = "專案執行-詢價單樣板管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="page-header">
+    <div class="row">
+        <form name="formInquirySearch" id="formInquirySearch" action="" method="Post" class="form-inline">
+            <div class="col-md-12 form-group">
+                <div id="id" class="col-md-3 text-left">
+                    專案編號 : <input id="id" name="id" type="text" value="@ViewBag.projectid" class="form-control" />
+                </div>
+                <div id="name" class="col-md-3 text-left">
+                    專案名稱 :<input id="name" name="name" type="text" value="@ViewBag.projectName" class="form-control" readonly="readonly" />
+                </div>
+                <div id="status" class="col-md-2 text-left">
+                    <label for="status" style="text-align:right">狀態 :</label>
+                    <select id="status" name="status">
+                        <option value="有效">有效</option>
+                        <option value="註銷">註銷</option>
+                    </select>
+                </div>
+                <div id="status" class="col-md-2 text-left">
+                    <input id="Submit12" class="btn btn-info" type="submit" value="查詢" />
+                    <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <div id="divProcessing" class="col-md-1">
+        <img src="~/Content/ajax-loader.gif">
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#tempMagerial">材料設備</a></li>
+        <li><a data-toggle="tab" href="#tempWage">代工</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="tempMagerial" class="tab-pane fade in active">
+            @{
+                Html.RenderPartial("_FormTempList");
+            }
+        </div>
+        <div id="tempWage" class="tab-pane fade">
+            @{
+                Html.RenderPartial("_FormTempList4wage");
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+    function createTemplate() {
+        var projectid = $("input[id=id]").val();
+        var URLs = "/PurchaseForm/createPlanEmptyForm";
+        $("#divProcessing").show();
+        $.ajax({
+            url: URLs,
+            data: { "projectid": projectid },
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                $("#divProcessing").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+                $("#divProcessing").hide();
+            }
+        });
+    }
+</script>
+

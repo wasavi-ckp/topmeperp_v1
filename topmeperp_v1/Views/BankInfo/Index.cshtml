@@ -1,0 +1,86 @@
+﻿@model IEnumerable<topmeperp.Models.FIN_BANK_ACCOUNT>
+@{
+    ViewBag.Title = "財務管理-銀行存款";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--直接顯示銀行存款記錄-->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 form-group">
+            <form name="formUpdateBankAccount" id="formUpdateBankAccount" action="updateBankAccount" method="Post">
+                <!--工具列-->
+                <div class="row">
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#bankAccountInfo">新增</button>
+                    <button type="submit" class="btn btn-warning">修改現額</button>
+                </div>
+                <div class="container">
+                    <table class="table">
+                        <thead>
+                            <tr><th>No</th><th>銀行代號</th><th>銀行名稱</th><th>分行名稱</th><th>帳戶名稱</th><th>帳號</th><th>現額</th><th>更新時間</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.BANK_ACCOUNT_ID
+                                        <input type="hidden" id="BankAccountId" name="BankAccountId" value="@item.BANK_ACCOUNT_ID" />
+                                    </td>
+                                    <td>@item.BANK_ID</td>
+                                    <td>@item.BANK_NAME</td>
+                                    <td>@item.BRANCH_NAME</td>
+                                    <td>@item.ACCOUNT_NAME</td>
+                                    <td>@item.ACCOUNT_NO</td>
+                                    <td><input type="text" class="form-control" id="curAmount" name="curAmount" value="@String.Format("{0:n0}",item.CUR_AMOUNT)"  autocomplete="off"/></td>
+                                    <td><input type="text" class="form-control" id="curDate" name="curDate" value="@item.CUR_DATE"  autocomplete="off"/></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal :對話框-->
+<div class="modal fade" id="bankAccountInfo" role="dialog">
+    <div class="modal-dialog" id="projectItemDialog">
+        <!-- Modal content-->
+        @Html.Partial("_BankAccountInfo");
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#CUR_DATE').datetimepicker({
+            format: 'YYYY/MM/DD',
+            locale: 'zh-tw'
+        });
+        $("input[id='curDate']").datetimepicker({
+            format: 'YYYY/MM/DD',
+            locale: 'zh-tw'
+        });
+    });
+
+    //增加銀行帳戶資料
+    $("#submit").click(function () {
+        var s = $('#formAddBankAccunt').serialize();
+        var URLs = "/BankInfo/addBankAccount";
+        $.ajax({
+            url: URLs,
+            data: s,
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>

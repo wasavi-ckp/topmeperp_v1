@@ -1,0 +1,26 @@
+﻿@model topmeperp.Models.TndProjectModels
+@using (Html.BeginForm("uploadPlanItem", "Tender", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <label for="file">得標標單匯入:</label>
+    <input type="hidden" name="projectid" id="projectid" value="@ViewBag.projectid" />
+    <input type="file" name="file" id="file" />
+    <input type="hidden" name="projectname" id="projectname" value="@Model.tndProject.PROJECT_NAME" />
+    <input type="hidden" name="engname" id="engname" value="@Model.tndProject.ENG_NAME" />
+    <input type="hidden" name="contructionname" id="contructionname" value="@Model.tndProject.CONTRUCTION_NAME" />
+    <input type="hidden" name="location" id="location" value="@Model.tndProject.LOCATION" />
+    <input type="hidden" name="ownername" id="ownername" value="@Model.tndProject.OWNER_NAME" />
+    <input type="hidden" name="contactname" id="contactname" value="@Model.tndProject.CONTACT_NAME" />
+    <input type="hidden" name="contecttel" id="contecttel" value="@Model.tndProject.CONTACT_TEL" />
+    <input type="hidden" name="contactfax" id="contactfax" value="@Model.tndProject.CONTACT_FAX" />
+    <input type="hidden" name="contactemail" id="contactemail" value="@Model.tndProject.CONTACT_EMAIL" />
+    <input type="hidden" name="duedate" id="duedate" value="@Model.tndProject.DUE_DATE" />
+    <input type="hidden" name="schdlofferdate" id="schdlofferdate" value="@Model.tndProject.SCHDL_OFFER_DATE" />
+    <input type="hidden" name="excelfilename" id="excelfilename" value="@Model.tndProject.EXCEL_FILE_NAME" />
+    <input type="hidden" name="starrowno" id="starrowno" value="@Model.tndProject.START_ROW_NO" />
+    <input type="hidden" name="owneruserid" id="owneruserid" value="@Model.tndProject.OWNER_USER_ID" />
+    <input type="hidden" name="createdid" id="createdid" value="@Model.tndProject.CREATE_USER_ID" />
+    <input type="hidden" name="createddate" id="createddate" value="@Model.tndProject.CREATE_DATE" />
+    <input type="hidden" name="wage" id="wage" value="@Model.tndProject.WAGE_MULTIPLIER" />
+    <input id="btnUploadfile" name="btnUploadfile" type="submit" class="btn-primary" value="匯入檔案" />
+}
+

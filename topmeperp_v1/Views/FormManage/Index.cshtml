@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "廠商計價單";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域 for test-->
+<div class="page-header">
+    <h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>
+    <form name="formSearch" id="formSearch" class="form-inline" action="" method="Post">
+        <div class="row">
+            <div class="col-sm-5">
+                <label class="control-label">專案:</label>
+                @Html.DropDownList("projects", null, String.Empty, new { @class = "form-control" })
+            </div>
+            <div class="col-sm-4">
+                <label for="status">狀態 : </label> @Html.DropDownList("status", null, String.Empty, new { @class = "form-control" })
+            </div>
+            <div class="col-sm-3">
+                <div id="divProcessing">
+                    <img src="~/Content/ajax-loader.gif">
+                </div>
+                <button type="button" class="btn btn-info" onclick="getFormList()">查詢</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container">
+    <div class="panel-body">
+        <div class="row" id="formList"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#btnQuery').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+    function getFormList() {
+        //Ajax 功能範例:置換部分網頁內容
+        var URLs = "FormList";
+        $("#divProcessing").show();
+        $.ajax({
+            url: URLs,
+            data: $('#formSearch').serialize(),
+            type: "POST",
+            dataType: 'html',
+            success: function (result) {
+                $("#formList").html(result);
+                $("#divProcessing").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+                $("#divProcessing").hide();
+            }
+        });
+    }
+    // Hide the "busy" Gif at load:
+    $("#divProcessing").hide();
+</script>

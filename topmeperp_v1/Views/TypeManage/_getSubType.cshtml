@@ -1,0 +1,37 @@
+﻿@model IEnumerable<topmeperp.Models.REF_TYPE_SUB>
+@ViewBag.SearchResult 
+@Html.Raw(ViewBag.Typecode)
+<table class="table">
+    <tr>
+        <td>
+            代號
+        </td>
+        <td>
+            九宮格編碼
+        </td>
+        <td>
+           次九宮格編碼
+        </td>
+        <td>
+            名稱
+        </td>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SUB_TYPE_ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TYPE_CODE_ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SUB_TYPE_CODE)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TYPE_DESC)
+            </td>
+        </tr>
+    }
+</table>

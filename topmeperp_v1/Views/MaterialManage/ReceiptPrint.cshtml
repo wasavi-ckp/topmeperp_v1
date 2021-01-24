@@ -1,0 +1,137 @@
+﻿@model topmeperp.Models.PurchaseRequisitionDetail
+@{
+    ViewBag.Title = "專案執行-列印驗收單 ";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>
+<button id="btnPrint" name="btnPrint" type="button" class="btn btn-info" onclick="javascript: printpage('printarea')">列印</button>
+<button id="btnClose" name="btnClose" type="button" class="btn btn-success" onclick="javascript: window.close();">關閉</button>
+<div id="printarea" style="margin:10px 10px 10px 10px;">
+    <div class="">
+        <div class="col-md-8">
+            <h3 class="text-center">協成水電工程事業有限公司-驗收單</h3>
+        </div>
+        <div class="col-md-4">列印日期:</div>
+    </div>
+    <div class="" >
+        <table class="printTable">
+            <tr>
+                <td class="printTh">專案名稱</td>
+                <td class="printTh">@Model.prj.PROJECT_NAME</td>
+                <td class="printTh">採購單號</td>
+                <td class="printTh">@Model.planPR.PR_ID</td>
+            </tr>
+            <tr class="printTh">
+                <td class="printTh">供應商</td>
+                <td class="printTh">@Model.planPR.SUPPLIER_ID</td>
+                <td class="printTh">驗收日期</td>
+                <td class="printTh">@ViewBag.receiptDate</td>
+            </tr>
+            <tr>
+                <td class="printTh">收件人</td>
+                <td class="printTh">@Model.planPR.RECIPIENT</td>
+                <td class="printTh">送貨地址</td>
+                <td class="printTh">@Model.planPR.LOCATION</td>
+            </tr>
+        </table>
+    </div>
+    <!--驗收明細資料-->
+    <div class="">
+        <table class="printTable">
+            <thead>
+                <tr>
+                    <th class="printTh">
+                        項次
+                    </th>
+                    <th class="printTh">
+                        項目說明
+                    </th>
+                    <th class="printTh">
+                        單位
+                    </th>
+                    <th class="printTh">
+                        備註
+                    </th>
+                    <th class="printTh">
+                        合約數量
+                    </th>
+                    <th class="printTh">
+                        已訂購數量
+                    </th>
+                    <th class="printTh">
+                        採購數量
+                    </th>
+                    <th class="printTh">
+                        已驗收數量
+                    </th>
+                    <th class="printTh">
+                        驗收數量
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.planPRItem)
+                {
+
+                    <tr>
+                        <td class="printTh">
+                            @item.ITEM_ID
+                        </td>
+                        <td class="printTh">
+                            @item.ITEM_DESC
+                        </td>
+                        <td class="printTh">
+                            @item.ITEM_UNIT
+                        </td>
+                        <td class="printTh">
+                            @item.REMARK
+                        </td>
+                        <td class="printTh">
+                            @item.ITEM_FORM_QUANTITY
+                        </td>
+                        <td class="printTh">
+                            @item.CUMULATIVE_QTY
+                        </td>
+                        <td class="printTh">
+                            @item.ORDER_QTY
+                        </td>
+                        <td class="printTh">
+                            @item.RECEIPT_QTY_BY_PO
+                        </td>
+                        <td class="printTh">
+                            @item.RECEIPT_QTY
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td class="printTh">採購需求說明</td>
+                    <td colspan="4" class="printTh">
+                        @Model.planPR.MESSAGE
+                    </td>
+                    <td class="printTh">驗收備忘錄</td>
+                    <td colspan="4" class="printTh">
+                        @Model.planPR.MEMO
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <!--Print Footer-->
+    <div class="">
+        <table style="border-style:solid;border-width:2px;width:100%;height:100px">
+            <tr>
+                <td style="width:10%;border-style:solid;border-width:1px">經理</td>
+                <td style="width:23%;border-style:solid;border-width:1px"></td>
+                <td style="width:10%;border-style:solid;border-width:1px">業管</td>
+                <td style="width:23%;border-style:solid;border-width:1px"></td>
+                <td style="width:10%;border-style:solid;border-width:1px">工地</td>
+                <td style="width:23%;border-style:solid;border-width:1px"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!--引進列印功能-->
+<script src="~/Scripts/topmep_selecComp.js"></script>

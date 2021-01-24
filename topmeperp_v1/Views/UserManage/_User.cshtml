@@ -1,0 +1,35 @@
+﻿@model topmeperp.Models.UserManageModels
+<!-- Modal content-->
+<div class="modal-content">
+    <form id="formUser" name="formUser" action="addUser" method="post">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">使用者資料</h4>
+        </div>
+        <div class="modal-body form-group">
+            <div class="row form-group"><div class="col-md-4">帳號</div><div class="col-md-8"><input type="text" id="u_userid" name="u_userid" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">姓名</div><div class="col-md-8"><input type="text" id="u_name" name="u_name" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-sm-4">密碼</div><div class="col-md-8"><input type="password" id="u_password" name="u_password" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">確認密碼</div><div class="col-md-8"><input type="password" id="u_confirmpwd" name="u_confirmpwd" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">EMail</div><div class="col-md-8"><input type="text" id="u_email" name="u_email" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">電話</div><div class="col-md-8"><input type="text" id="u_tel" name="u_tel" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">分機</div><div class="col-md-8"><input type="text" id="u_tel_ext" name="u_tel_ext" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">傳真</div><div class="col-md-8"><input type="text" id="u_fax" name="u_fax" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">手機</div><div class="col-md-8"><input type="text" id="u_mobile" name="u_mobile" class="form-control" /></div></div>
+            <div class="row form-group">
+                <div class="col-md-4">角色(權限)</div><div class="col-md-8">
+                    @Html.DropDownList("roles", null, String.Empty, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-4">部門</div><div class="col-md-8">
+                    @Html.DropDownList("dep_code", null, String.Empty, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+            <button type="submit" class="btn btn-default" data-dismiss="modal" id="saveUser">儲存</button>
+        </div>
+    </form>
+</div>

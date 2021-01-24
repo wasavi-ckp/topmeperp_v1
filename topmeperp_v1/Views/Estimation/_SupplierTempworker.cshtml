@@ -1,0 +1,52 @@
+﻿@model topmeperp.Models.ContractModels
+    <table class="table">
+        <thead>
+            <tr>
+                @***
+                    @foreach (System.Data.DataColumn col in Model.lstEstFromDailyReport[i].Tables[0].Columns)
+                    {
+                        <th>@col.Caption</th>
+                    }
+                        ***@
+                <th>
+                    施作廠商
+                </th>
+                <th>
+                    代扣廠商
+                </th>
+                <th>
+                    說明
+                </th>
+                <th>
+                    數量
+                </th>
+                <th>
+                   前期累計
+                </th>
+                <th>
+                    功能
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (System.Data.DataRow row in Model.dsTempWorkDailyReport.Tables[0].Rows)
+            {
+                <tr>
+                    <td>@row["SUPPLIER_ID"].ToString()</td>
+                    <td>@row["CHARGE_ID"].ToString()</td>
+                    <td>點工( @row["BeginID"] ~ @row["EndID"])</td>
+                    <td>@row["FINISH_QTY"].ToString()</td>
+                    <td>@row["FINISH_QTY"]</td>
+                    <td>
+                        <a href='/Estimation/createEstimationOrder4TmpOrder?projectId=@ViewBag.projectId&contractId=@row["INQUIRY_FORM_ID"]&rptStartId=@row["BeginID"]&rptEndId=@row["EndID"]&supplierId=@row["SUPPLIER_ID"]&chargeId=@row["CHARGE_ID"]' target="_blank">建立估驗單</a>
+                    </td>
+                    @**foreach (var cell in row.ItemArray)
+                        {
+                            <td>@cell.ToString()</td>
+                        }
+                    *@
+                </tr>
+            }
+        </tbody>
+    </table>
+

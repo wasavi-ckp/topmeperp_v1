@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "備標作業-兩案比較";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="page-header">
+    <form name="FormCompareProject" id="FormCompareProject" action="" method="Post">
+        <div class="row">
+            <div class="col-md-12 form-group">
+                <div class="col-md-6">
+                    <label for="srcprojectid" class="col-md-3 text-right">舊專案編號</label><input class="form-control col-md-3" id="srcprojectid" name="srcprojectid" type="text" />
+                </div>
+                <div class="col-md-6">
+                    <label for="tarprojectid" class="col-md-3 text-right">新專案編號</label><input class="form-control col-md-3" id="tarprojectid" name="tarprojectid" type="text"  />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 pull-right text-right">
+                <div id="divProcessing" class="col-md-1">
+                    <img src="~/Content/ajax-loader.gif">
+                </div>
+                <input type="checkbox" id="hasProject" name="hasProject" value="true" />加入系統,
+                <input type="checkbox" id="hasPrice" name="hasPrice" value="true" />僅篩選有單價
+                <input type="button" id="btnQuery" name="btnQuery" class="btn btn-info" value="查詢" onclick="getComparisonData()"/>
+                <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <div class="row" id="comparisonData"></div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#btnQuery').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+    function getComparisonData() {
+        //Ajax 功能範例:置換部分網頁內容
+        var URLs = "/ProjectCompare/getCompareData";
+        $("#divProcessing").show();
+        $.ajax({
+            url: URLs,
+            data: $('#FormCompareProject').serialize(),
+            type: "POST",
+            dataType: 'html',
+            success: function (result) {
+                $("#comparisonData").html(result);
+                $("#divProcessing").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+                $("#divProcessing").hide();
+            }
+        });
+    }
+</script>

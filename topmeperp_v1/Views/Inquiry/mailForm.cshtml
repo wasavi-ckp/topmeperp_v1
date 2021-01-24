@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewBag.Title = "備標作業-發送郵件";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-12 form-group">
+            <form name="FormSendMail" id="FormSendMail" action="sendMain" method="Post">
+                <div class="row col-md-12">
+                    <label for="textSenderAddress" class="col-md-2 text-right">寄件者</label><input class="form-control col-md-3" id="textSenderAddress" name="textSenderAddress" type="text" />
+                </div>
+                <div class="row col-md-12">
+                    <label for="textReceiveAddress" class="col-md-2 text-right">收件者</label><input class="form-control col-md-3" id="textReceiveAddress" name="textReceiveAddress" type="text" />
+                    <input class="form-control col-md-3" id="textReceiveAddress" name="textReceiveAddress" type="text" />
+                </div>
+                <div class="row col-md-12">
+                    <label for="textSubject" class="col-md-2 text-right" style="padding-top:15px;">主旨</label><input class="form-control col-md-3" id="textSubject" name="textSubject" type="text" />
+                </div>
+                <div class="row col-md-12">
+                    <label for="textContent" class="col-md-2">內容</label>
+                    <textarea class="form-control" id="textContent"  name="textContent" rows="2" cols="20"></textarea>
+                </div>
+                <div class="row col-md-12">
+                    <label for="textProjectId" class="col-md-2 text-right">專案編號</label><input class="form-control col-md-3" id="textProjectId" name="textProjectId" type="text" value=""/>
+                    <label for="textPOID" class="col-md-2 text-right">PO編號</label><input class="form-control col-md-3" id="textPOID" name="textPOID" type="text"  value="PO-000272" />
+                </div>
+
+                <div class="row col-md-12">
+                    <input id="btnSendMail" type="submit" class="btn btn-info" value="送出" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

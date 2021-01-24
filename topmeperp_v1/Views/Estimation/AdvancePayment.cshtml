@@ -1,0 +1,127 @@
+﻿@{
+    ViewBag.Title = "預付款/暫借款";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular.min.js"></script>
+<div class="page-header">
+    <h3>@ViewBag.Title</h3>
+    <div class="container" ng-app="" ng-controller="MyCtrl">
+        <form id="formAdvancePayment" name="formAdvancePayment" class="form-inline">
+            <div class="row" style="padding-bottom:5pt">
+                <div class="col-md-3">
+                    <label for="projectName">專案名稱:</label>
+                    <input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label for="contractid">合約編號:</label>
+                    <input id="contractid" name="contractid" type="text" value="@ViewBag.contractid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label for="formid">估驗單編號:</label>
+                    <input id="formid" name="formid" type="text" value="@ViewBag.formid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                </div>
+                <div class="col-md-3 form-group">
+                    <label for="advancePaymentRatio">預付比率 % :</label>
+                    <input type="text" id="advancePaymentRatio" name="advancePaymentRatio" value="@ViewBag.advancePaymentRatio" class="form-control" style="max-width:none;width:50%;background-color:#cccccc" readonly="readonly" />
+                </div>
+            </div>
+            <table class="table table-bordered" style="padding-top:10px">
+                <thead>
+                    <tr class="bg-info">
+                        <th>期別</th>
+                        <th>預付款</th>
+                        <th>暫借款</th>
+                        <th>保證金</th>
+                        <th>合計</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>前期累計</td>
+                        <td>{{keys.CUM_A_AMOUNT  | number : 0}}</td>
+                        <td>{{keys.CUM_B_AMOUNT  | number : 0}}</td>
+                        <td>{{keys.CUM_C_AMOUNT  | number : 0}}</td>
+                        <td>{{keys.CUM_A_AMOUNT + keys.CUM_B_AMOUNT + keys.CUM_C_AMOUNT  | number : 0}}</td>
+
+                    </tr>
+                    <tr>
+                        <td>本期金額</td>
+                        @if (ViewBag.advancePaymentRatio != null)
+                        {
+                            <td><input type="number" id="advance_payment" name="advance_payment" ng-model="keys.A_AMOUNT" style="width:150px;" /></td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                        <td><input type="number" id="temporary_loan" name="temporary_loan" ng-model="keys.B_AMOUNT" style="width:150px;" /></td>
+                        <td><input type="number" id="margins" name="margins" ng-model="keys.C_AMOUNT" style="width:150px;" /></td>
+                        <td>{{keys.A_AMOUNT + keys.B_AMOUNT + keys.C_AMOUNT | number :0}}</td>
+                    </tr>
+                    <tr>
+                        <td>累計金額</td>
+                        <td>{{keys.CUM_A_AMOUNT + keys.A_AMOUNT}}</td>
+                        <td>{{keys.CUM_B_AMOUNT + keys.B_AMOUNT }}</td>
+                        <td>{{keys.CUM_C_AMOUNT + keys.C_AMOUNT }}</td>
+                        <td>{{keys.CUM_A_AMOUNT + keys.A_AMOUNT + keys.CUM_B_AMOUNT + keys.B_AMOUNT + keys.CUM_C_AMOUNT + keys.C_AMOUNT  | number : 0}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row" style="padding-bottom:20px">
+                <span style="color: red; font-size: 15px;">負值為請款‧正值為繳回</span>
+            </div>
+            <div>
+                @if (ViewBag.status < 30)
+                {
+                    <input type="submit" value="修改" class="btn btn-success" id="updateForm" />
+                }
+                else
+                {
+                    <input type="submit" value="儲存" class="btn btn-success" id="saveForm" />
+                }
+                <input onclick="window.close();" value="關閉" type="button" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function MyCtrl($scope) {
+        $scope.keys = @Html.Raw(ViewData["items"]);
+        $scope.show = function () {
+            $scope.keys.push({ A_AMOUNT: $scope.keys.advance_payment, B_AMOUNT: $scope.keys.temporary_loan, C_AMOUNT: $scope.keys.margins });
+        }
+    }
+    $("#saveForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("AddAdvancePay", "Estimation")',
+            data: $('#formAdvancePayment').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    $("#updateForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateAdvancePay", "Estimation")',
+            data: $('#formAdvancePayment').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>
+
+

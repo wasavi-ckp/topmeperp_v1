@@ -1,0 +1,48 @@
+﻿@model IEnumerable<topmeperp.Models.PLAN_DALIY_REPORT>
+<div class="container" style="width:auto;height:auto;overflow-x:hidden;overflow-y:auto;padding-top:5px;">
+    <label id="Message" class="alert-info">@ViewBag.Result</label>
+    <div class="row">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="bg-success">
+                    <th class="text-center" style="width:10%">
+                        編號
+                    </th>
+                    <th class="text-center" style="width:10%">
+                        報告日期
+                    </th>
+                    <th class="text-center" style="width:40%">
+                        摘要
+                    </th>
+                    <th class="text-center" style="width:10%">
+                        天氣
+                    </th>
+                    <th class="text-center" style="width:10%">
+                        現場人員
+                    </th>
+                    <th class="text-center" style="width:10%">
+                        建立日期
+                    </th>
+                    <th class="text-center" style="width:10%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in Model)
+                {
+                    <tr>
+                        <td><a href="/ProjectPlan/dailyReportItem?rptID=@m.REPORT_ID" target="_blank">@m.REPORT_ID</a>
+                         </td>
+                        <td>@Html.Label(@m.REPORT_DATE.Value.ToString("yyyy/MM/dd"))</td>
+                        <td>@m.SUMMARY</td>
+                        <td>@m.WEATHER</td>
+                        <td>@m.SCENE_USER_NAME</td>
+                        <td>@Html.Label(@m.CREATE_DATE.Value.ToString("yyyy/MM/dd HH:mm:dd")) </td>
+                        <td>
+                            <a href="/ProjectPlan/dailyReportPrinter?rptID=@m.REPORT_ID" target="_blank">列印</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

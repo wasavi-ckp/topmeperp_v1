@@ -1,0 +1,53 @@
+﻿@model IEnumerable<topmeperp.Models.PLAN_TASK>
+@{
+    ViewBag.Title = "施工日報-選取任務";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<h2>@ViewBag.Title</h2>
+<!--條件區域-->
+<div class="page-header">
+    <form name="formDailyReport" id="formDailyReport" action="" method="Post" enctype="multipart/form-data">
+        <div class="row">
+            <label class="col-md-6 control-label">專案編號:@ViewBag.projectId </label>
+            <label class="col-md-6 control-label">專案名稱:@ViewBag.projectName </label>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="reportDate" class="control-label col-md-2">日期</label><input type="text" class="col-md-3" name="reportDate" id="reportDate" value="@ViewBag.reportDate" size="7" autocomplete="off" />
+                <button name="query" id="query" type="submit" class="btn-default">更換日期</button>
+            </div>
+        </div>
+        @ViewBag.Message
+    </form>
+    <div class="container">
+        <div class="panel panel-primary">
+            <div class="panel-heading">今日專案任務清單</div>
+            <div class="panel-body">
+                <table class="table">
+                    <tr><th>功能</th><th>任務名稱</th><th>開始時間</th><th>完成時間</th><th>工期</th></tr>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><a href="~/ProjectPlan/dailyReportItem?projectid=@ViewBag.projectId&prjuid=@item.PRJ_UID&rptDate=@ViewBag.reportDate">填寫日報</a></td>
+                            <td>@Html.DisplayFor(modelItem => item.TASK_NAME)</td>
+                            <td>@Html.DisplayFor(modelItem => item.START_DATE)</td>
+                            <td>@Html.DisplayFor(modelItem => item.FINISH_DATE)</td>
+                            <td>@Html.DisplayFor(modelItem => item.DURATION) </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(function () {
+            $('#reportDate').datetimepicker({
+                format: 'YYYY/MM/DD',
+                locale: 'zh-tw'
+            });
+        });
+    })
+</script>
+

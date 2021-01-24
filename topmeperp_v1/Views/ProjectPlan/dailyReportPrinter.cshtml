@@ -1,0 +1,196 @@
+﻿@model topmeperp.Models.DailyReport
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>協成水電-施工日報</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/themes/base/css")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
+</head>
+<body>
+    <div class="container">
+        <div class="panel panel-default" style="text-align:center">
+            <div class="panel-heading"><h5>協成水電工程事業有限公司-每日出工日報表-機電功能</h5></div>
+            <div class="panel-body">
+                <table class="table-bordered" style="width:100%">
+                    <tr><th>工程名稱</th><th colspan="4">@Model.project.PROJECT_NAME</th><th>報告日期</th><th colspan="2">@ViewBag.RptDate</th></tr>
+                    <tr><th>工程地點</th><th colspan="3">@Model.project.LOCATION</th><th>業主名稱</th><th>@Model.project.OWNER_NAME</th><th>專案編號</th><td>@Model.project.PROJECT_ID</td></tr>
+                    <tr><th>施工內容</th><th colspan="7">@ViewBag.taskName</th></tr>
+                    <!--施作的標單內容-->
+                    <tr><td>編號</td><td>項次</td><td colspan="2">名稱</td><td>發包數量</td><td>本日施作數量</td><td>累計數量</td><td>完成比例</td></tr>
+
+                    @for (int idx = 0; idx < Model.lstDailyRptItem4Show.Count; idx++)
+                    {
+                        <tr>
+                            <td>@Model.lstDailyRptItem4Show[idx].PROJECT_ITEM_ID</td>
+                            <td>
+                                @Model.lstDailyRptItem4Show[idx].ITEM_ID
+                            </td>
+                            <td style="text-align:left" colspan="2">@Model.lstDailyRptItem4Show[idx].ITEM_DESC</td>
+                            <td>@Model.lstDailyRptItem4Show[idx].QTY</td>
+                            <td>
+                                @string.Format("{0:0}", Model.lstDailyRptItem4Show[idx].FINISH_QTY)
+                            </td>
+                            <td>@string.Format("{0:0}", ((Model.lstDailyRptItem4Show[idx].ACCUMULATE_QTY == null ? 0 : Model.lstDailyRptItem4Show[idx].ACCUMULATE_QTY) + Model.lstDailyRptItem4Show[idx].FINISH_QTY))</td>
+                            <td>
+                                @{
+                                    decimal? percentage = null;
+                                    decimal? AccumlateQty = Model.lstDailyRptItem4Show[idx].ACCUMULATE_QTY;
+                                    decimal? finiQty = Model.lstDailyRptItem4Show[idx].FINISH_QTY;
+                                    if (Model.lstDailyRptItem4Show[idx].QTY > 0)
+                                    {
+                                        percentage = ((AccumlateQty == null ? 0 : AccumlateQty) + (finiQty == null ? 0 : finiQty)) / Model.lstDailyRptItem4Show[idx].QTY;
+                                    }
+                                }
+                                @string.Format("{0:P}", percentage)
+                            <td></td>
+                        </tr>
+                    }
+
+                    <!--施作的標單內容-->
+                    <tr>
+                        <!--工-->
+                        <td colspan="4" valign="top">
+                            <table class="table-bordered" style="width:100%">
+                                <tr>
+                                    <td>廠商</td>
+                                    <td>本日數量</td>
+                                    <td>累積數量</td>
+                                </tr>
+
+                                @for (int idx = 0; idx < Model.lstWokerType4Show.Count; idx++)
+                                {
+                                    <tr>
+                                        <!--工-->
+                                        <td class="text-left">@Model.lstWokerType4Show[idx].SUPPLIER_ID</td>
+                                        <td>
+                                            @string.Format("{0:0}", Model.lstWokerType4Show[idx].WORKER_QTY)
+                                        </td>
+                                        <td>
+                                            @string.Format("{0:0}", Model.lstWokerType4Show[idx].LAST_QTY + Model.lstWokerType4Show[idx].WORKER_QTY)
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                        <!--機具-->
+                        <td colspan="4">
+                            <table class="table-bordered" style="width:100%">
+                                <tr>
+                                    <td>名稱</td>
+                                    <td>本日數量</td>
+                                    <td>累積數量</td>
+                                </tr>
+                                @for (int idx = 0; idx < Model.lstDailyRptMachine4Show.Count; idx++)
+                                {
+                                    <tr>
+                                        <!--工-->
+                                        <td>@Model.lstDailyRptMachine4Show[idx].VALUE_FIELD</td>
+                                        <td>
+                                            @string.Format("{0:0}", Model.lstDailyRptMachine4Show[idx].WORKER_QTY)
+                                        </td>
+                                        <td>
+                                            @string.Format("{0:0}", Model.lstDailyRptMachine4Show[idx].LAST_QTY + Model.lstDailyRptMachine4Show[idx].WORKER_QTY)
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                    <!--點工-->
+                    <tr>
+                        <td colspan="8">
+                            <table class="table table-bordered table-hover" id="tab_TempWorker">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            #
+                                        </th>
+                                        <th class="text-center">
+                                            出工廠商
+                                        </th>
+                                        <th class="text-center">
+                                            出工數量
+                                        </th>
+                                        <th class="text-center">
+                                            代付支出廠商
+                                        </th>
+                                        <th class="text-center">
+                                            備註
+                                        </th>
+                                        <th class="text-center">
+                                            累積數量
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.lstTempWoker4Show != null)
+                                    {
+                                        for (int idx = 0; idx < Model.lstTempWoker4Show.Count; idx++)
+                                        {
+                                            var idxString = "addTempWorkerR" + idx;
+                                            var idxCount = idx + 1;
+                                            <tr id='@idxString'>
+                                                <td>@idxCount</td>
+                                                <td class="text-left">
+                                                    <!--出工廠商-->
+                                                    @Model.lstTempWoker4Show[idx].SUPPLIER_ID
+                                                </td>
+                                                <td>
+                                                    <!--出工數量-->
+                                                    @Model.lstTempWoker4Show[idx].WORKER_QTY
+                                                </td>
+                                                <td class="text-left">
+                                                    <!--代付支出廠商-->
+                                                    @Model.lstTempWoker4Show[idx].CHARGE_ID
+                                                </td>
+                                                <td>
+                                                    <!--備註-->
+                                                    @Model.lstTempWoker4Show[idx].REMARK
+                                                </td>
+                                                <td>
+                                                    <!--累計數量-->
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" rowspan="@Model.lstRptNote.Count">
+                            <label>本日重要記事</label>
+                        </td>
+                        <td colspan="6" style="text-align:left">
+                            @if (Model.lstRptNote.Count > 0)
+                            {
+                                @Model.lstRptNote[0].REMARK
+                            }
+                        </td>
+                    </tr>
+                    @for (int idx = 1; idx < Model.lstRptNote.Count; idx++)
+                    {
+                        <tr>
+                            <td colspan="6" style="text-align:left">
+                                @Model.lstRptNote[idx].REMARK
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+﻿<div class="row">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>期別</th>
+                <th>+ 代付支出<a href="/Estimation/RePayment?id=@ViewBag.formid&contractid=@ViewBag.contractid" target="_blank">＠</a></th>
+                <th>- 外勞扣款</th>
+                <th>= 小計</th>
+                <th>- 保留款 <input type="text" id="retention" name="retention" value="@ViewBag.retention" readonly="readonly" style="width:60px;" />%</th>
+                <th>- 預付款<a href="/Estimation/AdvancePayment?id=@ViewBag.formid&contractid=@ViewBag.contractid" target="_blank">＠</a></th>
+                <th>- 代付扣回<a href="/Estimation/Refund?id=@ViewBag.formid&contractid=@ViewBag.contractid" target="_blank">＠</a></th>
+                <th>- 其他扣款<a href="/Estimation/OtherPayment?id=@ViewBag.formid&contractid=@ViewBag.contractid" target="_blank" id="otherPay">＠</a></th>
+                <th>= 應付金額</th>
+                <th>+ 營業稅</th>
+                <th>= 實付金額</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>前期累計</td>
+                <td><input type="text" id="cum_t_repayment" name="cum_t_repayment" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="cum_t_foreign" name="cum_t_foreign" value="" readonly="readonly"style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="cum_sub_amount" name="cum_sub_amount" value="" readonly="readonly"style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="cum_t_retention" name="cum_t_retention" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="cum_t_advance" name="cum_t_advance" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="cum_t_refund" name="cum_t_refund" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="cum_t_other" name="cum_t_other" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="cum_payable_amount" name="cum_payable_amount" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="cum_tax_amount" name="cum_tax_amount" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="cum_paid_amount" name="cum_paid_amount" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+            </tr>
+            <tr>
+                <td>本期金額</td>
+                <td><input type="text" id="t_repayment" name="t_repayment" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="t_foreign" name="t_foreign" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="sub_amount" name="sub_amount" value=""  readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="t_retention" name="t_retention" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="t_advance" name="t_advance" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="t_refund" name="t_refund" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="t_other" name="t_other" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="payable_amount" name="payable_amount" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="tax_amount" name="tax_amount" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="paid_amount" name="paid_amount" value="" style="width:80px;" /></td>
+            </tr>
+            <tr>
+                <td>累計金額</td>
+                <td><input type="text" id="total_repayment" name="total_repayment" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="total_foreign" name="total_foreign" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="total_sub_amount" name="total_sub_amount" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="total_retention" name="total_retention" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="total_advance" name="total_advance" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="total_refund" name="total_refund" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="total_other" name="total_other" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="total_payable_amount" name="total_payable_amount" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="total_tax_amount" name="total_tax_amount" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+                <td><input type="text" id="total_paid_amount" name="total_paid_amount" value="" readonly="readonly" style="background-color:#cccccc; width:80px;" /></td>
+               
+            </tr>
+        </tbody>
+    </table>
+</div>

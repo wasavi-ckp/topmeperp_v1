@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "驗收單查詢 :";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+<h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>
+<div class="jumbotron">
+    <form name="receiptSearch" id="receiptSearch" action="" method="Post" class="form-inline">
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label for="id">專案編號:</label><input i d="id" name="id" type="text" value="@ViewBag.projectid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-6">
+                <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+        </div>
+        <hr style="border-top: 1px solid #8c8b8b;" />
+        <div class="row">
+            <div class='col-md-6 date form-group'>
+                <label for="keyword">關鍵字 : </label>
+                <input id="keyword" name="keyword" class="form-control" />
+                </div>
+                <div class="col-md-6 form-group">
+                    <input id="Submit5" type="submit" class="btn btn-info" value="查詢" />
+                    <input type="button" class="btn btn-success" onclick="javascript:window.location='@Url.Action("Index", "Plan")'" value="回上一頁">
+                </div>
+            </div>
+        <div class="col-md-6">
+            <div id="divProcessing">
+                <img src="~/Content/ajax-loader.gif">
+            </div>
+        </div>
+    </form>
+</div>
+<!--驗收單列表區域-->
+<div class="container-fluid">
+    @ViewBag.SearchResult
+    @if (null != Model)
+    {
+        Html.RenderPartial("_ReceiptList4Dilivery");
+    }
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit5').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+
+</script>

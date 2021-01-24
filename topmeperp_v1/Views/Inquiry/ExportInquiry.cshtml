@@ -1,0 +1,72 @@
+﻿@{
+    ViewBag.Title = "備標作業-詢價單下載測試";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-8">
+            <form name="FormInquiry" id="FormInquiry" action="" method="Post">
+                詢價單編號:<input id="formid" name="formid" type="text" value="@ViewBag.formid" /><br />
+                <input id="Submit1" type="submit" value="查詢" />
+                <p></p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="col-md-1">專案名稱：</div>
+                        <div class="col-md-3"><input id="prjId" name="prjId" type="text" value="@ViewBag.projectid" /></div>
+                        <div class="col-md-1">廠商名稱：</div>
+                        <div class="col-md-3"><input type="text" id='textbox1' name="textbox1" /> </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="col-md-1">採購項目：</div>
+                        <div class="col-md-3"><input id="prjId" name="prjId" type="text" value="@ViewBag.projectid" /></div>
+                        <div class="col-md-1">聯絡人：</div>
+                        <div class="col-md-3"><input type="text" id='textbox1' name="textbox1" /> </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="col-md-1">承辦人：</div>
+                        <div class="col-md-3"><input id="prjId" name="prjId" type="text" value="@ViewBag.projectid" /></div>
+                        <div class="col-md-1">E-mail：</div>
+                        <div class="col-md-3"><input type="text" id='textbox1' name="textbox1" /> </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="col-md-1">聯絡電話：</div>
+                        <div class="col-md-3"><input id="prjId" name="prjId" type="text" value="@ViewBag.projectid" /></div>
+                        <div class="col-md-1">報價期限：</div>
+                        <div class="col-md-3"><input type="text" id='textbox1' name="textbox1" /> </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="col-md-1">承辦人E-mail：</div>
+                        <div class="col-md-3"><input id="prjId" name="prjId" type="text" value="@ViewBag.projectid" /></div>
+                        <div class="col-md-1">詢價單編號：</div>
+                        <div class="col-md-3"><input type="text" id='textbox1' name="textbox1" /> </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="col-md-1">承辦人傳真：</div>
+                        <div class="col-md-3"><input id="prjId" name="prjId" type="text" value="@ViewBag.projectid" /></div>
+                    </div>
+                </div>
+            </form>
+    </div>
+</div>
+</div>
+
+<!--詢價單明細列表區域-->
+<div class="container">
+    @ViewBag.SearchResult
+    @if (null != Model)
+    {
+        Html.RenderPartial("FormItemList");
+    }
+</div>

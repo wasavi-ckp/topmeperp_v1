@@ -1,0 +1,25 @@
+﻿<!-- Modal content-->
+<div class="modal-content">
+    <form id="formTaskItem" name="formTaskItem" action="refreshTaskItem" method="post">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">任務分派資料</h4>
+        </div>
+        <div class="modal-body form-group">
+            <input type="hidden" id="prjid" name="prjid" value="@ViewBag.projectid" />
+            <input type="hidden" id="task_id" name="task_id" />
+            <input type="hidden" id="createDate" name="createDate" />
+            <div class="row form-group"><div class="col-md-4">任務類型</div><div class="col-md-8"><input type="text" id="taskType" name="taskType" class="form-control" readonly /></div></div>
+            <div class="row form-group"><div class="col-md-4">負責人員</div><div class="col-md-8"><input type="text" id="userId" name="userId" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">負責項目</div><div class="col-md-8"><input type="text" id="taskItem" name="taskItem" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">預定完成時間</div><div class="col-md-8"><input type="text" id="finishDate" name="finishDate" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">備註</div><div class="col-md-8"><input type="text" id="taskRemark" name="taskRemark" class="form-control" /></div></div>
+            <div class="row form-group"><div class="col-md-4">建立人</div><div class="col-md-8"><input type="text" id="createId" name="createId" class="form-control" readonly/></div></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+            <button type="submit" class="btn btn-default" data-dismiss="modal" id="refreshTask">儲存</button>
+        </div>
+    </form>
+</div>
+

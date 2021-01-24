@@ -1,0 +1,271 @@
+﻿@model topmeperp.Models.InquiryFormModel
+@{
+    ViewBag.Title = "備標作業-標單明細管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域-->
+<div class="jumbotron">
+    <h3>@ViewBag.Title</h3>
+    <form name="formSearch" id="formSearch" method="post" class="form-inline">
+        <div class="row">
+            <div class="col-md-6 form-group" style="padding-top:10px">
+                <label for="id">專案編號:</label><input id="id" name="id" type="text" value="@ViewBag.id" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-6" style="padding-top:10px">
+                <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                <a class="btn btn-link" href="/Tender/downLoadProjectItem?projectid=@ViewBag.id" target="_blank">下載</a>
+                <button class="btn btn-link" data-toggle="modal" data-target="#formUploadItem"  type="button">上傳</button>
+            </div>
+        </div>
+        <div class="container" id="divQuery">
+            <hr style="border-top: 1px solid #8c8b8b;" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="typeCode1">九宮格:</label><input id="typeCode1" name="typeCode1" type="text" value="" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label for="typeCode2">次九宮格:</label><input id="typeCode2" name="typeCode2" type="text" value="" class="form-control" />
+                </div>
+                <div class="col-md-2"><input type="checkbox" name="chkEx" id="chkEx" value="chkException" />未分類</div>
+                <div class="col-md-2">
+                    是否刪除:
+                    <select id="selDelFlag" name="selDelFlag">
+                        <option value="N" selected>否</option>
+                        <option value="Y">是</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="padding-top:5px">
+                <div class="col-md-4">
+                    <label for="systemMain">主系統:</label>
+                    @Html.DropDownList("SystemMain", (IEnumerable<SelectListItem>)ViewBag.SystemMain, String.Empty, new { @class = "form-control selectpicker" })
+                </div>
+                <div class="col-md-6">
+                    <label for="systemSub">次系統:</label>
+                    @Html.DropDownList("systemSub", (IEnumerable<SelectListItem>)ViewBag.SystemSub, String.Empty, new { @class = "form-control selectpicker" })
+                </div>
+            </div>
+            <div class="row" style="padding-top:3px">
+                <div class="col-md-6">
+                    <div id="divProcessing">
+                        <img src="~/Content/ajax-loader.gif">
+                    </div>
+                    <input id="btnQuery" class="btn btn-info" type="button" onclick="getComparisonData()" value="查詢" />
+                    <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#projectItem" onclick="addProjectItem()">新增</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="container" id="comparisonData" style="width:1920px">
+</div>
+<!-- Modal :對話框-->
+<div class="modal fade" id="projectItem" role="dialog">
+    <div class="modal-dialog" id="projectItemDialog">
+        <!-- Modal content-->
+        @Html.Partial("_ProjectItem");
+    </div>
+</div>
+
+<!-- Modal :對話框 上傳檔案-->
+<div class="modal fade" id="formUploadItem" role="dialog">
+    <div class="modal-dialog" id="formUploadItem">
+        <div class="modal-content">
+            <form id="formFileUpload" name="formFileUpload" action="/Tender/uploadProjectItem" method="post" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">上傳標單明細資料</h4>
+                </div>
+                <div class="modal-body form-group">
+                    <input id="id" name="id" type="text" value="@ViewBag.id" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                    <input type="file" name="file1" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="上傳" onclick="uploadProjecItem()"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#btnQuery').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+    function getComparisonData() {
+        //Ajax 功能範例:置換部分網頁內容
+        var URLs = "/Tender/ShowProejctItems";
+        $("#divProcessing").show();
+        $.ajax({
+            url: URLs,
+            data: $('#formSearch').serialize(),
+            type: "POST",
+            dataType: 'html',
+            success: function (result) {
+                $("#comparisonData").html(result);
+                $("#divProcessing").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+                $("#divProcessing").hide();
+            }
+        });
+    }
+    //將ProjectItem 註記刪除
+    function delProjectItem(itemid) {
+        // alert(itemid);
+        $.ajax({
+            url: "/Tender/delProjectItem",
+            type: "POST",
+            data: { itemid: itemid },
+            dataType: "text",
+            success: function (data) {
+                alert(data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error del data bys ajax');
+            }
+        });
+    }
+    //由ID 取得資料填入表單
+    function getProjectItem(itemid) {
+        //alert(userid);
+        $.ajax({
+            url: "/Tender/getProjectItem",
+            type: "GET",
+            data: { itemid: itemid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#project_id').val(data.PROJECT_ID);
+                $('#project_item_id').val(data.PROJECT_ITEM_ID);
+                $('#item_id').val(data.ITEM_ID);
+                $('#item_desc').val(data.ITEM_DESC);
+                $('#item_unit').val(data.ITEM_UNIT);
+                $('#item_quantity').val(data.ITEM_QUANTITY);
+                $('#item_unit_price').val(data.ITEM_UNIT_PRICE);
+                $('#item_remark').val(data.ITEM_REMARK);
+                $('#type_code_1').val(data.TYPE_CODE_1);
+                $('#type_code_2').val(data.TYPE_CODE_2);
+                $('#system_main').val(data.SYSTEM_MAIN);
+                $('#system_sub').val(data.SYSTEM_SUB);
+                $('#excel_row_id').val(data.EXCEL_ROW_ID);
+                $('#flag').val("update");
+                $('#projectItem').modal('show'); // show bootstrap modal when complete loaded
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+    function addProjectItemAfter(itemid) {
+        //alert(userid);
+        $.ajax({
+            url: "/Tender/getProjectItem",
+            type: "GET",
+            data: { itemid: itemid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#project_id').val(data.PROJECT_ID);
+                $('#type_code_1').val(data.TYPE_CODE_1);
+                $('#type_code_2').val(data.TYPE_CODE_2);
+                $('#system_main').val(data.SYSTEM_MAIN);
+                $('#system_sub').val(data.SYSTEM_SUB);
+                $('#excel_row_id').val(data.EXCEL_ROW_ID);
+                $('#flag').val("addAfter");
+                $('#projectItem').modal('show'); // show bootstrap modal when complete loaded
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+    function addProjectItem() {
+        $('#project_item_id').val("");
+        $('#item_id').val("");
+        $('#item_desc').val("");
+        $('#item_unit').val("");
+        $('#item_quantity').val("");
+        $('#item_unit_price').val("");
+        $('#item_remark').val("");
+        $('#type_code_1').val("");
+        $('#type_code_2').val("");
+        $('#system_main').val("");
+        $('#system_sub').val("");
+        $('#excel_row_id').val("");
+        $('#flag').val("add");
+        //$('#projectItem').modal('show'); // show bootstrap modal when complete loaded
+    }
+    //更新project item
+    $("#saveProjectItem").click(function () {
+        var s = $('#formProjectItem').serialize();
+        var URLs = "/Tender/addProjectItem";
+        $.ajax({
+            url: URLs,
+            data: $('#formProjectItem').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    // Hide the "busy" Gif at load:
+    $("#divProcessing").hide();
+    // Attach click handler to the submit button:
+    $('#login').click(function () {
+        $("#divProcessing").show();
+    });
+    //隱藏/開啟查詢區域
+    var isShow = true;
+    function switchDivQuery() {
+        if (isShow) {
+            $("#divQuery").hide();
+            isShow = false;
+        } else {
+            $("#divQuery").show();
+            isShow = true;
+        }
+    }
+    function uploadProjecItem() {
+        $("#divProcessing").show();
+        $("#formFileUpload").submit(function (e) {
+            var formObj = $(this);
+            var formURL = formObj.attr("action");
+            var formData = new FormData(this);
+            $.ajax({
+                url: formURL,
+                type: 'POST',
+                data: formData,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (data, textStatus, jqXHR) {
+                    alert(data);
+                    $("#divProcessing").hide();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR);
+                    $("#divProcessing").hide();
+                }
+            });
+            e.preventDefault(); //Prevent Default action. 
+            e.unbind();
+        });
+        $("#formFileUpload").submit(); //Submit the form
+       // document.forms["formFileUpload"].submit();
+    }
+</script>

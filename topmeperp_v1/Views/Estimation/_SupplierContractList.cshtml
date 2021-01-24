@@ -1,0 +1,68 @@
+﻿@model topmeperp.Models.ContractModels
+<table class="table">
+    <tr>
+        <th>
+            NO.
+        </th>
+        <th>
+            合約類型
+        </th>
+        <th>
+            合約編號
+        </th>
+        <th>
+            廠商名稱
+        </th>
+        <th>
+            採購項目
+        </th>
+        <th>
+            驗收品項
+        </th>
+        <th>
+            驗收單號
+        </th>
+        <th>
+            功能
+        </th>
+    </tr>
+
+    @foreach (var item in Model.contractItems)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NO)
+            </td>
+            @if (item.TYPE == "Y")
+            {
+            <td>
+                工資
+            </td>
+            }
+            else
+            {
+                <td>材料/設備</td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.INQUIRY_FORM_ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SUPPLIER_ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FORM_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ITEM_ROWS)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PR_ID_S)~@Html.DisplayFor(modelItem => item.PR_ID_E)
+            </td>
+            <td>
+                <a href="/Estimation/createEstimationOrder?contractId=@item.INQUIRY_FORM_ID&projectId=@ViewBag.projectId&PR_ID_S=@item.PR_ID_S&PR_ID_E=@item.PR_ID_E" target="_blank">建立估驗單</a>
+            </td>
+        </tr>
+    }
+
+</table>
+

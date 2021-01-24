@@ -1,0 +1,57 @@
+﻿@model IEnumerable<topmeperp.Models.PurchaseRequisition>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    項次
+                </th>
+                <th>
+                    項目說明
+                </th>
+                <th>
+                    備註
+                </th>
+                <th>
+                    單位
+                </th>
+                <th>
+                    主系統
+                </th>
+                <th>
+                    庫存數量
+                </th>
+                <th>
+                    物料進出紀錄
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+                {
+
+                <tr>
+                    <td>
+                        @item.ITEM_ID
+                    </td>
+                    <td>
+                        @item.ITEM_DESC
+                    </td>
+                    <td>
+                        @item.REMARK
+                    </td>
+                    <td>
+                        @item.ITEM_UNIT
+                    </td>
+                    <td>
+                        @item.SYSTEM_MAIN
+                    </td>
+                    <td>
+                        @item.INVENTORY_QTY
+                    </td>
+                    <td><a href="/MaterialManage/DeliveryItem/@item.PLAN_ITEM_ID@item.REMARK" target="_blank">檢視</a></td>
+                </tr>
+            }
+        </tbody>
+</table>
+

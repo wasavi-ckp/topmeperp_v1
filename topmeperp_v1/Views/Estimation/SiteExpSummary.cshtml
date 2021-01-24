@@ -1,0 +1,159 @@
+﻿@model topmeperp.Models.ExpenseBudgetModel
+@{
+    ViewBag.Title = "工地費用預算執行彙整表";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<style>
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #ccc;
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+</style>
+<!--DataTables 引用-->
+<script src="~/Content/datatables/datatables.js"></script>
+<script src="~/Content/datatables/Buttons-1.5.1/js/dataTables.buttons.js"></script>
+<script src="~/Content/datatables/Buttons-1.5.1/js/buttons.flash.js"></script>
+<script src="~/Content/datatables/JSZip-2.5.0/jszip.js"></script>
+<script src="~/Content/datatables/Buttons-1.5.1/js/buttons.html5.js"></script>
+<script src="~/Content/datatables/Buttons-1.5.1/js/buttons.print.js"></script>
+
+<div class="container" style="padding-bottom:10px">
+    <h3 style="padding-bottom:5px;">工地費用預算執行彙整表 : </h3>
+    <form class="form-inline">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="projectid">專案代號:</label>
+                <input id="projectid" name="projectid" type="text" value="@ViewBag.projectid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-8">
+                <label for="projectName">專案名稱:</label>
+                <input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                <button type="button" class="btn btn-primary" onclick="window.open('@Url.Action("SiteBudget", "Estimation", new { id = @ViewBag.projectid })');">工地費用預算</button>
+                <a class="btn btn-info" href="/Estimation/downLoadSiteExpenseSummary?projectid=@ViewBag.projectid" target="_blank"><span>下載彙整表</span></a>
+            </div>
+        </div>
+        <div class="row info">
+            <div class="col-md-3 text-right">
+                <span style="color:darkgreen; font-size: 18px;">總預算金額 : @String.Format("{0:#,##0.#}", TempData["TotalBudget"])</span>
+            </div>
+            <div class="col-md-3 text-right">
+                <span style="color:darkgreen; font-size: 18px;">費用累計金額 : @String.Format("{0:#,##0.#}", TempData["TotalExpense"])</span>
+            </div>
+            <div class="col-md-3 text-right">
+                @{
+                    decimal? excuRatio = 0;
+                    if (Convert.ToDecimal(TempData["TotalExpense"]) != 0 && Convert.ToDecimal(TempData["TotalBudget"]) != 0)
+                    {
+                            excuRatio = Convert.ToDecimal(TempData["TotalExpense"]) / Convert.ToDecimal(TempData["TotalBudget"]) * 100;
+                    }
+                }
+                <span style="color: red; font-size: 20px;">執行率 : @String.Format("{0:0.00}", excuRatio) %</span>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container-fluid">
+    <div class="tab">
+
+        @foreach (var item in Model.SiteBudgetPerYear)
+            {
+            <button class="tablinks" id="tab@item.YEAR_SEQUENCE" onclick="clickTab(event, @item.BUDGET_YEAR)">第 @item.YEAR_SEQUENCE 年度</button>
+        }
+    </div>
+    <div class="tab-content">
+        <div id="reportArea" name="reportArea">
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            var method1 = $('input[name=searchKey]:radio:checked').val();
+            if (method1 == "S" && $("#yearSequence").val() != "" || method1 == "D" && $("#date").val() != "") {
+                $("#divProcessing").show();
+            }
+        });
+        $(function () {
+            $('#date').datetimepicker({
+                format: 'YYYY',
+                locale: 'zh-tw'
+            });
+        });
+
+    });
+    function clickTab(evt, budgetYear) {
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        evt.currentTarget.className += " active";
+        showData(budgetYear);
+    }
+
+    $.extend($.fn.dataTable.defaults, {
+        searching: false,
+        ordering: false,
+        paging: false,
+        fixed: {
+            header: true
+        },
+        dom: 'Bfrtip',
+        buttons: [
+             'copy', 'csv', 'excel'
+        ]
+    });
+    function showData(budgetYear) {
+        var URLs = "/Estimation/SearchSiteExpSummary";
+        $("#divProcessing").show();
+        $.ajax({
+            url: URLs,
+            data: { 'budgetYear': budgetYear, 'projectid': $('#projectid').val() },
+            type: "POST",
+            dataType: 'html',
+            success: function (result) {
+                $("#reportArea").html(result);
+                $('#tableSum').DataTable();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+        $("#divProcessing").hide();
+    }
+</script>

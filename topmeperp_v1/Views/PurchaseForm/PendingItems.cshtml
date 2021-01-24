@@ -1,0 +1,67 @@
+﻿@model IEnumerable<topmeperp.Models.PlanItem4Map>
+
+<div class="container">
+    <h2 style="padding-top:50px;">材料分項漏報品項 : </h2>
+</div>
+<div style="padding-top:15px;">@ViewBag.SearchResult</div>
+<table class="table">
+    <tr>
+        <th>
+            分項名稱
+        </th>
+        <th>
+            發包詢價單號碼
+        </th>
+        <th>
+            No.
+        </th>
+        <th>
+            項次
+        </th>
+        <th>
+            項目說明
+        </th>
+        <th>
+            單位
+        </th>
+        <th>
+            數量
+        </th>
+        <th>
+            備註
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.formName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.formId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PLAN_ITEM_ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ITEM_ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ITEM_DESC)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ITEM_UNIT)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ITEM_QUANTITY)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ITEM_REMARK)
+            </td>
+        </tr>
+    }
+</table>
+
+
+

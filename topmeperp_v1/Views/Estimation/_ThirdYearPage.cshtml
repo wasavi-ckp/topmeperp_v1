@@ -1,0 +1,314 @@
+﻿@model topmeperp.Models.SiteBudgetModels
+
+<div class="container-fluid">
+    @if (null != Model)
+    {
+        <form id="formSiteBudget_3" name="formSiteBudget_3" action="UpdateSiteBudgetOfThirdYear" method="post">
+            <input type="hidden" name="thirdYear" id="thirdYear" value="@ViewBag.ThirdYear" />
+            <input type="hidden" name="projectId" id="projectId" value="@ViewBag.projectid" />
+            <div class="row" style="padding-bottom:10px">
+                <div class="col-md-12" style="padding-top:5px">
+                    <div class="col-md-3">
+                        <span style="color: blue; font-size: 25px;">預算年度 : @ViewBag.ThirdYear</span>
+                    </div>
+                    <div class="col-md-1">
+                        <span font-size 30px;"><input type="button" value="修改" class="btn btn-warning" id="saveThirdYear" /></span>
+                    </div>
+                </div>
+            </div>
+            <table class="table fixed_headers2">
+                <thead>
+                    <tr>
+                        <th>
+                            項目名稱
+                        </th>
+                        <th>
+                            項目代碼
+                        </th>
+                        <th>
+                            1月
+                        </th>
+                        <th>
+                            2月
+                        </th>
+                        <th>
+                            3月
+                        </th>
+                        <th>
+                            4月
+                        </th>
+                        <th>
+                            5月
+                        </th>
+                        <th>
+                            6月
+                        </th>
+                        <th>
+                            7月
+                        </th>
+                        <th>
+                            8月
+                        </th>
+                        <th>
+                            9月
+                        </th>
+                        <th>
+                            10月
+                        </th>
+                        <th>
+                            11月
+                        </th>
+                        <th>
+                            12月
+                        </th>
+                        <th>
+                            合計
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.thirdYear)
+                    {
+                        <tr>
+                            <td>
+                                <span style="color: blue; font-size: 15px;">
+                                    <input type="text" style="width:80px" value="@item.SUBJECT_NAME" readonly="readonly" />
+                                </span>
+                            </td>
+                            <td>
+                                <span style="color: blue; font-size: 15px;">
+                                    <input type="text" style="width:60px" name="subjctid" id="subjctid" value="@item.SUBJECT_ID" readonly="readonly" />
+                                </span>
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="janAmt3" id="janAmt3" value="@String.Format("{0:#,##0.#}", item.JAN)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="febAmt3" id="febAmt3" value="@String.Format("{0:#,##0.#}", item.FEB)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="marAmt3" id="marAmt3" value="@String.Format("{0:#,##0.#}", item.MAR)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="aprAmt3" id="aprAmt3" value="@String.Format("{0:#,##0.#}", item.APR)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="mayAmt3" id="mayAmt3" value="@String.Format("{0:#,##0.#}", item.MAY)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="junAmt3" id="junAmt3" value="@String.Format("{0:#,##0.#}", item.JUN)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="julAmt3" id="julAmt3" value="@String.Format("{0:#,##0.#}", item.JUL)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="augAmt3" id="augAmt3" value="@String.Format("{0:#,##0.#}", item.AUG)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="sepAmt3" id="sepAmt3" value="@String.Format("{0:#,##0.#}", item.SEP)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="octAmt3" id="octAmt3" value="@String.Format("{0:#,##0.#}", item.OCT)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="novAmt3" id="novAmt3" value="@String.Format("{0:#,##0.#}", item.NOV)" />
+                            </td>
+                            <td>
+                                <input type="text" style="width:70px;text-align:right" name="decAmt3" id="decAmt3" value="@String.Format("{0:#,##0.#}", item.DEC)" />
+                            </td>
+                            <td>
+                                <span style="color: blue; font-size: 15px;">
+                                    <input type="text" style="width:80px" name="htotal_3" id="htotal_3" value="@String.Format("{0:#,##0.#}", item.HTOTAL)" readonly="readonly" />
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <table class="table fixed_headers2">
+                <tr>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:80px" name="" id="" value="合計 :" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:60px" name="" id="" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="janVTotal_3" id="janVTotal_3" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="febVTotal_3" id="febVTotal_3" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="marVTotal_3" id="marVTotal_3" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="aprVTotal_3" id="aprVTotal_3" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="mayVTotal_3" id="mayVTotal_3" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="junVTotal_3" id="junVTotal_3" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="julVTotal_3" id="julVTotal_3" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="augVTotal_3" id="augVTotal_3" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="sepVTotal_3" id="sepVTotal_3" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="octVTotal_3" id="octVTotal_3" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="novVTotal_3" id="novVTotal_3" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:70px;text-align:right" name="decVTotal_3" id="decVTotal_3" value="" />
+                        </span>
+                    </th>
+                    <th>
+                        <span style="color: blue; font-size: 15px;">
+                            <input type="text" style="width:80px" name="VTotal_3" id="VTotal_3" value="" />
+                        </span>
+                    </th>
+                </tr>
+            </table>
+        </form>
+    }
+    else
+    {
+        <p></p>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        var total1 = 0;
+        var sum1 = 0;
+        var total2 = 0;
+        var sum2 = 0;
+        var total3 = 0;
+        var sum3 = 0;
+        var total4 = 0;
+        var sum4 = 0;
+        var total5 = 0;
+        var sum5 = 0;
+        var total6 = 0;
+        var sum6 = 0;
+        var total7 = 0;
+        var sum7 = 0;
+        var total8 = 0;
+        var sum8 = 0;
+        var total9 = 0;
+        var sum9 = 0;
+        var total0 = 0;
+        var sum10 = 0;
+        var total11 = 0;
+        var sum11 = 0;
+        var total12 = 0;
+        var sum12 = 0;
+        var sum13 = 0;
+        $('table > tbody > tr').each(function () {
+            var atm1 = 0; var atm2 = 0; var atm3 = 0;
+            var atm4 = 0; var atm5 = 0; var atm6 = 0;
+            var atm7 = 0; var atm8 = 0; var atm9 = 0;
+            var atm10 = 0; var atm11 = 0; var atm12 = 0;
+
+            if ($.trim($(this).find("#janAmt3").val()) != "") {
+                atm1 = parseInt($.trim($(this).find("#janAmt3").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#febAmt3").val()) != "") {
+                atm2 = parseInt($.trim($(this).find("#febAmt3").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#marAmt3").val()) != "") {
+                atm3 = parseInt($.trim($(this).find("#marAmt3").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#aprAmt3").val()) != "") {
+                atm4 = parseInt($.trim($(this).find("#aprAmt3").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#mayAmt3").val()) != "") {
+                atm5 = parseInt($.trim($(this).find("#mayAmt3").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#junAmt3").val()) != "") {
+                atm6 = parseInt($.trim($(this).find("#junAmt3").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#julAmt3").val()) != "") {
+                atm7 = parseInt($.trim($(this).find("#julAmt3").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#augAmt3").val()) != "") {
+                atm8 = parseInt($.trim($(this).find("#augAmt3").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#sepAmt3").val()) != "") {
+                atm9 = parseInt($.trim($(this).find("#sepAmt3").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#octAmt3").val()) != "") {
+                atm10 = parseInt($.trim($(this).find("#octAmt3").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#novAmt3").val()) != "") {
+                atm11 = parseInt($.trim($(this).find("#novAmt3").val().replace(",", "")));
+            }
+            if ($.trim($(this).find("#decAmt3").val()) != "") {
+                atm12 = parseInt($.trim($(this).find("#decAmt3").val().replace(",", "")));
+            }
+
+            total1 = atm1; total2 = atm2; total3 = atm3;
+            total4 = atm4; total5 = atm5; total6 = atm6;
+            total7 = atm7; total8 = atm8; total9 = atm9;
+            total10 = atm10; total11 = atm11; total12 = atm12;
+
+            sum1 += total1; sum2 += total2; sum3 += total3;
+            sum4 += total4; sum5 += total5; sum6 += total6;
+            sum7 += total7; sum8 += total8; sum9 += total9;
+            sum10 += total10; sum11 += total11; sum12 += total12;
+            sum13 += total1 + total2 + total3 + total4 + total5 + total6 + total7 + total8 + total9 + total10 + total11 + total12;
+
+        });
+        //使用Numeral.js 處理格式
+        $("#janVTotal_3").val(numeral(sum1).format('0,0'));
+        $("#febVTotal_3").val(numeral(sum2).format('0,0'));
+        $("#marVTotal_3").val(numeral(sum3).format('0,0'));
+        $("#aprVTotal_3").val(numeral(sum4).format('0,0'));
+        $("#mayVTotal_3").val(numeral(sum5).format('0,0'));
+        $("#junVTotal_3").val(numeral(sum6).format('0,0'));
+        $("#julVTotal_3").val(numeral(sum7).format('0,0'));
+        $("#augVTotal_3").val(numeral(sum8).format('0,0'));
+        $("#sepVTotal_3").val(numeral(sum9).format('0,0'));
+        $("#octVTotal_3").val(numeral(sum10).format('0,0'));
+        $("#novVTotal_3").val(numeral(sum11).format('0,0'));
+        $("#decVTotal_3").val(numeral(sum12).format('0,0'));
+        $("#VTotal_3").val(numeral(sum13).format('0,0'));
+    });
+
+</script>
+

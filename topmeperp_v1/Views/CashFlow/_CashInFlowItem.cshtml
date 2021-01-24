@@ -1,0 +1,101 @@
+﻿<div style="padding-top:50px;">
+    <h4><span style="font-weight:bold;color:cornflowerblue">@ViewBag.SearchTerm</span></h4>
+    <h3 class="text-left" style="padding-top:10px;">收入明細 :</h3>
+    <form id="formAccount" name="formAccount" action="UpdateAccountStatus" method="post">
+        <table class="table">
+            <tr>
+                <th>
+                    修改
+                </th>
+                <th>
+                    No.
+                </th>
+                <th>
+                    專案名稱/摘要說明
+                </th>
+                <th>
+                    應收金額
+                </th>
+                <th>
+                    實收金額
+                </th>
+                <th>
+                    預計入帳日期
+                </th>
+                <th>
+                    支票號碼
+                </th>
+                <th>
+                    暫不入帳
+                </th>
+            </tr>
+
+            @foreach (var item in Model.planAccount)
+            {
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-default btn-xs" onclick="getPlanAccountItem('@item.PLAN_ACCOUNT_ID')">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                    <td>@item.NO</td>
+                    <td>@item.PROJECT_NAME</td>
+                    <td>@String.Format("{0:$#,##0.#}", item.AMOUNT_PAYABLE)</td>
+                    <td>@String.Format("{0:$#,##0.#}", item.AMOUNT_PAID)</td>
+                    <td>@item.RECORDED_DATE</td>
+                    <td>@item.CHECK_NO</td>
+                    @if (item.STATUS != 10)
+                    {
+                        <td><span style="color: red; font-size: 15px;">是</span></td>
+                    }
+                    else
+                    {
+                        <td>否</td>
+                    }
+                </tr>
+            }
+        </table>
+    </form>
+</div>
+<h3 class="text-left" style="padding-top:20px;">銀行借款/廠商還款 :</h3>
+<table class="table table-bordered">
+    <tr>
+        <th>
+            類型
+        </th>
+        <th>
+            金額
+        </th>
+        <th>
+            日期
+        </th>
+        <th>
+            備註
+        </th>
+    </tr>
+
+    @foreach (var item in Model.finLoanTranaction)
+            {
+        <tr>
+            @if (item.IS_SUPPLIER == "Y")
+            {
+                <td>廠商還款</td>
+            }
+            else
+            {
+                <td>銀行借款</td>
+
+            }
+            <td>@String.Format("{0:$#,##0.#}", item.AMOUNT)</td>
+            @if (item.TRANSACTION_TYPE == -1)
+            {
+                <td>@string.Format("{0:yyyy/MM/dd}", @item.EVENT_DATE)</td>
+            }
+            else
+            {
+                <td>@string.Format("{0:yyyy/MM/dd}", @item.PAYBACK_DATE)</td>
+            }
+            <td>@item.REMARK</td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,63 @@
+﻿@model topmeperp.Models.SYS_USER
+@{
+    ViewBag.Title = "基本資料管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="container">
+    <div class="page-header">
+        <h4 class="title">個人基本資料</h4>
+    </div>
+    <form id="formUser" name="formUser" action="userProfile" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-md-2" for="USER_ID">帳號</label>
+
+            <div class="col-md-10" style="margin-bottom:5px;"> @Html.EditorFor(model => model.USER_ID, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })</div>
+
+            <label class="control-label col-md-2" for="USER_NAME">姓名</label>
+            <div class="col-md-10" style="margin-bottom:5px;">
+                @Html.EditorFor(model => model.USER_NAME, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <label class="control-label col-md-2" for="PASSWORD">密碼</label>
+            <div class="col-md-10" style="margin-bottom:5px;">
+                <input type="password" id="PASSWORD" name="PASSWORD" class="form-control" />
+            </div>
+
+            <label class="control-label col-md-2" for="confirmpwd">確認密碼</label>
+            <div class="col-md-10" style="margin-bottom:5px;">
+                <input type="password" id="confirmpwd" name="confirmpwd" class="form-control" />
+            </div>
+
+            <label class="control-label col-md-2" for="EMAIL">EMail</label>
+            <div class="col-md-10" style="margin-bottom:5px;">
+                @Html.EditorFor(model => model.EMAIL, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <label class="control-label col-md-2" for="TEL">電話</label>
+            <div class="col-md-10" style="margin-bottom:5px;">
+                <div class="col-md-3">
+                    @Html.EditorFor(model => model.TEL, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <label class="col-md-1 control-label" for="TEL_EXT">分機</label>
+                <div class="col-md-2">
+                    @Html.EditorFor(model => model.TEL_EXT, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+            <label class="control-label col-md-2" for="FAX">傳真</label>
+            <div class="col-md-10" style="margin-bottom:5px;">
+                @Html.EditorFor(model => model.FAX, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+
+            <label class="control-label col-md-2" for="MOBILE">手機</label>
+            <div class="col-md-10" style="margin-bottom:5px;">
+                @Html.EditorFor(model => model.MOBILE, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="button" class="btn btn-primary" onclick="window.close()">關閉</button>
+                <button type="submit" class="btn btn-default" id="saveUser">儲存</button>
+                <span class="label label-primary">@ViewBag.Message</span>
+                <span class="label label-danger">@ViewBag.ErrorMessage</span>
+            </div>
+        </div>
+    </form>
+</div>

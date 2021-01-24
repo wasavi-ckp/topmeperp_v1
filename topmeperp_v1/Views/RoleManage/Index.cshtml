@@ -1,0 +1,110 @@
+﻿@{
+    ViewBag.Title = "權限設定";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<div class="jumbotron">
+    <form name="formRole" id="formRole" method="Post">
+        <div class="row form-group">
+            <label class="col-md-1">角色:</label>
+            <div class="col-md-3">
+                @Html.DropDownList("roles", null, String.Empty, new { @class = "form-control", @onchange = "selectRole(this.value)" })
+            </div>
+            <div class="col-md-3"><button type="button" class="btn btn-warning" data-toggle="modal" data-target="#roleId">新增角色</button></div>
+            <div id="divProcessing" class="col-md-2">
+                <img src="~/Content/ajax-loader.gif">
+            </div>
+
+        </div>
+    </form>
+</div>
+<div class="row body-content">
+    <button class="btn-default" onclick="updatePrivilegr()">送出</button>
+    <form id="formPrivilege" name="formPrivilege">
+        <input type="hidden" id="roleid" name="roleid" value="" />
+        <div id="privilegeArea" name="privilegeArea">
+            @Html.Partial("FunctionList")
+        </div>
+    </form>
+    <button class="btn-default" onclick="updatePrivilegr()">送出</button>
+</div>
+
+<!-- Modal :對話框-->
+<div class="modal fade" id="roleId" role="dialog">
+    <div class="modal-dialog" id="roleDialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <form id="formRoleInfo" name="formRoleInfo" action="addOrUpdateRole" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">新增/編輯角色</h4>
+                </div>
+                <div class="modal-body form-group">
+                    <div class="row form-group"><div class="col-md-4">角色代碼</div><div class="col-md-8"><input type="text" id="r_roleid" name="r_roleid" class="form-control" /></div></div>
+                    <div class="row form-group"><div class="col-md-4">角色名稱</div><div class="col-md-8"><input type="text" id="r_name" name="r_name" class="form-control" /></div></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+                    <button type="submit" class="btn btn-default" data-dismiss="modal" id="saveRole">儲存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $("#saveRole").click(function () {
+        //Ajax 功能範例
+        alert($('#formRoleInfo').serialize());
+        var URLs = "addOrUpdateRole";
+        $.ajax({
+            url: URLs,
+            data: $('#formRoleInfo').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    // Hide the "busy" Gif at load:
+    $("#divProcessing").hide();
+
+    function selectRole(val) {
+        //Ajax 功能範例:置換部分網頁內容
+        var URLs = "/RoleManage/FunctionList";
+        $("#divProcessing").show();
+        $.ajax({
+            url: URLs,
+            data: $('#formRole').serialize(),
+            type: "POST",
+            dataType: 'html',
+            success: function (result) {
+                $("#privilegeArea").html(result);
+                $("#roleid").val($("#roles").val());
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+        $("#divProcessing").hide();
+    }
+    function updatePrivilegr() {
+        var formdata = $('#formPrivilege').serialize();
+        //alert(formdata);
+        $.ajax({
+            url: "/RoleManage/UpdatePrivilege",
+            data: formdata,
+            type: "POST",
+            dataType: 'text',
+            success: function (result) {
+                // $("#functionArea").html(result);
+                alert(result);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,617 @@
+﻿@model topmeperp.Models.DailyReport
+@{
+    ViewBag.Title = "施工日報-填寫日報";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+    var iWorkerMaxRowIdx = 0;
+    var iTempWorkerRowIdx = 0;
+}
+<h3>@ViewBag.Title</h3>
+<!--條件區域-->
+<div class="page-header">
+    @ViewBag.Message
+    <form name="formSaveItemRow" id="formSaveItemRow" action="saveItemRow" method="post" enctype="multipart/form-data">
+        <div class="container">
+            <div class="row form-group">
+                <label class="col-sm-1 control-label">日期:</label>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" id="reportDate" name="reportDate" value="@ViewBag.RptDate" size="7" readonly />
+                </div>
+                <label class="col-sm-1 control-label">日報編號:</label>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" id="reportID" name="reportID" value="@ViewBag.RptId" readonly />
+                </div>
+                <label class="btn btn-info active">
+                    <input type="checkbox" id="taskDone" name="taskDone" value="done" checked=@Model.isDoneFlag />
+                    <span class="glyphicon glyphicon-ok">完成</span>
+                </label>
+                <button id="closeWindow" name="closeWindow" type="button" class="btn btn-success" onclick="javascript: window.close();">關閉</button>
+
+            </div>
+
+            <div class="row form-group">
+                <label class="col-sm-1 control-label">專案編號:</label>
+                <div class="col-sm-1">
+                    <input class="form-control" type="text" id="txtProjectId" name="txtProjectId" value="@ViewBag.projectId" readonly />
+                </div>
+                <label class="col-sm-1 control-label">專案名稱:</label>
+                <label class="col-sm-3 info">@ViewBag.projectName</label>
+                <label class="col-sm-1 control-label">任務編號:</label>
+                <div class="col-sm-1">
+                    <input class="form-control" type="text" id="txtPrjUid" name="txtPrjUid" value="@ViewBag.prj_uid" readonly />
+                </div>
+                <label class="col-sm-1 control-label">任務名稱:</label>
+                <label class="col-sm-3 info">@ViewBag.taskName</label>
+            </div>
+        </div>
+        <!--日報摘要輸入區塊-->
+        <div class="row">
+            <div class="panel panel-info">
+                <div class="panel-heading">施工日報摘要</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-4 bootstrap-select">
+                            <label class="col-xs-3 control-label">天氣:</label>
+                            @Html.DropDownList("selWeather", (IEnumerable<SelectListItem>)ViewBag.ddlWeather, new { @class = "selectpicker" })
+                        </div>
+                        <div class="col-xs-8">
+                            <label class="col-xs-2 control-label">摘要:</label>
+                            @if (null == @Model.dailyRpt)
+                            {
+                            <input class="form-control" type="text" id="txtSummary" name="txtSummary" value="" />
+                            }
+                            else
+                            {
+                            <input class="form-control" type="text" id="txtSummary" name="txtSummary" value="@Model.dailyRpt.SUMMARY" />
+                            }
+                        </div>
+                    </div>
+                    <div class="row" style="padding-top:5px">
+                        <div class="col-xs-4">
+                            <label class="col-xs-3 control-label">現場:</label>
+                            @if (null == @Model.dailyRpt)
+                            {
+                            <input class="form-control" style="width:40%" type="text" id="txtSenceUser" name="txtSenceUser" value="" />
+                            }
+                            else
+                            {
+                            <input class="form-control" style="width:40%" type="text" id="txtSenceUser" name="txtSenceUser" value="@Model.dailyRpt.SCENE_USER_NAME" />
+                            }
+                        </div>
+                        <div class="col-xs-4">
+                            <label class="col-xs-3 control-label">監造:</label>
+                            @if (null == @Model.dailyRpt)
+                            {
+                            <input class="form-control" style="width:40%" type="text" id="txtSupervision" name="txtSupervision" value="" />
+                            }
+                            else
+                            {
+                            <input class="form-control" style="width:40%" type="text" id="txtSupervision" name="txtSupervision" value="@Model.dailyRpt.SUPERVISION_NAME" />
+                            }
+                        </div>
+                        <div class="col-xs-4">
+                            <label class="col-xs-3 control-label">業主:</label>
+                            @if (null == @Model.dailyRpt)
+                            {
+                            <input class="form-control" style="width:40%" type="text" id="txtOwner" name="txtOwner" value="" />
+                            }
+                            else
+                            {
+                            <input class="form-control" style="width:40%" type="text" id="txtOwner" name="txtOwner" value="@Model.dailyRpt.OWNER_NAME" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#divItem">料件</a></li>
+                <li><a data-toggle="tab" href="#divWorker">出工</a></li>
+                <li><a data-toggle="tab" href="#divTempWorker">點工</a></li>
+                <li><a data-toggle="tab" href="#divMachine">機具</a></li>
+                <li><a data-toggle="tab" href="#divOther">重要記事</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="divItem" class="tab-pane fade in active">
+                    <h3>填寫料件施作記錄</h3>
+                    <div class="container" id="ItemImp">
+                        <div class="row clearfix">
+                            <div class="col-md-12 column">
+                                <table class="table table-bordered table-hover" id="tab_Item">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                #
+                                            </th>
+                                            <th class="text-center">
+                                                編號
+                                            </th>
+                                            <th class="text-center" width="62%">
+                                                名稱
+                                            </th>
+                                            <th class="text-center" width="8%">
+                                                發包數量
+                                            </th>
+                                            <th class="text-center" width="8%">
+                                                累積數量
+                                            </th>
+                                            <th class="text-center" width="8%">
+                                                施作數量
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int idx = 0; idx < Model.lstDailyRptItem4Show.Count; idx++)
+                                        {
+                                            var idxString = "addItemR" + idx;
+                                            var idxCount = idx + 1;
+                                        <tr id='@idxString'>
+                                            <td>@idxCount</td>
+                                            <td>
+                                                @Model.lstDailyRptItem4Show[idx].PROJECT_ITEM_ID
+                                                <input type='hidden' id='planItemId' name='planItemId' placeholder='planItemId' value='@Model.lstDailyRptItem4Show[idx].PROJECT_ITEM_ID' />
+                                            </td>
+                                            <td>@Model.lstDailyRptItem4Show[idx].ITEM_DESC</td>
+                                            <td>@Model.lstDailyRptItem4Show[idx].QTY</td>
+                                            <td><input type='text' id='accumulateQty' name='accumulateQty' placeholder='0' size="5" value="@Model.lstDailyRptItem4Show[idx].ACCUMULATE_QTY" readonly /></td>
+                                            <td><input type='text' id='planItemQty' name='planItemQty' placeholder='0' size="5" value="@Model.lstDailyRptItem4Show[idx].FINISH_QTY" /></td>
+                                        </tr>
+                                        }
+                                        @{
+                                            var iItemMaxRowIdx = @Model.lstDailyRptItem4Show.Count + 1;
+                                            var trItemMaxRowIdx = "addItemR" + iItemMaxRowIdx;
+                                        }
+
+                                        <tr id='@trItemMaxRowIdx'></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!--<a id="add_item_row" class="btn btn-default pull-left" onclick="addItemRow()">新增</a>-->
+                        <!-- <a id='delete_item_row' class="pull-right btn btn-default" onclick="delItemRow()">刪除</a>-->
+                        <buttn typeof="button" class="pull-right btn btn-default" onclick="nextTab('divWorker')">下一步</buttn>
+                        <!--<buttn typeof="button" class="pull-right btn btn-default" onclick="saveItemRow()">儲存</buttn>-->
+                    </div>
+                </div>
+                <div id="divWorker" class="tab-pane fade">
+                    <h3>填寫出工記錄</h3>
+                    <div class="container" id="WorkerImp">
+                        <a id="add_worker_row" class="btn btn-default pull-left" onclick="addWorkerRow()">新增</a>
+                        <div class="row clearfix">
+                            <div class="col-md-12 column">
+                                <table class="table table-bordered table-hover" id="tab_Worker">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                #
+                                            </th>
+                                            <th class="text-center">
+                                                廠商
+                                            </th>
+                                            <th class="text-center">
+                                                出工人數
+                                            </th>
+                                            <th class="text-center">
+                                                累積人天
+                                            </th>
+                                            <th class="text-center">
+                                                備註
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.lstWokerType4Show != null)
+                                        {
+                                            for (int idx = 0; idx < Model.lstWokerType4Show.Count; idx++)
+                                            {
+                                                var idxString = "addWorkerR" + idx;
+                                                var idxCount = idx + 1;
+                                                <tr id='@idxString'>
+                                                    <td>@idxCount</td>
+                                                    <td>
+                                                        <input type='text' id='txtSupplierId' name='txtSupplierId' value='@Model.lstWokerType4Show[idx].SUPPLIER_ID' />
+                                                    </td>
+                                                    <td>
+                                                        <input type='text' id='txtWorkerQty' name='txtWorkerQty' placeholder='0' size="5" value='@Model.lstWokerType4Show[idx].WORKER_QTY' />
+                                                    </td>
+                                                    <td>累計人天</td>
+                                                    <td><input type='text' id='txtRemark' name='txtRemark' value='@Model.lstWokerType4Show[idx].REMARK' /></td>
+                                                </tr>
+                                            }
+                                            iWorkerMaxRowIdx = @Model.lstWokerType4Show.Count;
+                                        }
+                                        @{
+                                            var trWorkerMaxRowIdx = "addWorkerR" + iWorkerMaxRowIdx;
+                                        }
+                                        <tr id='@trWorkerMaxRowIdx'></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <a id='delete_worker_row' class="pull-right btn btn-default" onclick="delWorkerRow()">刪除</a>
+                        <buttn typeof="button" class="pull-right btn btn-default" onclick="nextTab('divTempWorker')">下一步</buttn>
+                    </div>
+                </div>
+                <div id="divTempWorker" class="tab-pane fade">
+                    <h3>填寫點工工記錄</h3>
+                    <div class="container" id="TempWorkerImp">
+                        <a id="add_tempworker_row" class="btn btn-default pull-left" onclick="addTempWorkerRow()">新增</a>
+                        <div class="row clearfix">
+                            <div class="col-md-12 column">
+                                <table class="table table-bordered table-hover" id="tab_TempWorker">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                #
+                                            </th>
+                                            <th class="text-center">
+                                                出工廠商
+                                            </th>
+                                            <th class="text-center">
+                                                出工數量
+                                            </th>
+                                            <th class="text-center">
+                                                代付支出廠商
+                                            </th>
+                                            <th class="text-center">
+                                                簽到檔案
+                                            </th>
+                                            <th class="text-center">
+                                                備註
+                                            </th>
+                                            <th class="text-center">
+                                                累積數量
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.lstTempWoker4Show != null)
+                                        {
+                                            for (int idx = 0; idx < Model.lstTempWoker4Show.Count; idx++)
+                                            {
+                                                var idxString = "addTempWorkerR" + idx;
+                                                var idxCount = idx + 1;
+                                                <tr id='@idxString'>
+                                                    <td>@idxCount</td>
+                                                    <td>
+                                                        <!--出工廠商-->
+                                                        <input type='text' id='txtTempWorkSupplierId' name='txtTempWorkSupplierId' value='@Model.lstTempWoker4Show[idx].SUPPLIER_ID' class='form-control' />
+                                                    </td>
+                                                    <td>
+                                                        <!--出工數量-->
+                                                        <input type='text' id='txtTempWorkerQty' name='txtTempWorkerQty' placeholder='0' size="5" value='@Model.lstTempWoker4Show[idx].WORKER_QTY' class='form-control' />
+                                                    </td>
+                                                    <td>
+                                                        <!--代付支出廠商-->
+                                                        <input type='text' id='txtChargeSupplierId' name='txtChargeSupplierId' value='@Model.lstTempWoker4Show[idx].CHARGE_ID' class='form-control' />
+                                                    </td>
+                                                    <td>
+                                                        <!--簽名檔上傳-->
+                                                        <input type="file" id="fileList" name="fileList" class="form-control-file" value="test"/>
+                                                        <input type="hidden" id="doc" name="doc"  value="@Model.lstTempWoker4Show[idx].DOC"/>
+                                                        <a href="~/UploadFile/@ViewBag.projectId/@Model.lstTempWoker4Show[idx].DOC" target="_blank">檔案</a>
+                                                    </td>
+                                                    <td>
+                                                        <!--備註-->
+                                                        <input type='text' id='txtTempWorkRemark' name='txtTempWorkRemark' value='@Model.lstTempWoker4Show[idx].REMARK' class='form-control' />
+                                                    </td>
+                                                    <td>
+                                                        <!--累計數量-->
+
+                                                    </td>
+                                                </tr>
+                                            }
+                                            iTempWorkerRowIdx = @Model.lstTempWoker4Show.Count;
+                                        }
+                                        @{
+                                            var trTempWorkerRowIdx = "addTempWorkerR" + iTempWorkerRowIdx;
+                                        }
+                                        <tr id='@trTempWorkerRowIdx'></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <a id='delete_tempworker_row' class="pull-right btn btn-default" onclick="delTempWorkerRow()">刪除</a>
+                        <buttn typeof="button" class="pull-right btn btn-default" onclick="nextTab('divMachine')">下一步</buttn>
+                    </div>
+                </div>
+                <div id="divMachine" class="tab-pane fade">
+                    <h3>填寫機具記錄</h3>
+                    <div class="container" id="MachineImp">
+                        <div class="row clearfix">
+                            <div class="col-md-12 column">
+                                <table class="table table-bordered table-hover" id="tab_Machine">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                #
+                                            </th>
+                                            <th class="text-center">
+                                                編號
+                                            </th>
+                                            <th class="text-center">
+                                                機具種類
+                                            </th>
+                                            <th class="text-center">
+                                                累積數量
+                                            </th>
+                                            <th class="text-center">
+                                                執行數量
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int idx = 0; idx < Model.lstDailyRptMachine4Show.Count; idx++)
+                                        {
+                                            var idxString = "addMachineR" + idx;
+                                            var idxCount = idx + 1;
+                                            <tr id='@idxString'>
+                                                <td>@idxCount</td>
+                                                <td>
+                                                    @Model.lstDailyRptMachine4Show[idx].KEY_FIELD
+                                                    <input type='hidden' id='MachineKeyid' name='MachineKeyid' value='@Model.lstDailyRptMachine4Show[idx].KEY_FIELD' />
+                                                </td>
+                                                <td>@Model.lstDailyRptMachine4Show[idx].VALUE_FIELD</td>
+                                                <td>@Model.lstDailyRptMachine4Show[idx].LAST_QTY</td>
+                                                <td><input type='text' id='planMachineQty' name='planMachineQty' placeholder='0' size="5" value='@Model.lstDailyRptMachine4Show[idx].WORKER_QTY' /></td>
+                                            </tr>
+                                        }
+                                        @{
+                                            var iMachineMaxRowIdx = @Model.lstDailyRptMachine4Show.Count + 1;
+                                            var trMachineMaxRowIdx = "addMachineR" + iMachineMaxRowIdx;
+                                        }
+
+                                        <tr id='@trMachineMaxRowIdx'></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!--<a id="add_worker_row" class="btn btn-default pull-left" onclick="addMachineRow()">新增</a>
+                        <a id='delete_worker_row' class="pull-right btn btn-default" onclick="delMachineRow()">刪除</a>-->
+                        <buttn typeof="button" class="pull-right btn btn-default" onclick="nextTab('divOther')">下一步</buttn>
+                    </div>
+                </div>
+                <div id="divOther" class="tab-pane fade">
+                    <h3>重要記事</h3>
+                    <a id="add_note_row" class="btn btn-default" onclick="addNoteRow()">新增</a>
+                    <div class="container" id="NoteImp">
+                        <div class="row clearfix">
+                            <div class="col-md-12 column">
+                                <table class="table table-bordered table-hover" id="tab_Note">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                #
+                                            </th>
+                                            <th class="text-center" width="90%">
+                                                說明
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            var iNoteMaxRowIdx = 0;
+                                            var trNoteMaxRowIdx = "addNoteR";
+                                        }
+                                        @if (null == Model.lstRptNote)
+                                        {
+                                        <tr id='addNoteR0'>
+                                            <td>1</td>
+                                            <td>
+                                                <textarea id='planNote' name='planNote' placeholder="請輸入本日重要記事" cols="500" rows="3"></textarea>
+                                        </tr>
+                                        <tr id='addNoteR1'></tr>
+                                        }
+                                        else
+                                        {
+                                            for (int idx = 0; idx < Model.lstRptNote.Count; idx++)
+                                            {
+                                                var idxString = "addNoteR" + idx;
+                                                var idxCount = idx + 1;
+                                        <tr id='@idxString'>
+                                            <td>@idxCount</td>
+                                            <td>
+                                                <textarea id='planNote' name='planNote' placeholder="請輸入本日重要記事" cols="500" rows="3">@Model.lstRptNote[idx].REMARK</textarea>
+                                            </td>
+                                        </tr>
+                                            }
+                                            iNoteMaxRowIdx = @Model.lstRptNote.Count;
+                                            trNoteMaxRowIdx = "addNoteR" + iNoteMaxRowIdx;
+                                        <tr id='@trNoteMaxRowIdx'></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <buttn typeof="button" class="pull-right btn btn-info" onclick="saveDailReport()">儲存</buttn>
+                            <a id='delete_note_row' class="pull-right btn btn-warning" onclick="delNoteRow()">刪除</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--隱藏資料建立者-->
+        @if (null != Model.dailyRpt)
+        {
+            <input type="hidden" id="txtCreateUserId" name="txtCreateUserId" value="@Model.dailyRpt.CREATE_USER_ID" />
+            <input type="hidden" id="txtCreateDate" name="txtCreateDate" value="@Model.dailyRpt.CREATE_DATE" />
+        }
+    </form>
+    <script type="text/javascript">
+        /***
+         料件施作處理畫面
+        */
+        var iItemRow = @iItemMaxRowIdx;
+        function addItemRow() {
+            $('#addItemR' + iItemRow).html("<td>" + (iItemRow + 1) + "</td>" +
+                "<td><input type='text' id='planItem' name='planItemId' placeholder='planItemId'  value='planItem_id' readonly/></td>" +
+                "<td>名稱</td>" +
+                "<td>0</td>" +
+                "<td>0</td>" +
+                "<td><input type='text' id='planItemQty' name='finishQty' placeholder='0' /></td>");
+            $('#tab_Item').append('<tr id="addItemR' + (iItemRow + 1) + '"></tr>');
+            iItemRow++;
+        }
+        function delItemRow() {
+            if (iItemRow > 1) {
+                $("#addItemR" + (iItemRow - 1)).html('');
+                iItemRow--;
+            }
+        }
+        /***
+        人工施作資料畫面
+        */
+        var iWorkerRow = @iWorkerMaxRowIdx;
+        function addWorkerRow() {
+            $('#addWorkerR' + iWorkerRow).html("<td>" + (iWorkerRow + 1) + "</td>" +
+                "<td>" +
+                "<input type='text' id='txtSupplierId."+ iWorkerRow +"' name='txtSupplierId' value='' class='form-control' />"+
+                "</td>" +
+                "<td>" +
+                "<input type='text' id='txtWorkerQty' name='txtWorkerQty'  placeholder='0' value='' class='form-control'/>" +
+                "</td>" +
+                "<td>" +
+                "<input type='text' id='txtLastQty' name='txtLastQty' value='' class='form-control' />" +
+                "</td>" +
+                "<td><input type='text' id='txtRemark' name='txtRemark' value='' class='form-control'/></td>");
+            $('#tab_Worker').append('<tr id="addWorkerR' + (iWorkerRow + 1) + '"></tr>');
+            var txtName = "#txtSupplierId\\." + iWorkerRow;
+            console.log(txtName);
+            ///Auto Complete 公司名稱
+            $(txtName).typeahead({
+                source: function (query, process) {
+                    return $.ajax({
+                        url: '/Inquiry/aotoCompleteData',
+                        type: 'post',
+                        dataType: 'json',
+                        success: function (result) {
+                            process(result);
+                        }
+                    })
+                },
+                afterSelect: function (data) {
+                    // getContactor(data);
+                }
+            }
+            );
+            iWorkerRow++;
+        }
+        function delWorkerRow() {
+            if (iWorkerRow > 0) {
+                $("#addWorkerR" + (iWorkerRow - 1)).html('');
+                iWorkerRow--;
+            }
+        }
+        /**
+          點工資料畫面
+        */
+        var iTempWorkerRow = @iTempWorkerRowIdx;
+        function addTempWorkerRow() {
+            $('#addTempWorkerR' + iTempWorkerRow).html("<td>" + (iTempWorkerRow + 1) + "</td>" +
+                "<td>" +
+                "<input type='text' id='txtTempWorkSupplierId"+ iTempWorkerRow +"' name='txtTempWorkSupplierId' value='' class='form-control' />" +
+                "</td>" +
+                "<td>" +
+                "<input type='text' id='txtTempWorkerQty' name='txtTempWorkerQty' placeholder='0' size='5' value='' class='form-control' />" +
+                "</td>" +
+                "<td>" +
+                "<input type='text' id='txtChargeSupplierId" +iTempWorkerRow+ "' name='txtChargeSupplierId' value='' class='form-control' />" +
+                "</td>" +
+                "<td>" +
+                "<input type='file' id='fileList"+iTempWorkerRow+"' name='fileList"+iTempWorkerRow+"' class='file-path validate' />" +
+                "</td>" +
+                "<td>" +
+                "<input type='text' id='txtTempWorkRemark' name='txtTempWorkRemark' value='' class='form-control' />" +
+                "</td><td></td>");
+            $('#tab_TempWorker').append('<tr id="addTempWorkerR' + (iTempWorkerRow + 1) + '"></tr>');
+            var txtName = "#txtTempWorkSupplierId" + iTempWorkerRow;
+            var txtCharge="#txtChargeSupplierId"+ iTempWorkerRow;
+            console.log(txtName);
+            ///Auto Complete 公司名稱
+            $(txtName).typeahead({
+                source: function (query, process) {
+                    return $.ajax({
+                        url: '/Inquiry/aotoCompleteData',
+                        type: 'post',
+                        dataType: 'json',
+                        success: function (result) {
+                            process(result);
+                        }
+                    })
+                },
+                afterSelect: function (data) {
+                    // getContactor(data);
+                }
+            }
+            );
+
+            $(txtCharge).typeahead({
+                source: function (query, process) {
+                    return $.ajax({
+                        url: '/Inquiry/aotoCompleteData',
+                        type: 'post',
+                        dataType: 'json',
+                        success: function (result) {
+                            process(result);
+                        }
+                    })
+                },
+                afterSelect: function (data) {
+                    // getContactor(data);
+                }
+            }
+            );
+            iTempWorkerRow++;
+        }
+        ///刪除點工紀錄
+        function delTempWorkerRow() {
+            console.log("tempWorkerID=" + iTempWorkerRow);
+            if (iTempWorkerRow > 0) {
+                $("#addTempWorkerR" + (iTempWorkerRow - 1)).html('');
+                iTempWorkerRow--;
+            }
+        }
+        /***
+        *重要記事
+        */
+        var iNoteRow = @iNoteMaxRowIdx;
+        function addNoteRow() {
+            $('#addNoteR' + iNoteRow).html("<td>" + (iNoteRow + 1) + "</td>" +
+               "<td><textarea id='planNote' name='planNote' placeholder='請輸入本日重要記事' cols='500' rows='3' autofocus ></textarea>");
+            $('#tab_Note').append('<tr id="addNoteR' + (iNoteRow + 1) + '"></tr>');
+            iNoteRow++;
+        }
+        function delNoteRow() {
+            if (iNoteRow > 1) {
+                $("#addNoteR" + (iNoteRow - 1)).html('');
+                iNoteRow--;
+            }
+        }
+        //切換Tab
+        function nextTab(tabName){
+            $('.nav-tabs a[href="#' + tabName + '"]').tab('show');
+        }
+        //儲存日報資料
+        function saveDailReport(){
+            if (!checkCondition()){
+                return;
+            }
+            document.getElementById("formSaveItemRow").submit();
+        }
+        function checkCondition(){
+            var check=true;
+            var message="";
+            $("input:file").each(function( index ) {
+                if ( $(this).val()=="" && $(this).attr('value') == null){
+                    check=false;
+                    message = "無點工名冊檔案!!!";
+                }
+            });
+            //提示使用者錯誤訊息
+            if (!check){
+                alert(message);
+            }
+            return check;
+        }
+    </script>
+</div>

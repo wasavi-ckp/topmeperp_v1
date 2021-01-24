@@ -1,0 +1,375 @@
+﻿@model topmeperp.Models.ContractModels
+@{
+    ViewBag.Title = "估驗請款單";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+    decimal? CurTotal = 0.0M;
+    decimal? CurAmount = 0.0M;
+    int holderCount = 0;
+    //設定Viewbage 傳遞子頁變數
+    ViewBag.ParentViewBag = ViewBag;
+}
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+<form id="formESTMain" name="formESTMain" action="" method="post" enctype="multipart/form-data" class="form-inline">
+    <!--表頭-->
+    @Html.Partial("~/Views/include/_PaymentHead.cshtml")
+    <!--請款明細資料-->
+    <div class="contailer">
+        <!--物料清單-來至驗收單-->
+        <table class="table" align="left">
+            <thead>
+                <tr class="bg-info">
+                    <th>
+                        No.
+                    </th>
+                    <th>
+                        項次
+                    </th>
+                    <th>
+                        項目說明
+                    </th>
+                    <th>
+                        單位
+                    </th>
+                    <th>
+                        合約數量
+                    </th>
+                    <th>
+                        單價
+                    </th>
+                    <th>
+                        前期數量
+                    </th>
+                    <th>
+                        本期數量
+                    </th>
+                    <th>
+                        本期金額
+                    </th>
+                    <th>
+                        累計數量
+                    </th>
+                    <th>
+                        累計金額
+                    </th>
+                    <th>
+                        累計%
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.EstimationItems)
+                {
+                    <tr>
+                        <td>
+                            @item.PLAN_ITEM_ID
+                        </td>
+                        <td>
+                            @item.ITEM_ID
+                        </td>
+                        <td>
+                            @item.ITEM_DESC
+                        </td>
+                        <td>
+                            @item.ITEM_UNIT
+                        </td>
+                        <td>
+                            @String.Format("{0:N2}", item.ITEM_QUANTITY)
+                        </td>
+                        <td>
+                            @String.Format("{0:N0}", item.ITEM_UNIT_PRICE)
+                        </td>
+                        <td>
+                            @String.Format("{0:N2}", item.PriorQty)
+                        </td>
+                        <td>
+                            @String.Format("{0:N2}", item.EstimationQty)
+                            @if (item.EstimationQty != null)
+                            {
+                                CurTotal = CurTotal + item.EstimationQty;
+                            }
+                        </td>
+                        <td>
+                            @String.Format("{0:N0}", item.EstimationAmount)
+                            @if (item.EstimationQty != null)
+                            {
+                                CurAmount = CurAmount + item.EstimationAmount;
+                            }
+                        </td>
+                        <td>
+                            @String.Format("{0:N2}", ((item.PriorQty == null ? 0 : item.PriorQty) + item.EstimationQty))
+                        </td>
+                        <td>
+                            @String.Format("{0:N0}", ((item.PriorQty == null ? 0 : item.PriorQty) + item.EstimationQty) * item.ITEM_UNIT_PRICE)
+                        </td>
+                        <th>
+                            @String.Format("{0:N2}", ((item.PriorQty == null ? 0 : item.PriorQty) + item.EstimationQty) / item.ITEM_QUANTITY * 100) %
+                        </th>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr class="bg-success">
+                    <th colspan="7" style="text-align:right">
+                        合計
+                    </th>
+                    <th>
+                        @String.Format("{0:N2}", @CurTotal)
+                    </th>
+                    <th>
+                        @String.Format("{0:N0}", @CurAmount)
+                    </th>
+                    <th colspan="3">
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <!--憑證資料-->
+    @Html.Partial("~/Views/include/_PaymentInvoices.cshtml")
+    <!--代付支出資料-->
+    <div class="contailer">
+        <label>代付支出資料</label>
+        <input type="button" class="btn btn btn-warning" id="addrow" value="新增" />
+        <table class="table order-list">
+            <thead>
+                <tr class="bg-info">
+                    <th width="5%">功能</th>
+                    <th width="25%">代付廠商</th>
+                    <th width="15%">代付金額</th>
+                    <th>原因</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (null != Model.EstimationHoldPayments && Model.EstimationHoldPayments.Count() != 0)
+            {
+                foreach (var item in Model.EstimationHoldPayments)
+                {
+                        <tr>
+                            <td width="5%">
+                                <input type="button" class="ibtnDel btn btn-md btn-danger" value="刪除" />
+                                <input type="hidden" id="estItemId" name="estItemId" value="@item.HOLD_ID" />
+                            </td>
+                            <td width="25%">
+                                <input type="text" id="hold4Supplier.@holderCount" name="hold4Supplier" class="typeahead form-control" style="max-width:none;width:100%" autocomplete="off" value="@item.SUPPLIER_ID" />
+                            </td>
+                            <td width="15%">
+                                <input type="text" id="holdAmount.@holderCount" name="holdAmount" pattern="[0-9]{1,9}" class="form-control" autocomplete="off" value="@item.HOLD_AMOUNT" />
+                            </td>
+                            <td>
+                                <input type="text" id="hold4Remark.@holderCount" name="hold4Remark" class="form-control" style="max-width:none;width:90%" value="@item.REMARK" />
+                            </td>
+                        </tr>
+                        holderCount = holderCount + 1;
+                    }
+                }
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+    </div>
+    <!--代付扣回明細-->
+    <div class="contailer">
+        <label>代付扣回明細</label>
+        @if (null != Model.Hold4DeductForm && Model.Hold4DeductForm.Count() != 0)
+        {
+            <table class="table">
+                <thead>
+                    <tr class="bg-info">
+                        <th>應扣未扣</th>
+                        <th>憑單編號</th>
+                        <th>次數</th>
+                        <th>估驗日期</th>
+                        <th>請款人</th>
+                        <th>代付金額</th>
+                        <th>手續費</th>
+                        <th>應扣金額</th>
+                        <th>本期扣款</th>
+                        <th>原因</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Hold4DeductForm)
+                {
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="hf_notpay" name="hf_notpay" value="@item.EST_FORM_ID" class="form-control" />
+                            </td>
+                            <td>
+                                <input type="hidden" id="paymentTransferId" name="paymentTransferId" value="@item.PAYMENT_ID" />
+                                <input type="text" id="HoldformId" name="HoldformId" value="@item.EST_FORM_ID" class="form-control" style="max-width:none;width:100%" />
+                            </td>
+                            <td>
+                                @item.ESTIMATION_COUNT
+                            </td>
+                            <td>
+                                @item.CREATE_DATE.ToString("yyyy/MM/dd")
+                            </td>
+                            <td>
+                                @item.COMPANY_NAME
+                            </td>
+                            <td>
+                                <input type="text" id="hf_paidamount" name="hf_paidamount" value="@item.PAID_AMOUNT" class="form-control" style="max-width:none;width:80%" />
+                            </td>
+                            <td>
+                                <input type="text" id="hf_fee" name="hf_fee" value="@item.FEE" class="form-control" style="max-width:none;width:70%" />
+                            </td>
+                            <td>
+                                <input type="text" id="hf_holdAmount" name="hf_holdAmount" value="@item.HOLD_AMOUNT" class="form-control" style="max-width:none;width:70%" />
+                            </td>
+                            <td>
+                                <input type="text" id="hf_cur_holdAmount" name="hf_cur_holdAmount" value="@item.CUR_HOLDAMOUNT" class="form-control" style="max-width:none;width:70%" />
+                            </td>
+                            <td>
+                                <input type="text" id="hf_remark" name="hf_remark" value="@item.REMARK" class="form-control" style="max-width:none;width:120%" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <!--資料仍在驗收單、未送審、業管初審階段-->
+            @if (Model.planEST.STATUS == null || Model.planEST.STATUS == 0 || Model.planEST.STATUS == 10)
+            {
+                <button class="btn btn-default" id="updateForm" name="updateForm" type="button">儲存</button>
+            }
+            <!--依據現有估驗單-->
+            @if (Model.planEST.STATUS == 0)
+            {
+                <button class="btn btn-warning" type="button" onclick="createFlow()">送審</button>
+                <button class="btn btn-danger" type="button" onclick="delEstimationOrder()">刪除</button>
+            }
+            <a href="~/Estimation/createEstimationOrder_Approve?formid=@Model.planEST.EST_FORM_ID" class="btn btn-default">彙整</a>
+            <button class="btn btn-success" type="button" onclick="javascript:window.close()">離開</button>
+        </div>
+        <!--依據流程任務與部門設定功能-->
+        @Html.Partial("~/Views/include/_WorkFlowFunction.cshtml")
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var counter = @holderCount;
+        $("#addrow").on("click", function () {
+            var newRow = $("<tr>");
+            var cols = "";
+            cols += '<td><input type="button" class="ibtnDel btn btn-md btn-danger"  value="刪除" /></td>';
+            cols += '<td><input type="text" id="hold4Supplier.' + counter + '" name="hold4Supplier" class="typeahead form-control" autocomplete="off" style="max-width:none;width:100%" /></td>';
+            cols += '<td><input type="text" id="holdAmount.' + counter + '" name="holdAmount" pattern="[0-9]{1,9}" class="form-control" autocomplete="off" style="max-width:none;width:90%" /></td>';
+            cols += '<td><input type="text" id="hold4Remark.' + counter + '" name="hold4Remark" class="form-control" style="max-width:none;width:90%"  /></td>';
+            cols += '</tr>';
+            newRow.append(cols);
+            $("table.order-list").append(newRow);
+            var txtName = "#hold4Supplier\\." + counter;
+            console.log(txtName);
+            ///Auto Complete 公司名稱
+            $(txtName).typeahead({
+                source: function (query, process) {
+                    return $.ajax({
+                        url: '/Inquiry/aotoCompleteData',
+                        type: 'post',
+                        dataType: 'json',
+                        success: function (result) {
+                            process(result);
+                        }
+                    })
+                },
+                afterSelect: function (data) {
+                    // getContactor(data);
+                }
+            }
+            );
+            counter++;
+        });
+        $("table.order-list").on("click", ".ibtnDel", function (event) {
+            $(this).closest("tr").remove();
+            counterInvoice -= 1
+        });
+
+        //請款憑證明細資料 ///計數器由子頁傳回
+        var counterInvoice = @ViewBag.invoiceCount;
+        $("#addInvoicerow").on("click", function () {
+            var newRow = $("<tr>");
+            var cols = "";
+            cols += '<td><input type="button" class="ibtnDelInvoice btn btn-md btn-danger"  value="刪除" /></td>';
+            cols += '<td><input type="text" id="invoiceNo.' + counterInvoice + '" name="invoiceNo" class="form-control" autocomplete="off" style="max-width:none;width:100%" /></td>';
+            cols += '<td><input type="date" id="invoiceDate.' + counterInvoice + '" name="invoiceDate" class="form-control" style="max-width:none;width:100%" /></td>';
+            cols += '<td><input type="text" id="inoviceAmt.' + counterInvoice + '" name="invoiceAmt" class="form-control" style="max-width:none;width:100%"  /></td>';
+            cols += '<td><input type="text" id="inoviceTax.' + counterInvoice + '" name="invoiceTax" class="form-control" style="max-width:none;width:100%"  /></td>';
+            cols += '<td>';
+            cols += '<select class="form-control" id="invoicetype.' + counterInvoice + '" name="invoicetype" required><option value="二聯式">二聯式</option><option value="三聯式">三聯式</option><option value="收據">收據</option><option value="工資單">工資單</option><option value="對開發票">對開發票</option><option value="折讓單">折讓單</option><option value="其他扣款">其他扣款</option></select>';
+            cols += '</td>';
+            cols += '<td  width="30%"><input type="text" id="invoiceNote.' + counterInvoice +'" name="invoiceNote" class="form-control" autocomplete="off" style="max-width:none;width:100%" value="" /></td>';
+            cols += '</tr>';
+            newRow.append(cols);
+            $("table.Invoice-list").append(newRow);
+            counterInvoice++;
+        });
+
+        $("table.Invoice-list").on("click", ".ibtnDelInvoice", function (event) {
+            $(this).closest("tr").remove();
+            counterInvoice -= 1
+        });
+
+    });
+    //建立送審流程紀錄
+    function createFlow() {
+        $.ajax({
+            url: '/Estimation/createFlow',
+            data: $('#formESTMain').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                console.log("del form=" + msg);
+                window.close();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    }
+
+    //刪除估驗單資料
+    function delEstimationOrder() {
+        if (confirm("刪除資料將無法還原，確認要刪除?")) {
+            $.ajax({
+                url: '/Estimation/delEstimationOrder',
+                data: $('#formESTMain').serialize(),
+                type: "POST",
+                dataType: 'text',
+                success: function (msg) {
+                    console.log("del form=" + msg);
+                    window.close();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError);
+                }
+            })
+        };
+    }
+
+    //建立或修改估驗單資料
+    $("#updateForm").click(function () {
+        console.log("send estimation order !!");
+        $.ajax({
+            url: '/Estimation/saveEstimationOrder',
+            data: $('#formESTMain').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                window.location.href = "/Estimation/createEstimationOrderInfo?formid=" + msg;
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        })
+    });
+</script>
+@Scripts.Render("~/Scripts/topmep_EstimationFlow.js")
+<style>
+    .typeahead {
+        position: sticky;
+    }
+</style>

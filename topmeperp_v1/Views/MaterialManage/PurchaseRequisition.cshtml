@@ -1,0 +1,78 @@
+﻿@{
+    ViewBag.Title = "申購單管理 :";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<h4>@ViewBag.Title</h4>
+<div class="page-header">
+    <form name="prSearch" id="prSearch" action="Search" method="Post" class="form-inline">
+        <div class="row">
+            <div class="col-md-4 form-group">
+                <label for="id">專案編號:</label><input id="id" name="id" type="text" value="@ViewBag.projectid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-8">
+                <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                <input type="button" class="btn btn-success" onclick="javascript:window.location='@Url.Action("Index", "Plan")'" value="回上一頁">
+            </div>
+        </div>
+        <hr style="border-top: 1px solid #8c8b8b;" />
+        <div class="row" style="padding-top:-30px">
+            <div class='col-md-2 date form-group'>
+                <label for="create_date">申購年月 : </label>
+                <input id="create_date" name="create_date" class="form-control" style="width:50%"/>
+            </div>
+            <div class='col-md-3 form-group'>
+                <label for="prid">申購單號 :</label>
+                <input id="prid" name="prid" type="text" value="" class="form-control" style="width:60%;" />
+            </div>
+            <div class="col-md-3 form-group">
+                <label for="keykname">關鍵字 :</label>
+                <input id="keyname" name="keyname" type="text" value="" class="form-control" style="width:60%;" />
+            </div>
+            <div class="col-md-2 form-group">
+                <label for="status">狀態</label>
+                <select id="status" name="status" class="form-control">
+                    <option value="*">全部</option>
+                    <option value="0">草稿/退件</option>
+                    <option value="10">已送審</option>
+                    <option value="20">採購中</option>
+                    <option value="30">待驗收</option>
+                    <option value="40">結案</option>
+                </select>
+            </div>
+            <div class="col-md-2 form-group">
+                <div id="divProcessing">
+                    <img src="~/Content/ajax-loader.gif">
+                </div>
+                <input id="Submit1" type="submit" class="btn btn-info" value="查詢" />
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PlanTask","MaterialManage", new { id = @ViewBag.projectid })'; ">新增申購單</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--申購單列表區域-->
+<div class="container-fluid">
+    @ViewBag.SearchResult
+    @if (null != Model)
+    {
+        Html.RenderPartial("_PurchaseRequisitionList");
+    }
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+
+        $(function () {
+            $('#create_date').datetimepicker({
+                format: 'YYYY/M',
+                locale: 'zh-tw'
+            });
+        });
+    })
+</script>

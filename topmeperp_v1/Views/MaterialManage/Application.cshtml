@@ -1,0 +1,206 @@
+﻿@model IEnumerable<topmeperp.Models.PurchaseRequisition>
+@{
+    ViewBag.Title = "申購作業 :建立申購單";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+<form name="prForm" id="prForm" action="/MaterialManage/SavePR" method="post">
+    <div class="row">
+        <div class="col-md-8"><h3>@ViewBag.Title</h3></div>
+        <div class="col-md-4">
+            <input type="button" class="btn btn-success" onclick="history.back()" value="回上一頁">
+        </div>
+    </div>
+    <div class="page-header">
+        <div class="row bg-success">
+            <div class="col-md-2 form-group">
+                <label for="id">專案編號:@ViewBag.projectid</label>
+            </div>
+            <div class="col-md-4">
+                <label for="projectName">專案名稱:@ViewBag.projectName</label>
+            </div>
+            <div class="col-md-3">
+                <label for="apply_date">申購日期:@ViewBag.applyDate</label>
+                <input type="hidden" id="apply_date" name="apply_date" value="@ViewBag.applyDate" />
+            </div>
+
+            <div class="col-md-1">
+                <input type="hidden" id="prj_uid" name="prj_uid" value="@ViewBag.uid" />
+                <input type="hidden" id="id" name="id" value="@ViewBag.projectid" />
+            </div>
+        </div>
+    </div>
+    <div class="body-content">
+        <div class="row">
+            <label class="col-md-2 control-label">收件人 : </label>
+            <div class="col-md-2" style="padding-bottom:10px">
+                <input type="text" class="form-control" name="recipient" id="recipient" value="@ViewBag.recipient">
+            </div>
+            <label class="col-md-2 control-label">申購說明 : </label>
+            <div class="col-md-6" style="padding-bottom:10px">
+                <input type="text" class="form-control" name="caution" id="caution" value="">
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-md-2 control-label">送貨地址 : </label>
+            <div class="col-md-10" style="padding-bottom:10px">
+                <input style="max-width:none;width:70%" type="text" class="form-control" name="location" id="location" value="@ViewBag.location">
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    No.
+                </th>
+                <th>
+                    項次
+                </th>
+                <th>
+                    項目說明
+                </th>
+                <th>
+                    單位
+                </th>
+                <th>
+                    發包數量
+                </th>
+                <th>
+                    已訂購數量
+                </th>
+                <th>
+                    庫存數量
+                </th>
+                <th><input type="checkbox" name="CheckAll" id="CheckAll">全選</th>
+                <th>
+                    申購數量
+                </th>
+                <th>
+                    備註
+                </th>
+                <th>
+                    需求日期
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.TextBox("planitemid", @String.Format("{0:N0}", item.PLAN_ITEM_ID), new { style = "width:90px", @readonly = "readonly" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITEM_ID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITEM_DESC)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ITEM_UNIT)
+                    </td>
+                    <td>
+                        @Html.TextBox("map_qty", item.MAP_QTY, new { @class = "form-control", style = "width:90px", Name = "map_qty", @readonly = "readonly" })
+                    </td>
+                    <td>
+                        @Html.TextBox("cumulative_qty", item.CUMULATIVE_QTY, new { @class = "form-control", style = "width:90px", Name = "cumulative_qty", @readonly = "readonly" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.INVENTORY_QTY)
+                    </td>
+                    <td>
+                        <input type="checkbox" id="chkItem" name="chkItem" value="@item.PLAN_ITEM_ID" />
+                    </td>
+                    <td><input style="width:80px" type="text" class="form-control" name="need_qty" id="need_qty" value="" autocomplete="off"></td>
+                    <td><input style="width:300px" type="text" class="form-control" name="remark" id="remark" value="" autocomplete="off"></td>
+                    <td><input style="width:150px" type="date" class="form-control" name="Date_${index}" id="Date_${index}" value=""></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <textarea class="form-control" rows="5" id="memo" name="memo" placeholder="注意事項"></textarea>
+        </div>
+        <div class="col-md-2">
+            <input type="button" value="建立" name="SavePR" class="btn btn-warning" onclick="Confirm_Form2()" />
+        </div>
+    </div>
+</form>
+
+
+<script language="javascript" type="text/javascript">
+    $(document).ready(function () {
+        $("#CheckAll").click(function () {
+            if ($("#CheckAll").prop("checked")) {
+                $("input[name='chkItem']").prop("checked", true);
+            } else
+                $("input[name='chkItem']").prop("checked", false);
+        });
+        $("input").not($(":button")).keypress(function (evt) {
+            if (evt.keyCode == 13) {
+                if ($(this).attr("type") !== 'submit') {
+                    var fields = $(this).parents('form:eq(0),body').find('button, input, textarea, select');
+                    var index = fields.index(this);
+                    if (index > -1 && (index + 1) < fields.length) {
+                        fields.eq(index + 1).focus();
+                    }
+                    $(this).blur();
+                    return false;
+                }
+            }
+        });
+    });
+
+    function Confirm_Form() {
+        var method1 = $('input[name=chkItem]:checkbox:checked').val();
+        if (typeof (method1) == "undefined") { // 注意檢查完全沒有選取的寫法，這行是精華
+            alert("沒有選取要申購的物料，請勾選並檢查數量是否正確！");
+            return false;
+        }
+        var boolOver = false;
+        var boolLost = false;
+        var method2 = $("input[name='chkItem']:checked").length;
+        var i = 0;
+
+        $('table > tbody > tr').each(function () {
+            var map = 0;
+            var need = 0;
+            var cumulative_qty = 0;
+            map = parseInt($.trim($(this).find("#map_qty").val())); //抓取每筆記錄圖算數量的值
+            need = parseInt($.trim($(this).find("#need_qty").val()));//抓取每筆記錄申購數量的值
+            if (need >= 0)
+            { i = i + 1 }
+            cumulative_qty = parseInt($.trim($(this).find("#cumulative_qty").val()));//抓取每筆記錄累計採購數量的值
+            if (parseInt(need) + parseInt(cumulative_qty) > parseInt(map)) {
+                boolOver = true;
+            }
+        });
+        if (i != method2) {
+            boolLost = true;
+        }
+
+        if (boolLost == true) {
+            alert("勾選的項目沒有填寫申購數量，請重新確認後再進行申購!");
+            return false;
+        }
+
+        if (boolOver == true) {
+            var r = confirm("總申購量大於發包數量，請確認您要申購的數量，送出後申購單就無法再修改！");
+            if (r != true) return false;
+        }
+
+    }
+
+    function Confirm_Form2() {
+        var method1 = $('input[name=chkItem]:checkbox:checked').val();
+        var method2 = $("input[name='chkItem']:checked").length;
+
+        if (typeof (method1) == "undefined") { // 注意檢查完全沒有選取的寫法，這行是精華
+            alert("沒有選取要申購的物料，請勾選並檢查數量是否正確！");
+            return false;
+        }
+        document.getElementById("prForm").submit();
+    }
+</script>

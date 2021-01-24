@@ -1,0 +1,17 @@
+﻿
+<div class="container">
+    @if (ViewBag.isWage != null && ViewBag.itemwagebudget != null)
+    {
+        <div>
+            <span style="color: black; font-size:large;">預算金額 :  </span><span style="border:2px red solid; padding:5px; color: red; font-size: 18px;">@String.Format("{0:N0}", ViewBag.itemwagebudget)</span>
+        </div>
+    }
+    else if (ViewBag.itembudget != null && ViewBag.isWage == null)
+    {
+        <div>
+            <span style="color: black; font-size:large;">預算金額 :  </span><span style="border:2px red solid; padding:5px; color: red; font-size: 18px;">@String.Format("{0:N0}", ViewBag.itembudget)</span>
+        </div>
+    }
+    @ViewBag.ResultMsg
+    @Html.Raw(ViewBag.htmlString)
+</div>

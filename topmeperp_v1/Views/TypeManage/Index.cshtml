@@ -1,0 +1,78 @@
+﻿@model IEnumerable<topmeperp.Models.REF_TYPE_MAIN>
+@{
+    ViewBag.Title = "九宮格/次九宮格管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--搜尋條件區域-->
+<div class="jumbotron">
+    <div class="row"><h5>@ViewBag.Title</h5></div>
+</div>
+<!--九宮格資料區塊-->
+@{
+    string curType1 = "";
+    string rowHTML = "";
+}
+<div class="container">
+    <div class="row">
+        <h5>九宮格</h5>
+        <table class="table">
+            <tr>
+                <td class="bg-primary"></td>
+                <td class="bg-primary" style="width:50px">第一階</td>
+                @{
+                    for (int i = 0; i < 10; i++)
+                    {
+                        rowHTML = rowHTML + "<td class='bg-primary'>" + i + "</td>";
+                    }
+                    @Html.Raw(rowHTML);
+                }
+            </tr>
+            @foreach (var item in Model)
+            {
+                if (curType1 != item.TYPE_CODE_1)
+                {
+                    if (curType1 != "")
+                    {
+                        @Html.Raw(rowHTML + "</tr>");
+                    }
+                    rowHTML = "<tr><td class='bg-primary'> " + item.TYPE_CODE_1 + "</td><td class='bg-primary'>" + item.CODE_1_DESC + "</td>" +
+                         "<td style='padding:2px'>" +
+                         "<input type='button' class='btn-link btn-xs' onclick=\"selectType('" + item.TYPE_CODE_1 + "','" + item.TYPE_CODE_2 + "')\" value='" + item.TYPE_DESC + "'/>" +
+                         "<a href=\"EditMainType?typecode1=" + item.TYPE_CODE_1 + "&typecode2=" + item.TYPE_CODE_2 + "\"><span class=\"glyphicon glyphicon-pencil\"></span></a></td>"; 
+                    curType1 = item.TYPE_CODE_1;
+                }
+                else
+                {
+                    //  @ViewBag.Typecode = "<a href =\"EditMainType?typecode1=" + typecod1 + "&typecode2=" + typecod2 + "\">編輯</a>";
+                    rowHTML = rowHTML + "<td style='padding:2px'>" +
+                         "<input type='button' class='btn-link btn-xs' onclick=\"selectType('" + item.TYPE_CODE_1 + "','" + item.TYPE_CODE_2 + "')\" value='" + item.TYPE_DESC + "'/>" +
+                         "<a href=\"EditMainType?typecode1=" + item.TYPE_CODE_1 + "&typecode2=" + item.TYPE_CODE_2 + "\"><span class=\"glyphicon glyphicon-pencil\"></span></a></td>";
+                }
+            }
+            @Html.Raw(rowHTML + "</tr>")
+        </table>
+    </div>
+</div>
+<!--次九宮格資料區塊-->
+<div class="container">
+    <h5>次九宮格</h5>
+    <div id="subTypeArea" name="subTypeArea">
+    </div>
+</div>
+
+<script type="text/javascript">
+    function selectType(typecode1, typecode2) {
+        $.ajax({
+            url: "getSubType",
+            type: "POST",
+            data: { typecode1: typecode1, typecode2: typecode2 },
+            dataType: "HTML",
+            success: function (result) {
+                $("#subTypeArea").html(result);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax(' + errorThrown + ')');
+            }
+        });
+    }
+</script>

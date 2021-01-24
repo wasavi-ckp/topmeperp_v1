@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "其他扣款 : ";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular.min.js"></script>
+<div class="container">
+    <h4>@ViewBag.Title</h4>
+    <div ng-app="" ng-controller="MyCtrl">
+        <form id="otherpayment_form" name="otherpayment_form" ng-submit="submit()">
+            <div class="row">
+                <div class="col-md-4" style="padding-top:10px">
+                    <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                </div>
+                <div class="col-md-4 form-group" style="padding-top:10px">
+                    <label for="formname">發包項目:</label><input id="formname" name="formname" type="text" value="@ViewBag.formname" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                </div>
+                <div class="col-md-4 form-group" style="padding-top:10px">
+                    <label for="formid">估驗單編號:</label><input id="formid" name="formid" type="text" value="@ViewBag.formid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+                </div>
+                <input type="hidden" id="contractid" name="contractid" value="@ViewBag.contractid" />
+            </div>
+            <ng-form ng-repeat="key in keys" name="keyForm">
+                <span class="btn btn-info">
+                    <button type="button" class="close" ng-click="remove($index)">&times;</button>
+                </span>
+                扣款金額：
+                <input type="number" id="input_amount" name="input_amount" ng-model="key.AMOUNT" required>
+                扣款原因：
+                <input type="text" style="width:500px" id="input_reason" name="input_reason" ng-model="key.REASON" required>
+                <br />
+            </ng-form>
+            <div style="padding-top : 20px">
+                @if (ViewBag.status <= 30)
+                {
+                    <input type="submit" value="新增" ng-click="addKey()" class="btn btn-warning" />
+                    <input type="submit" value="儲存" class="btn btn-success" id="updateForm" />
+                }
+                <input onclick="window.close();" value="關閉" type="button" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function MyCtrl($scope) {
+        $scope.keys = @Html.Raw(ViewData["items"]);
+        $scope.show = function () {
+            $scope.keys.push({ amount: $scope.key.AMOUNT, reason: $scope.key.REASON });
+
+        };
+        $scope.addKey = function () {
+            $scope.keys.push({ amount: null, reason: '' });
+
+        };
+        $scope.remove = function (index) {
+            $scope.keys.splice(index, 1);
+        };
+    }
+    $("#updateForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateOtherPay", "Estimation")',
+            data: $('#otherpayment_form').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload()
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+</script>

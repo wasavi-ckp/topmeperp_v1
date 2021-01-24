@@ -1,0 +1,359 @@
+﻿@model topmeperp.Models.ExpenseTask
+@{
+    ViewBag.Title = "財務管理-公司營業費用/工地費用";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+<div class="page-header">
+    @if (Model.FormData.finEXP.STATUS >= 10)
+    {
+        <div class="col-sm-3">
+            <a class="btn btn-link" href="/CashFlow/downLoadExpenseForm?formid=@Model.FormData.finEXP.EXP_FORM_ID" target="_blank">下載費用表</a>
+        </div>
+    }
+    <form id="formExpense" name="formExpense" action="" method="post">
+        <div class="row">
+            <div class="col-md-10">
+                @if (null == Model.FormData.finEXP.PROJECT_ID || Model.FormData.finEXP.PROJECT_ID == "")
+                {
+                    <h3 class="text-center">協成水電工程事業有限公司-公司營業費用</h3>
+                }
+                else
+                {
+                    <h3 class="text-center">協成水電工程事業有限公司-工地費用</h3>
+                }
+            </div>
+            <div class="col-md-2 alert-warning">
+                @if (Model.FormData.finEXP.STATUS == 0)
+                {
+                    <h5 class="text-right">狀態: 退件</h5>
+                }
+                else if (Model.FormData.finEXP.STATUS == 10)
+                {
+                    <h5 class="text-right">狀態: 草稿</h5>
+                }
+                else if (Model.FormData.finEXP.STATUS == 20)
+                {
+                    <h5 class="text-right">狀態: 審核中</h5>
+                }
+                else if (Model.FormData.finEXP.STATUS == 30)
+                {
+                    <h5 class="text-right">狀態: 審核通過</h5>
+                }
+            </div>
+        </div>
+        <!-- Reg-Form new { enctype = "multipart/form-data" } -->
+        <div class="row" style="padding-top : 30px">
+            @if (Model.FormData.finEXP.PROJECT_ID != null && Model.FormData.finEXP.PROJECT_ID != "")
+            {
+                <label for="projectName" class="col-md-2 control-label">專案名稱 :</label>
+                <label class="col-sm-6 info">@Model.FormData.finEXP.PROJECT_NAME</label>
+            }
+        </div>
+        <div class="row" style="padding-top : 10px">
+            <div class="form-group">
+                <label for="year" class="col-md-2 control-label">費用發生年度</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="year" id="year" value="@Model.FormData.finEXP.OCCURRED_YEAR">
+                </div>
+
+                <label for="month" class="col-md-2 control-label">費用發生月份</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="month" id="month" value="@Model.FormData.finEXP.OCCURRED_MONTH">
+                </div>
+            </div>
+        </div>
+        <div class="row" style="padding-top : 10px">
+            <div class="form-group">
+                <label for="paymentdate" class="col-md-2 control-label">費用支付日期</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="paymentdate" id="paymentdate" value="@Model.FormData.finEXP.PAYMENT_DATE">
+                </div>
+
+                <label for="formnumber" class="col-md-2 control-label">費用單編號</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="formnumber" id="formnumber" value="@Model.FormData.finEXP.EXP_FORM_ID" readonly="readonly">
+                </div>
+            </div>
+        </div>
+        <div class="row" style="padding-top : 10px">
+            <div class="form-group">
+                <label for="remark" class="col-md-2 control-label">說明事項</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="remark" id="remark" value="@Model.FormData.finEXP.REMARK">
+                </div>
+                <label for="supplier" class="col-md-2 control-label">受款人</label>
+                <div class="col-md-4">
+                    <input type="text" class="typeahead form-control" id="supplier" name="supplier" value="@Model.FormData.finEXP.PAYEE" autocomplete="off">
+                </div>
+
+                <input type="hidden" name="createid" id="createid" value="@Model.FormData.finEXP.CREATE_ID" />
+                <input type="hidden" name="createdate" id="createdate" value="@Model.FormData.finEXP.CREATE_DATE" />
+                <input type="hidden" name="status" id="status" value="@Model.FormData.finEXP.STATUS" />
+                <input type="hidden" name="projectid" id="projectid" value="@Model.FormData.finEXP.PROJECT_ID" />
+            </div>
+        </div>
+        <br /><br />
+        <div class="contailer" style="page-break-before: always">
+            <table class="table">
+                <tr>
+                    <th>
+                    </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th style="width:100px;">
+                        合約
+                    </th>
+                    <th style="width:100px;">
+                        前期完成
+                    </th>
+                    <th style="width:100px;">
+                        本期完成
+                    </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th>
+                        No.
+                    </th>
+                    <th>
+                        會計名稱
+                    </th>
+                    <th>
+                        會計科目
+                    </th>
+                    <th>
+                        品名/摘要
+                    </th>
+                    <th>
+                        單位
+                    </th>
+                    <th>
+                        單價
+                    </th>
+                    <th>
+                        數量
+                    </th>
+                    <th>
+                        預算金額
+                    </th>
+                    <th>
+                        累計金額
+                    </th>
+                    <th>
+                        金額
+                    </th>
+                    <th>
+                        累計金額
+                    </th>
+                    <th>
+                        累計比率
+                    </th>
+                    <th></th>
+                </tr>
+                @if (null == Model.FormData.finEXP.PROJECT_ID || Model.FormData.finEXP.PROJECT_ID == "")
+                {
+                    foreach (var item in Model.FormData.finEXPItem)
+                    {
+                        <tr>
+                            <td>
+                                @item.NO
+                            </td>
+                            <td>
+                                @item.SUBJECT_NAME
+                            </td>
+                            <td>
+                                @Html.TextBox("subject", @item.FIN_SUBJECT_ID, new { style = "width:60px", @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @Html.TextBox("item_remark", @item.ITEM_REMARK, new { style = "width:200px" })
+                            </td>
+                            <td><input style="width:80px" type="text" name="unit" id="unit" value="@item.ITEM_UNIT"></td>
+                            <td><input style="width:80px" type="text" name="unit_price" id="unit_price" value="@String.Format("{0:#,##0.#}", item.ITEM_UNIT_PRICE)"></td>
+                            <td><input style="width:60px" type="text" name="item_quantity" id="item_quantity" value="@item.ITEM_QUANTITY"></td>
+                            <td>
+                                @String.Format("{0:#,##0.#}", item.BUDGET_AMOUNT)
+                            </td>
+                            <td>
+                                @String.Format("{0:#,##0.#}", item.CUM_AMOUNT)
+                            </td>
+                            <td>
+                                @Html.TextBox("amount", @String.Format("{0:#,##0.#}", item.AMOUNT), new { style = "width:80px" })
+                            </td>
+                            <td>
+                                @String.Format("{0:#,##0.#}", item.CUR_CUM_AMOUNT)
+                            </td>
+                            @if (item.CUR_CUM_RATIO > 100)
+                            {
+                                <td>
+                                    <span style="color: orangered; font-size: 15px;">
+                                        @String.Format("{0:#,##0.##}", item.CUR_CUM_RATIO) %
+                                    </span>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <span style="color: cornflowerblue; font-size: 15px;">
+                                        @String.Format("{0:#,##0.##}", item.CUR_CUM_RATIO) %
+                                    </span>
+                                </td>
+                            }
+                            <td><input type="hidden" name="exp_item_id" id="exp_item_id" value="@item.EXP_ITEM_ID"></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    foreach (var item in Model.FormData.planEXPItem)
+                    {
+
+                        <tr>
+                            <td>
+                                @item.NO
+                            </td>
+                            <td>
+                                @item.SUBJECT_NAME
+                            </td>
+                            <td>
+                                @Html.TextBox("subject", @item.FIN_SUBJECT_ID, new { style = "width:60px", @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @Html.TextBox("item_remark", @item.ITEM_REMARK, new { style = "width:200px" })
+                            </td>
+                            <td><input style="width:80px" type="text" name="unit" id="unit" value="@item.ITEM_UNIT"></td>
+                            <td><input style="width:80px" type="text" name="unit_price" id="unit_price" value="@item.ITEM_UNIT_PRICE"></td>
+                            <td><input style="width:60px" type="text" name="item_quantity" id="item_quantity" value="@item.ITEM_QUANTITY"></td>
+                            <td>
+                                @Html.TextBox("amount", @String.Format("{0:#,##0.#}", item.AMOUNT), new { style = "width:80px" })
+                            </td>
+                            <td>
+                                @String.Format("{0:#,##0.#}", item.BUDGET_AMOUNT)
+                            </td>
+                            <td>
+                                @String.Format("{0:#,##0.#}", item.CUM_AMOUNT)
+                            </td>
+                            <td>
+                                @Html.TextBox("amount", @String.Format("{0:#,##0.#}", item.AMOUNT), new { style = "width:80px" })
+                            </td>
+                            <td>
+                                @String.Format("{0:#,##0.#}", item.CUR_CUM_AMOUNT)
+                            </td>
+                            @if (item.CUR_CUM_RATIO > 100)
+                            {
+                                <td>
+                                    <span style="color: orangered; font-size: 15px;">
+                                        @item.CUR_CUM_RATIO
+                                    </span>
+                                </td>
+                            }
+                            <td><input type="hidden" name="exp_item_id" id="exp_item_id" value="@item.EXP_ITEM_ID"></td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+        <div class="row">
+            <!--依據流程任務與部門設定功能-->
+            @Html.Partial("~/Views/include/_WorkFlowFunction.cshtml")
+        </div>
+    </form>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $(function () {
+            $('#paymentdate').datetimepicker({
+                format: 'YYYY/MM/DD',
+                locale: 'zh-tw'
+            });
+        });
+    })
+
+    $("#updateForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("UpdateEXP", "CashFlow")',
+            data: $('#formExpense').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.reload();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    //送審、通過
+    $("#SendForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("SendForm", "CashFlow")',
+            data: $('#formExpense').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.replace("/CashFlow/ExpenseForm");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    //退件
+    $("#RejectForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("RejectForm", "CashFlow")',
+            data: $('#formExpense').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.replace("/CashFlow/ExpenseForm");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    //中止
+    $("#CancelForm").click(function () {
+        $.ajax({
+            url: '@Url.Action("CancelForm", "CashFlow")',
+            data: $('#formExpense').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+                window.location.replace("/CashFlow/ExpenseForm");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+
+
+    ///Auto Complete 公司名稱
+    $('#supplier').typeahead({
+        source: function (query, process) {
+            return $.ajax({
+                url: '/PurchaseForm/aotoCompleteData',
+                type: 'post',
+                dataType: 'json',
+                success: function (result) {
+                    process(result);
+                }
+            })
+        },
+    }
+    );
+</script>

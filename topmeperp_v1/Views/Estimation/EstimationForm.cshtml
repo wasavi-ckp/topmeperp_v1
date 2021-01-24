@@ -1,0 +1,138 @@
+﻿@model topmeperp.Models.EstimationFormApprove
+@{
+    ViewBag.Title = "廠商估驗單管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<label class="btn-link">@ViewBag.Title</label>
+<div class="container bg-primary" style="padding-bottom:5px">
+    <div class="row">
+        <div class="col-sm-12 text-left">
+            <label>
+                專案名稱:@ViewBag.projectName ( @ViewBag.projectid )
+            </label>
+        </div>
+    </div>
+    <!--查詢條件區塊-->
+    <div class="row">
+        <form name="estSearch" id="estSearch" action="/Estimation/EstimationForm" method="Post" class="form-inline">
+            <div class='col-md-4 form-group'>
+                <label for="payee">供應商名稱 :</label>
+                <input id="payee" name="payee" type="text" value="" class="form-control" />
+                <input id="id" name="id" type="hidden" value="@ViewBag.projectid" />
+            </div>
+            <div class='col-md-3 form-group'>
+                <label for="estid">估驗單編號 :</label>
+                <input id="estid" name="estid" type="text" value="" class="form-control" style="width:50%" />
+            </div>
+            <div class="col-md-2 form-group">
+                <label for="status">狀態 : </label> @Html.DropDownList("status", null, String.Empty, new { @class = "form-control" })
+            </div>
+            <div class="col-md-3 form-group">
+                <input id="Submit1" type="submit" class="btn btn-info" value="查詢" />
+                <button type="button" class="btn btn-warning" onclick="location.href='/Estimation/Valuation/@ViewBag.projectid'">新增</button>
+                <input type="button" class="btn btn-success" onclick="javascript:window.location='@Url.Action("Index", "CashFlow")'" value="回上一頁">
+            </div>
+        </form>
+    </div>
+</div>
+<!--估驗單表單審核區域-->
+<div class="container">
+    <div class="row"> <label>審核中的標單</label></div>
+    <div class="row">
+        @if (null != Model && null != Model.lstEstimationFlowTask)
+        {
+            <div class="container">
+                <div class="row" style="padding-top:5px;">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="bg-info">
+                                <th>編號</th>
+                                <th>發包項目名稱</th>
+                                <th>供應商名稱(受款人)</th>
+                                <th>金額</th>
+                                <th>備註</th>
+                                <th>下一步</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tbody>
+                            @foreach (var item in Model.lstEstimationFlowTask)
+                            {
+                                <tr>
+                                    <td><a href="/Estimation/createEstimationOrderInfo?formid=@item.EST_FORM_ID" target="_blank">@item.EST_FORM_ID</a></td>
+                                    <td>@item.FORM_NAME</td>
+                                    <td>@item.PAYEE</td>
+                                    <td>@item.PAID_AMOUNT</td>
+                                    <td>@item.REJECT_DESC</td>
+                                    <td>
+                                        <a href='@(item.FORM_URL+"formid="+item.EST_FORM_ID)' target="_blank">@item.NOTE</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<!--估驗單區域-->
+<div class="container">
+    <div class="row"><label>未受審的估驗單</label> </div>
+    <div class="row">
+        @if (null != Model && null != Model.lstEstimationForm)
+        {
+ <!--未受審的估驗單清單-->
+            <div class="container">
+                <div class="row" style="padding-top:5px;">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="bg-info">
+                                <th>編號</th>
+                                <th>發包項目名稱</th>
+                                <th>供應商名稱(受款人)</th>
+                                <th>金額</th>
+                                <th>備註</th>
+                                <th>狀態</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tbody>
+                            @foreach (var item in Model.lstEstimationForm)
+                            {
+                                <tr>
+                                    <td><a href="/Estimation/createEstimationOrderInfo?formid=@item.EST_FORM_ID" target="_blank">@item.EST_FORM_ID</a></td>
+                                    <td>@item.CONTRACT_NAME</td>
+                                    <td>@item.SUPPLIER_NAME</td>
+                                    <td>@item.PAID_AMOUNT</td>
+                                    <td>@item.REMARK</td>
+                                    <td>
+                                        @if (item.STATUS == 0)
+                                        {
+                                            <label>草稿</label>
+                                        }
+                                        else
+                                        {
+                                            <label>審核中</label>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    })
+</script>

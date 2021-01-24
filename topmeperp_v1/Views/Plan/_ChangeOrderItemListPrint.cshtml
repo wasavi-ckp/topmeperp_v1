@@ -1,0 +1,46 @@
+﻿@model topmeperp.Models.CostChangeFormTask
+<table class="printTable">
+    <tr>
+        <th class="printTh">
+            編號
+        </th>
+        <th class="printTh">
+            標單項次
+        </th>
+        <th class="printTh">
+            品項名稱
+        </th>
+        <th class="printTh">
+            單位
+        </th>
+        <th class="printTh">
+            異動數量
+        </th>
+        <th class="printTh">
+            備註說明
+        </th>
+    </tr>
+    @foreach (var item in Model.lstItem)
+    {
+        <tr>
+            <td class="printTh">
+                @item.PLAN_ITEM_ID
+            </td>
+            <td class="printTh">
+                @Html.DisplayFor(modelItem => item.ITEM_ID)
+            </td>
+            <td class="printTh">
+                @item.ITEM_DESC
+            </td>
+            <td class="printTh">
+                @item.ITEM_UNIT
+            </td>
+            <td class="printTh">
+                @String.Format("{0:n0}", item.ITEM_QUANTITY)
+            </td>
+            <td class="printTh">
+                @item.ITEM_REMARK
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "領料作業:";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--標單項目搜尋區條件區域
+<h3 style="height:20px;line-height:10px">@ViewBag.Title</h3>-->
+<div class="jumbotron">
+    <form name="formSearch" id="formSearch" action="SearchDelivery" method="Post" class="form-inline">
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label for="id">專案編號:</label><input id="id" name="id" type="text" value="@ViewBag.projectid" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+            <div class="col-md-6">
+                <label for="projectName">專案名稱:</label><input id="projectName" name="projectName" type="text" value="@ViewBag.projectName" class="form-control" style="background-color:#cccccc;" readonly="readonly" />
+            </div>
+        </div>
+        <hr style="border-top: 1px solid #8c8b8b;" />
+
+        <!--設備主要依據9宮格次九宮格-->
+        <div class="row">
+            <div class="col-md-12">
+                <label class="control-label" for="typeCode1">類型: </label>
+                @Html.DropDownList("TypeCodeL1", (IEnumerable<SelectListItem>)ViewBag.TypeCodeL1, String.Empty, new { @class = "selectpicker", onchange = "getTypeCode2()" })
+                <select id="TypeCodeL2" name="TypeCodeL2" class="selectpicker" onchange="getSubType()"></select>
+
+                <select id="TypeSub" name="TypeSub" class="selectpicker"></select>
+                <label for="systemMain">主系統:</label>
+                @Html.DropDownList("SystemMain", (IEnumerable<SelectListItem>)ViewBag.SystemMain, String.Empty, new { @class = "selectpicker" })
+                <label for="systemSub">次系統:</label>
+                @Html.DropDownList("systemSub", (IEnumerable<SelectListItem>)ViewBag.SystemSub, String.Empty, new { @class = "selectpicker" })
+            </div>
+        </div>
+        <div class="row" style="padding-top:10px">
+            <div class="col-md-4">
+                <label for="item">物料名稱:</label><input id="item" name="item" type="text" value="" class="form-control" style="width:250px" />
+            </div>
+            <div class="col-md-4">
+                <label for="item">備註:</label><input id="remark" name="remark" type="text" value="" class="form-control" style="width:250px" />
+            </div>
+            <div class="col-md-2">
+                <input id="Submit4" type="submit" class="btn btn-info" value="查詢" />
+                <input type="button" class="btn btn-success" onclick="javascript:window.location='@Url.Action("Index", "Plan")'" value="回上一頁">
+            </div>
+            <div class="col-md-1">
+                <div id="divProcessing">
+                    <img src="~/Content/ajax-loader.gif">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--專案列表區域-->
+<div class="container">
+
+    @ViewBag.SearchResult
+    @if (null != Model)
+            {
+                Html.RenderPartial("_DeliveryItem");
+            }
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit4').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+
+</script>
+<script src="~/Scripts/topmep_selecComp.js"></script>

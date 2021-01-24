@@ -1,0 +1,138 @@
+﻿@{
+    ViewBag.Title = "使用者帳號管理";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--搜尋條件區域-->
+<div class="jumbotron">
+    <div class="row"><h5>@ViewBag.Title</h5></div>
+    <div class="row form-group">
+        <form name="formSearch" id="formSearch">
+            <div class="col-md-12">
+                <div class="col-md-3">
+                    帳號: <input id="userid" name="userid" type="text" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    姓名: <input id="username" name="username" type="text" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    電話: <input id="tel" name="tel" type="text" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    角色: @Html.DropDownList("roles", null, String.Empty, new { @class = "form-control" })
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="row" style="padding-top:10px;">
+        <div class="col-md-12">
+            <button class="btn btn-info" id="btnQuery" name="btnQuery">查詢</button>
+            <div id="divProcessing">
+                <img src="~/Content/ajax-loader.gif">
+            </div>
+            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#userInfo" onclick="clearDialog()">新增使用者</button>
+        </div>
+    </div>
+    <!-- Modal :對話框-->
+    <div class="modal fade" id="userInfo" role="dialog">
+        <div class="modal-dialog" id="userInfoDialog">
+            <!-- Modal content-->
+            @Html.Partial("_User");
+        </div>
+    </div>
+</div>
+<!--帳號資料清單，透過AJAX 更新相關頁面資料-->
+<div class="container">
+    <div id="userList" name="userList">
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#saveUser").click(function () {
+        //Ajax 功能範例
+        // alert($('#formUser').serialize());
+        //alert($('#formSearch').serialize());
+        if ($("#u_userid").val() == "") { alert("帳號欄位不可為空白!!"); return false; }
+        if ($("#u_password").val() == "") { alert("密碼不可為空白!!"); return false; }
+        if ($("#u_password").val() != $("#u_confirmpwd").val()) { alert("密碼與確認密碼必須相同!!"); return false; }
+        //特殊JQuery 選擇器
+        if ($("form[name='formUser'] select[name='roles']").val() == "") { alert("請設定使用者角色!!"); return false; }
+        var URLs = "addUser";
+        $.ajax({
+            url: URLs,
+            data: $('#formUser').serialize(),
+            type: "POST",
+            dataType: 'text',
+            success: function (msg) {
+                alert(msg);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    // Hide the "busy" Gif at load:
+    $("#divProcessing").hide();
+    // Attach click handler to the submit button:
+    $('#login').click(function () {
+        $("#divProcessing").show();
+    });
+    //設定查詢Form
+    $("#btnQuery").click(function () {
+        //Ajax 功能範例
+        var URLs = "Query";
+        $.ajax({
+            url: URLs,
+            data: $('#formSearch').serialize(),
+            type: "POST",
+            dataType: 'html',
+            success: function (result) {
+                $("#userList").html(result);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(thrownError);
+            }
+        });
+    });
+    //由ID 取得資料填入表單
+    function getUser(userid) {
+        //alert(userid);
+        $.ajax({
+            url: "getUser",
+            type: "GET",
+            data: { userid: userid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#u_userid').val(data.USER_ID);
+                $('#u_name').val(data.USER_NAME);
+                $('#u_password').val(data.PASSWORD);
+                $('#u_confirmpwd').val(data.PASSWORD);
+                $('#u_email').val(data.EMAIL);
+                $('#u_tel').val(data.TEL);
+                $('#u_tel_ext').val(data.TEL_EXT);
+                $('#u_fax').val(data.FAX);
+                $('#u_mobile').val(data.MOBILE);
+                //使用Jqery selector 選定對話框內的droplist
+                $('#formUser #roles').val(data.ROLE_ID);
+                $('#formUser #dep_code').val(data.DEP_CODE);
+                $('#userInfo').modal('show'); // show bootstrap modal when complete loaded
+                //$('.modal-title').text('編輯設定資料'); // Set title to Bootstrap modal title
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error get data from ajax');
+            }
+        });
+    }
+    function clearDialog() {
+        $('#u_userid').val('');
+        $('#u_name').val('');
+        $('#u_password').val('');
+        $('#u_confirmpwd').val('');
+        $('#u_email').val('');
+        $('#u_tel').val('');
+        $('#u_tel_ext').val('');
+        $('#u_mobile').val('');
+        //使用Jqery selector 選定對話框內的droplist
+        $('#formUser #roles').val('');
+    }
+</script>

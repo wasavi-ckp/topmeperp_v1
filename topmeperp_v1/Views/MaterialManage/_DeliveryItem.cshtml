@@ -1,0 +1,139 @@
+﻿@model IEnumerable<topmeperp.Models.PurchaseRequisition>
+@using (Html.BeginForm("AddDelivery", "MaterialManage", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <!--不好的方式但檔著先屆時設為Hidden-->
+    <input type="hidden" id="prjId" name="prjId" value="@ViewBag.projectid" />
+    <input type="hidden" id="prjName" name="prjName" value="@ViewBag.projectName" />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    No.
+                </th>
+                <th>
+                    項次
+                </th>
+                <th>
+                    項目說明
+                </th>
+                <th>
+                    備註
+                </th>
+                <th>
+                    單位
+                </th>
+                <th>
+                    主系統
+                </th>
+                <th>
+                    未驗收數量
+                </th>
+                <th>
+                    庫存數量
+                </th>
+                <th><input type="checkbox" name="CheckAll" id="CheckAll">全選</th>
+                <th>
+                    提領數量
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+                {
+
+                <tr>
+                    <td>
+                        @Html.TextBox("planitemid", @item.PLAN_ITEM_ID, new { @class = "form-control", style = "width:120px", @readonly = "readonly" })
+                    </td>
+                    <td>
+                        @item.ITEM_ID
+                    </td>
+                    <td>
+                        @item.ITEM_DESC
+                    </td>
+                    <td>
+                        @item.REMARK
+                    </td>
+                    <td>
+                        @item.ITEM_UNIT
+                    </td>
+                    <td>
+                        @item.SYSTEM_MAIN
+                    </td>
+                    <td>
+                        @item.diffQty
+                    </td>
+                    <td>
+                        @Html.TextBox("inventory_qty", item.INVENTORY_QTY, new { @class = "form-control", style = "width:90px", Name = "inventory_qty", @readonly = "readonly" })
+                    </td>
+                    <td>
+                        <input type="checkbox" id="chkItem" name="chkItem" value="@item.PLAN_ITEM_ID/@item.REMARK" />
+                    </td>
+                    <td>
+                        @Html.TextBox("delivery_qty", item.DELIVERY_QTY, new { @class = "form-control", style = "width:90px", Name = "delivery_qty" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="col-md-12" style="padding-bottom:20px;">
+        <div class="col-md-6">
+            領料人所屬單位/公司:<input style="width: 300px" type="text" class="form-control" name="recipient" id="recipient" value="">
+        </div>
+
+        <div class="col-md-6">
+            領料說明:<textarea class="form-control" rows="5" id="caution" name="caution" style="font-size: 15px;"></textarea>
+        </div>
+    </div>
+    <input id="Submit1" type="submit" value="提領" class="btn btn-warning" onclick="return Confirm_Form()" />
+}
+
+
+<script language="javascript" type="text/javascript">
+    $(document).ready (function () {
+        $("#CheckAll").click(function () {
+            if ($("#CheckAll").prop("checked")) {
+                $("input[name='chkItem']").prop("checked", true);
+            } else
+                $("input[name='chkItem']").prop("checked", false);
+        });
+    });
+
+    function Confirm_Form() {
+        var method1 = $('input[name=chkItem]:checkbox:checked').val();
+        if (typeof (method1) == "undefined") { // 注意檢查完全沒有選取的寫法，這行是精華
+            alert("沒有選取要提領的物料，請勾選並檢查數量是否正確！");
+            return false;
+        }
+
+        var boolOver = false;
+        var boolLost = false;
+        var method2 = $("input[name='chkItem']:checked").length;
+        var i = 0;
+        $('table > tbody > tr').each(function () {
+            var inventory = 0;
+            var delivery = 0;
+            inventory = parseInt($.trim($(this).find("#inventory_qty").val())); //抓取每筆記錄庫存數量的值
+            delivery = parseInt($.trim($(this).find("#delivery_qty").val())); //抓取每筆記錄總領收數量的值
+            if (delivery >= 0)
+            { i = i + 1 }
+            if (parseInt(delivery) > parseInt(inventory)) {
+                boolOver = true;
+            }
+
+        });
+        if (i != method2) {
+            boolLost = true;
+        }
+
+        if (boolLost == true) {
+            alert("勾選的項目沒有填寫提領數量，請重新確認後再進行提領!");
+            return false;
+        }
+        if (boolOver == true) {
+            alert("提領數量大於庫存數量！");
+            return false;
+        }
+    }
+</script>
+

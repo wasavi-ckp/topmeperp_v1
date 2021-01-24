@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "備標作業-專案清單";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+<!--專案搜尋區條件區域-->
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-12">
+            <form name="FormSearchProject" id="FormSearchProject" action="Search" method="Post">
+                <div class="col-md-8 form-group">
+                    <label class="control-label col-md-2" for="textProejctName">專案名稱:</label>
+                    <input class="form-control col-md-6" id="textProejctName" name="textProejctName" type="text" />
+                    <div class="col-md-3">
+                        <select id="selProjectStatus" name="selProjectStatus" class="selectpicker form-control">
+                            <option value="備標">備標</option>
+                            <option value="專案執行">專案執行</option>
+                            <option value="保固">保固</option>
+                            <option value="結案">結案</option>
+                        </select>
+                    </div>
+                    <div id="divProcessing">
+                        <img src="~/Content/ajax-loader.gif">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <input id="Submit1" type="submit" class="btn btn-info" value="查詢" />
+                </div>
+                <div class="col-md-2 pull-left">
+                    <a href="Create" class="btn btn-warning">新增專案</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--專案列表區域-->
+<div class="container">
+    @ViewBag.SearchResult
+    @if (null != Model)
+    {
+        Html.RenderPartial("ProjectList");
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Hide the "busy" Gif at load:
+        $("#divProcessing").hide();
+        // Attach click handler to the submit button:
+        $('#Submit1').click(function () {
+            $("#divProcessing").show();
+        });
+    });
+</script>
+

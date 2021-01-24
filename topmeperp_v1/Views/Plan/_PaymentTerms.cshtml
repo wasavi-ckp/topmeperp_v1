@@ -1,0 +1,113 @@
+﻿@model topmeperp.Models.ContractModels
+<!-- Modal content -->
+<div class="modal-content">
+    <form id="formPayment" name="formPayment" action="addPaymentTerms" method="post">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">付款條件與票期</h4>
+        </div>
+        <div class="modal-body form-group">
+            <input type="hidden" id="project_id" name="project_id"/>
+            <input type="hidden" id="contract_id" name="contract_id"/>
+            <div class="row form-group">
+                <div class="col-md-6" style="padding-bottom: 15px;">
+                    付款方式與日期 :
+                </div>
+                <div class="radio">
+                    <div class="col-md-12">
+                        <label>
+                            <input type="radio" id="payfrequency" name="payfrequency" value="O" />每月分上下兩期付款，付款日為每月<input type="text" id="date1" name="date1" style="width:60px;" />日與
+                            <input type="text" id="date2" name="date2" style="width:60px;" />日，遇假日順延
+                        </label>
+                    </div>
+                    <div class="col-md-12">
+                        <label>
+                            <input type="radio" id="payfrequency" name="payfrequency" value="T" />每月付款一次，為每月<input type="text" id="date3" name="date3" style="width:60px;" />日，遇假日順延
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-6" style="padding-bottom: 15px;">
+                    付款比例與票期 :
+                </div>
+                <div class="radio">
+                    <div class="col-md-12">
+                        <label>
+                            <input type="radio" id="payterms" name="payterms" value="P" />按期估驗
+                        </label>
+                    </div>
+                    <div class="col-md-12">
+                        <select id="paymenttype" name="paymenttype"><option value=""></option><option value="工資">工資</option><option value="設備">設備</option><option value="連工帶料">連工帶料</option></select>
+                    </div>
+                    <div class="col-md-12" style="padding-top: 10px;">
+                        <table border="1">
+                            <tr>
+                                <td Align="Center">估驗比率</td>
+                                <td Align="Center">現金票 : <select id="paymentcash" name="paymentcash"><option value=""></option><option value="電匯">電匯</option><option value="現金">現金</option><option value="支票">支票</option></select></td>
+                                <td Align="Center"><input type="text" id="payment_date1" name="payment_date1" style="width:60px;" />天票 : <select id="payment_1" name="payment_1"><option value=""></option><option value="電匯">電匯</option><option value="現金">現金</option><option value="支票">支票</option></select></td>
+                                <td Align="Center"><input type="text" id="payment_date2" name="payment_date2" style="width:60px;" />天票 : <select id="payment_2" name="payment_2"><option value=""></option><option value="電匯">電匯</option><option value="現金">現金</option><option value="支票">支票</option></select></td>
+                            <tr>
+                                <td>預付款 : <input type="text" id="paymentadvance" name="paymentadvance" style="width:60px;" />%</td>
+                                <td><input type="text" id="paymentadvance_cash" name="paymentadvance_cash" style="width:100px;" />%</td>
+                                <td><input type="text" id="paymentadvance_1" name="paymentadvance_1" style="width:100px;" />%</td>
+                                <td><input type="text" id="paymentadvance_2" name="paymentadvance_2" style="width:100px;" />%</td>
+                            <tr>
+                                <td>估驗款 : <input type="text" id="paymentestimated" name="paymentestimated" style="width:60px;" />%</td>
+                                <td><input type="text" id="paymentestimated_cash" name="paymentestimated_cash" style="width:100px;" />%</td>
+                                <td><input type="text" id="paymentestimated_1" name="paymentestimated_1" style="width:100px;" />%</td>
+                                <td><input type="text" id="paymentestimated_2" name="paymentestimated_2" style="width:100px;" />%</td>
+                            <tr>
+                                <td>保留款 : <input type="text" id="paymentretention" name="paymentretention" style="width:60px;" />%</td>
+                                <td><input type="text" id="paymentretention_cash" name="paymentretention_cash" style="width:100px;" />%</td>
+                                <td><input type="text" id="paymentretention_1" name="paymentretention_1" style="width:100px;" />%</td>
+                                <td><input type="text" id="paymentretention_2" name="paymentretention_2" style="width:100px;" />%</td>
+                        </table>
+                    </div>
+                    <div class="col-md-12" style="padding-top: 20px;">
+                        <label>
+                            <input type="radio" id="payterms" name="payterms" value="S" />階段付款
+                        </label>
+                    </div>
+                    <div class="col-md-12">
+                        <table border="1">
+                            <tr>
+                                <td Align="Center">估驗比率</td>
+                                <td Align="Center">現金票 : <select id="usancecash" name="usancecash"><option value=""></option><option value="電匯">電匯</option><option value="現金">現金</option><option value="支票">支票</option></select></td>
+                                <td Align="Center"><input type="text" id="usance_date1" name="usance_date1" style="width:60px;" />天票 : <select id="usance_1" name="usance_1"><option value=""></option><option value="電匯">電匯</option><option value="現金">現金</option><option value="支票">支票</option></select></td>
+                                <td Align="Center"><input type="text" id="usance_date2" name="usance_date2" style="width:60px;" />天票 :<select id="usance_2" name="usance_2"><option value=""></option><option value="電匯">電匯</option><option value="現金">現金</option><option value="支票">支票</option></select></td>
+                            <tr>
+                                <td>訂金 : <input type="text" id="usanceadvance" name="usanceadvance" style="width:80px;" />%</td>
+                                <td><input type="text" id="usanceadvance_cash" name="usanceadvance_cash" style="width:100px;" />%</td>
+                                <td><input type="text" id="usanceadvance_1" name="usanceadvance_1" style="width:100px;" />%</td>
+                                <td><input type="text" id="usanceadvance_2" name="usanceadvance_2" style="width:100px;" />%</td>
+                            <tr>
+                                <td>貨到 : <input type="text" id="usancegoods" name="usancegoods" style="width:80px;" />%</td>
+                                <td><input type="text" id="usancegoods_cash" name="usancegoods_cash" style="width:100px;" />%</td>
+                                <td><input type="text" id="usancegoods_1" name="usancegoods_1" style="width:100px;" />%</td>
+                                <td><input type="text" id="usancegoods_2" name="usancegoods_2" style="width:100px;" />%</td>
+                            <tr>
+                                <td>完工 : <input type="text" id="usancefinished" name="usancefinished" style="width:80px;" />%</td>
+                                <td><input type="text" id="usancefinished_cash" name="usancefinished_cash" style="width:100px;" />%</td>
+                                <td><input type="text" id="usancefinished_1" name="usancefinished_1" style="width:100px;" />%</td>
+                                <td><input type="text" id="usancefinished_2" name="usancefinished_2" style="width:100px;" />%</td>
+                            <tr>
+                                <td>尾款 : <input type="text" id="usanceretention" name="usanceretention" style="width:80px;" />%</td>
+                                <td><input type="text" id="usanceretention_cash" name="usanceretention_cash" style="width:100px;" />%</td>
+                                <td><input type="text" id="usanceretention_1" name="usanceretention_1" style="width:100px;" />%</td>
+                                <td><input type="text" id="usanceretention_2" name="usanceretention_2" style="width:100px;" />%</td>
+                        </table>
+                    </div>
+                    <div class="col-md-12" style="padding-top: 30px;">
+                        <textarea class="form-control" rows="10">備註</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+            <button type="submit" class="btn btn-default" data-dismiss="modal" id="savePayment">儲存</button>
+        </div>
+    </form>
+</div>
+
