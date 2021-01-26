@@ -1,0 +1,145 @@
+﻿@model IEnumerable<topmeperp.Models.PLAN_SUP_INQUIRY>
+
+@{
+    ViewBag.Title = "getPlanSupInquiryByProjectId";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+
+<h2>估驗查詢</h2>
+
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    @if (Model != null)
+    {
+
+
+    <table class="table">
+        <tr style="text-align:center">
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.INQUIRY_FORM_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PROJECT_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FORM_NAME)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OWNER_NAME)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OWNER_TEL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OWNER_EMAIL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OWNER_FAX)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SUPPLIER_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CONTACT_NAME)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CONTACT_EMAIL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DUEDATE)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.REF_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ISWAGE)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CREATE_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CREATE_DATE)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MODIFY_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MODIFY_DATE)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.STATUS)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |*@
+                    @Html.ActionLink("清單", "getPlanSupInquiryItemByInquiryFormId", new { _id = item.INQUIRY_FORM_ID }) @*|*@
+                    @*@Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+                </td>
+                <td>
+                    @*@Html.ActionLink((modelItem => item.INQUIRY_FORM_ID), "getPlanSupInquiryItemByInquiryFormId", new { _id = item.INQUIRY_FORM_ID })*@
+                    @Html.DisplayFor(modelItem => item.INQUIRY_FORM_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PROJECT_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FORM_NAME)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OWNER_NAME)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OWNER_TEL)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OWNER_EMAIL)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OWNER_FAX)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SUPPLIER_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CONTACT_NAME)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CONTACT_EMAIL)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DUEDATE)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.REF_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ISWAGE)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CREATE_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CREATE_DATE)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MODIFY_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MODIFY_DATE)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.STATUS)
+                </td>
+            </tr>
+        }
+
+    </table>
+    }
+    else { <div>無資料</div>}

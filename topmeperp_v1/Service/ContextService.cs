@@ -16,6 +16,9 @@ namespace topmeperp.Service
 {
     public class ContextService
     {
+        /// <summary>
+        /// EntityFrame 最基本資料庫
+        /// </summary>
         public topmepEntities db;// = new topmepEntities();
         //定義上傳檔案存放路徑
         public static string strUploadPath = ConfigurationManager.AppSettings["UploadFolder"];
@@ -160,7 +163,7 @@ namespace topmeperp.Service
             logger.Info("get functions count=" + userPrivilege.Count);
         }
         SYS_USER user = null;
-        //取得供應商資料
+        //取得User資料【//取得供應商資料暫時判定為錯誤】
         public SYS_USER getUserInfo(string userid)
         {
             logger.Debug("get user by id=" + userid);

@@ -1,0 +1,124 @@
+﻿@model IEnumerable<topmeperp.Models.PLAN_SUP_INQUIRY_ITEM>
+
+@{
+    ViewBag.Title = "getPlanSupInquiryItemByInquiryFormId";
+    Layout = "~/Views/Shared/_MenuLayout.cshtml";
+}
+
+<h2>估驗查詢細項清單</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class=""table"">
+    <tr style="text-align:center">
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.INQUIRY_ITEM_ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.INQUIRY_FORM_ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PLAN_ITEM_ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TYPE_CODE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SUB_TYPE_CODE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ITEM_ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ITEM_DESC)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ITEM_UNIT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ITEM_QTY)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ITEM_UNIT_PRICE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ITEM_QTY_ORG)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ITEM_UNITPRICE_ORG)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ITEM_REMARK)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MODIFY_ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MODIFY_DATE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WAGE_PRICE)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.INQUIRY_ITEM_ID)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.INQUIRY_FORM_ID)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.PLAN_ITEM_ID)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TYPE_CODE)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.SUB_TYPE_CODE)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ITEM_ID)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ITEM_DESC)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ITEM_UNIT)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ITEM_QTY)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ITEM_UNIT_PRICE)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ITEM_QTY_ORG)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ITEM_UNITPRICE_ORG)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ITEM_REMARK)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.MODIFY_ID)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.MODIFY_DATE)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.WAGE_PRICE)
+    </td>
+</tr>
+}
+
+</table>

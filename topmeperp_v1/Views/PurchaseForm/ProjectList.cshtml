@@ -50,8 +50,8 @@
                 <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PurchaseOrderIndex","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">採購單查詢</button>
 
                 <!-- 2020/1/2 11:04 edit here 按鈕-估驗作業-->
-                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("AssessmentIndex","Assessment", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">估驗作業</button>
-                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("AssessmentListIndex","Assessment", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">估驗清單</button>
+                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("getPlanSupInquiryByProjectId","Certify", new { _id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">估驗查詢</button>
+                @*<button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("AssessmentListIndex","Assessment", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">估驗清單</button>*@
             </td>
         </tr>
     }
