@@ -19,6 +19,7 @@ namespace topmeperp.Controllers
         [topmeperp.Filter.AuthFilter]
         public ActionResult Index()
         {
+            //首頁
             List<topmeperp.Models.TND_PROJECT> lstProject = SearchProjectByName("", "備標");
             ViewBag.SearchResult = "共取得" + lstProject.Count + "筆資料";
             return View(lstProject);

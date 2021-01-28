@@ -43,9 +43,10 @@
                 <button type="button" class="btn btn-warning" @ViewBag.F10005 onclick="location.href='@Url.Action("FormTemplateMgr", "PurchaseForm", new { id = item.PROJECT_ID })'">空白詢價單</button>
                 <button type="button" class="btn btn-warning" onclick="location.href='@Url.Action("FormMainPage","PurchaseForm", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">廠商詢價單</button>
                 <button type="button" class="btn btn-warning" onclick="location.href='@Url.Action("PendingFormTemplate", "PurchaseForm", new { id = item.PROJECT_ID })'; ">議約發包</button>
+                <button type="button" class="btn btn-warning" onclick="location.href='@Url.Action("LeadTimeMainPage", "PurchaseForm", new { id = item.PROJECT_ID })'; ">設備前置時間</button>
             </td>
             <td>
-                <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("LeadTimeMainPage", "PurchaseForm", new { id = item.PROJECT_ID })'; ">設備前置時間</button>
+                
                 <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PurchaseOrder","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">採購作業</button>
                 <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("PurchaseOrderIndex","MaterialManage", new { id = @Html.DisplayFor(modelItem => item.PROJECT_ID)})'; ">採購單查詢</button>
 
